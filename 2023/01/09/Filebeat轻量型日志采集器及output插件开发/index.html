@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filebeat轻量型日志采集器及output插件开发 [ Ch3nnn个人博客 ]</title>
+
+  <link rel="icon" href="/img/favicon.ico">
+
+
+    <meta name="author" content="Ch3nnn">
+
+
+    <meta name="subtitle" content="Ch3nnn 个人博客 | 折腾不息 · 乐此不疲.">
+
+
+    <meta name="Description" content="小站主要用来分享和记录学习经验,教程,记录个人生活的点滴以及一些随笔.">
+
+
+    <meta name="keywords" content=",linux, nginx, mysql, 服务器, ubuntu, shell, web, mac, python, django, es">
+
+
+  <link rel="alternate" href="/feed.xml " title="Ch3nnn个人博客" type="application/atom+xml">
+
+
+  
+    <link rel="stylesheet" href="/css/main.css">
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body data-theme="light" class="notransition">
+    <script>
+      const body = document.body;
+      const data = body.getAttribute("data-theme");
+      const initTheme = (state) => {
+        if (state === "dark") {
+          body.setAttribute("data-theme", "dark");
+        } else if (state === "light") {
+          body.removeAttribute("data-theme");
+        } else {
+          localStorage.setItem("theme", data);
+        }
+      };
+   
+      initTheme(localStorage.getItem("theme"));
+      
+      setTimeout(() => body.classList.remove("notransition"), 75);
+    </script>
+  <div class="navbar" role="navigation">
+    <nav class="menu">
+      <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+      <label for="menu-trigger">
+        <span class="menu-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z"
+            />
+          </svg>
+        </span>
+      </label>
+      <a id="mode">
+        <svg
+          class="mode-sunny"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>LIGHT</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+        <svg
+          class="mode-moon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>DARK</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+      </a>
+      <div class="trigger">
+        <div class="trigger-container">
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/"> Home 🏠</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/about/"> About 👨‍💻</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/archives/"> Archives 📆</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/tags/"> Tags 🏷️</a>
+          
+              <a class="menu-link" href="/feed.xml"><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 512 512"
+            fill="#ED812E"
+          >
+            <title>RSS</title>
+            <path
+              d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"
+            />
+            <path
+              d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"
+            />
+            <path
+              d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"
+            />
+          </svg></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  
+<div class="wrapper post">
+  <main class="page-content" aria-label="Content">
+      <header class="header">
+        
+          <div class="tags">
+            <a href="/tags/Go/" class="tag"># Go</a>
+          </div>
+        
+        <h1 class="header-title" itemprop="headline">Filebeat轻量型日志采集器及output插件开发</h1>
+          <div class="post-meta">
+            <time>1月 09, 2023</time>
+            <span itemprop="author">
+              <span itemprop="name">Ch3nnn</span>
+            </span>
+          </div>
+        </header>
+
+          <div class="page-content"><blockquote>
+<p>无论您是从安全设备、云、容器、主机还是 OT 进行数据收集，Filebeat 都将为您提供一种轻量型方法，用于转发和汇总日志与文件，让简单的事情不再繁杂。</p>
+</blockquote>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Filebeat 是使用 Golang 实现的轻量型日志采集器。本质上是一个 agent ，可以安装在各个节点上，根据配置读取对应位置的日志，并上报到相应的地方去。</p>
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>Filebeat 并不依赖于 ElasticSearch，可以单独存在。我们可以单独使用Filebeat进行日志的上报和搜集。filebeat 内置了常用的 Output 组件, 例如 kafka、ElasticSearch、redis 等，出于调试考虑，也可以输出到 console 和 file 。我们可以利用现有的 Output 组件，将日志进行上报。</p>
+<h3 id="整体工作原理"><a href="#整体工作原理" class="headerlink" title="整体工作原理"></a>整体工作原理</h3><p>Filebeat 由两个主要组件组成：harvester 和 prospector。</p>
+<ul>
+<li>harvester (采集器) 的主要职责是读取单个文件的内容。读取每个文件，并将内容发送到 the output。 每个文件启动一个 harvester，harvester 负责打开和关闭文件，这意味着在运行时文件描述符保持打开状态。如果文件在读取时被删除或重命名，Filebeat 将继续读取文件。</li>
+<li>prospector (查找器) 的主要职责是管理 harvester 并找到所有要读取的文件来源。如果输入类型为日志，则查找器将查找路径匹配的所有文件，并为每个文件启动一个 harvester。每个 prospector 都在自己的 Go 协程中运行。<blockquote>
+<p><em>注：Filebeat prospector只能读取本地文件， 没有功能可以连接到远程主机来读取存储的文件或日志。</em></p>
+</blockquote>
+</li>
+</ul>
+<p>由以上两个组件一起工作来读取文件（tail file）并将事件数据发送到指定的输出。<br>下图是 Filebeat 官方提供的架构图：<br><img src="https://cdn.jsdelivr.net/gh/ch3nnn/picgo/blog/imgs20230109163928.png"></p>
+<h4 id="Filebeat背后的“老大”"><a href="#Filebeat背后的“老大”" class="headerlink" title="Filebeat背后的“老大”"></a>Filebeat背后的“老大”</h4><p>说到Filebeat，它其实只是<a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https://github.com/elastic/beats/tree/master/libbeat">beats家族</a>众多成员中的一个。除了Filebeat, 还有很多其他的beat小伙伴：</p>
+<table>
+<thead>
+<tr>
+<th>beat</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Filebeat</td>
+<td>收集日志文件</td>
+</tr>
+<tr>
+<td>Metricbeat</td>
+<td>收集各种指标数据</td>
+</tr>
+<tr>
+<td>Packetbeat</td>
+<td>收集网络数据包</td>
+</tr>
+<tr>
+<td>Auditbeat</td>
+<td>收集审计数据</td>
+</tr>
+<tr>
+<td>Heartbeat</td>
+<td>收集服务运行状态监测数据</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody></table>
+<p>如果你愿意的话，你也可以按照beat的规范来写自己的beat。<br>能实现以上这些beat，都离不开beats家族真正的“老大”—— libbeat， 它是beat体系的核心库。我们接下来看一下libbeat到底都作了些什么</p>
+<ul>
+<li>libbeat提供了publisher组件，用于对接input；</li>
+<li>收集到的数据在进入到libbeat后，首先会经过各种 processor的加工处理，比如过滤添加字段，多行合并等等；</li>
+<li>input组件通过publisher组件将收集到的数据推送到publisher内部的队列；</li>
+<li>libbeat本身实现了前面介绍过的多种output, 因此它负责将处理好的数据通过output组件发送出去；</li>
+<li>libbeat本身封装了retry的逻辑；</li>
+<li>libbeat负责将ACK反馈通过到input组件 ；</li>
+</ul>
+<p>由此可见，大部分活儿都是libbeat来作，当“老大”不容易啊～。<br>input仅需要作两件事：</p>
+<ul>
+<li>从不同的介质中收集数据后投递给libbeat;</li>
+<li>接收libbeat反馈回来的ACK, 作相应的持久化;</li>
+</ul>
+<h2 id="安装与使用"><a href="#安装与使用" class="headerlink" title="安装与使用"></a>安装与使用</h2><p>Filebeat 基于 Go 语言开发无其他依赖，它最大的特点是性能稳定、配置简单、占用系统资源很少，安装使用也非常简单，可访问 Elastic-Beats 官网获取各版本 Filebeat。因为 Filebeat 各版本之间的差异较大，这里推荐7以上的新版，首先进行下载解压：<br>tar -zxvf filebeat-7.tar.gz mv filebeat-7 filebeat cd filebeat</p>
+<h3 id="FileBeat启停指令："><a href="#FileBeat启停指令：" class="headerlink" title="FileBeat启停指令："></a>FileBeat启停指令：</h3><ul>
+<li>调试模式下采用：终端启动（退出终端或 ctrl+c 会退出运行）</li>
+</ul>
+<p><code>./filebeat -e -c filebeat.yml</code></p>
+<ul>
+<li>线上环境配合 error 级别使用：以后台守护进程启动启动 filebeats</li>
+</ul>
+<p><code>nohup ./filebeat -e -c filebeat.yml &amp;</code></p>
+<ul>
+<li>零输出启动（不推荐）：将所有标准输出及标准错误输出到&#x2F;dev&#x2F;null空设备，即没有任何输出信息。</li>
+</ul>
+<p><code>nohup ./filebeat -e -c filebeat.yml &gt;/dev/null 2&gt;&amp;1 &amp;</code></p>
+<ul>
+<li>停止运行 FileBeat 进程</li>
+</ul>
+<p><code>ps -ef | grep filebeat Kill -9 线程号</code></p>
+<h3 id="FileBeat配置文件"><a href="#FileBeat配置文件" class="headerlink" title="FileBeat配置文件"></a>FileBeat配置文件</h3><p>FileBeat 的配置文件定义了在读取文件的位置，输出流的位置以及相应的性能参数，本实例是以 Kafka 消息中间件作为缓冲，所有的日志收集器都向 Kafka 输送日志流，相应的配置项如下，并附配置说明：</p>
+<p>filebeat.yml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">filebeat.inputs:</span> </span><br><span class="line"><span class="bullet">-</span> <span class="attr">type:</span> <span class="string">log</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">paths:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/wls/applogs/rtlog/app.log</span></span><br><span class="line">  <span class="attr">fields:</span> </span><br><span class="line">    <span class="attr">log_topic:</span> <span class="string">appName</span></span><br><span class="line">  <span class="attr">multiline:</span></span><br><span class="line">        <span class="comment"># pattern for error log, if start with space or cause by </span></span><br><span class="line">        <span class="attr">pattern:</span> <span class="string">&#x27;^[[:space:]]+(at|\.&#123;3&#125;)\b|^Caused by:&#x27;</span></span><br><span class="line">        <span class="attr">negate:</span>  <span class="literal">false</span></span><br><span class="line">        <span class="attr">match:</span>   <span class="string">after</span></span><br><span class="line"></span><br><span class="line"><span class="attr">output.kafka:</span></span><br><span class="line">   <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">   <span class="attr">hosts:</span> [<span class="string">&quot;kafka-1:9092&quot;</span>,<span class="string">&quot;kafka-2:9092&quot;</span>]</span><br><span class="line">   <span class="attr">topic:</span> <span class="string">applog</span></span><br><span class="line">   <span class="attr">version:</span> <span class="string">&quot;0.10.2.0&quot;</span></span><br><span class="line">   <span class="attr">compression:</span> <span class="string">gzip</span></span><br><span class="line"></span><br><span class="line"><span class="attr">processors:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">drop_fields:</span> </span><br><span class="line">   <span class="attr">fields:</span> [<span class="string">&quot;beat&quot;</span>, <span class="string">&quot;input&quot;</span>, <span class="string">&quot;source&quot;</span>, <span class="string">&quot;offset&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="attr">logging.level:</span> <span class="string">error</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">app-server-ip</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>paths</strong>:定义了日志文件路径，可以采用模糊匹配模式，如*.log</li>
+<li><strong>fields</strong>：topic 对应的消息字段或自定义增加的字段。</li>
+<li><strong>output.kafka</strong>：filebeat 支持多种输出，支持向 kafka，logstash，elasticsearch 输出数据，此处设置数据输出到 kafka。</li>
+<li><strong>enabled</strong>：这个启动这个模块。</li>
+<li><strong>topic</strong>：指定要发送数据给 kafka 集群的哪个 topic，若指定的 topic 不存在，则会自动创建此 topic。</li>
+<li><strong>version</strong>：指定 kafka 的版本。</li>
+<li><strong>drop_fields</strong>：舍弃字段，filebeat 会 json 日志信息，适当舍弃无用字段节省空间资源。</li>
+<li><strong>name</strong>：收集日志中对应主机的名字，<strong>建议 name 这里设置为 IP</strong>，便于区分多台主机的日志信息。</li>
+</ul>
+<p>以上参数信息，需要用户个性化修改的主要是：paths，hosts，topic，version 和 name。</p>
+<h3 id="Filebeat-input-配置热加载"><a href="#Filebeat-input-配置热加载" class="headerlink" title="Filebeat input 配置热加载"></a>Filebeat input 配置热加载</h3><p>filebeat.yml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">filebeat.config.inputs:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">../configs/input*.yml</span></span><br><span class="line">  <span class="attr">reload.enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">reload.period:</span> <span class="string">5s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">output.syslog:</span></span><br><span class="line">  <span class="attr">network:</span> <span class="string">tcp</span></span><br><span class="line">  <span class="attr">addr:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:5140</span></span><br><span class="line">  <span class="attr">tag:</span> <span class="string">tag</span></span><br><span class="line"></span><br><span class="line"><span class="attr">fields:</span></span><br><span class="line">  <span class="attr">prober_id:</span> <span class="number">1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>input.yml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">type:</span> <span class="string">log</span></span><br><span class="line">  <span class="attr">paths:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/Users/chentong/project/log-prober-go/prober-filebeat/cmd/filebeat/example.log</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="Filebeat-写入-kafka-示例"><a href="#Filebeat-写入-kafka-示例" class="headerlink" title="Filebeat 写入 kafka 示例"></a>Filebeat 写入 kafka 示例</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">    - type: log</span><br><span class="line">      paths:</span><br><span class="line">        - /var/log/*.log</span><br><span class="line">        - /Users/chentong/project/log-prober-go/logs/app.log</span><br><span class="line">output.kafka:</span><br><span class="line">    hosts:</span><br><span class="line">        - 127.0.0.1:9092</span><br><span class="line">    topic: test_filebeat</span><br><span class="line">    keep_alive: 10s</span><br><span class="line">fields:</span><br><span class="line">    prober_id: 999</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Filebeat-output-syslog插件开发"><a href="#Filebeat-output-syslog插件开发" class="headerlink" title="Filebeat output syslog插件开发"></a>Filebeat output syslog插件开发</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><blockquote>
+<p>filebeat 自带只支持 es、logstash、kafka、redis、file、console 数据输出. 需要自定义输出 syslog </p>
+</blockquote>
+<h3 id="工程搭建"><a href="#工程搭建" class="headerlink" title="工程搭建"></a>工程搭建</h3><h4 id="引入对beat的依赖"><a href="#引入对beat的依赖" class="headerlink" title="引入对beat的依赖"></a>引入对<code>beat</code>的依赖</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go get github.com/elastic/beats/v7</span><br></pre></td></tr></table></figure>
+
+<p>定义在filebeat中的配置文件<br><code>filebeat</code>通常以配置文件的方式加载插件。让我们定义一下必须的配置，就像<code>elasticsearch</code>中的连接地址等等一样。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">output.syslog:</span></span><br><span class="line">  <span class="comment"># 接收方式</span></span><br><span class="line">  <span class="attr">network:</span> <span class="string">tcp</span>   </span><br><span class="line">  <span class="comment"># syslog 地址</span></span><br><span class="line">  <span class="attr">addr:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:5140</span></span><br><span class="line">  <span class="comment"># 自定义消息tag</span></span><br><span class="line">  <span class="attr">tag:</span> <span class="string">tag</span></span><br></pre></td></tr></table></figure>
+<h4 id="go文件中的配置"><a href="#go文件中的配置" class="headerlink" title="go文件中的配置"></a>go文件中的配置</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> syslogConfig <span class="keyword">struct</span> &#123;</span><br><span class="line">	Network <span class="type">string</span> <span class="string">`config:&quot;network&quot;`</span></span><br><span class="line">	Addr    <span class="type">string</span> <span class="string">`config:&quot;addr&quot;`</span></span><br><span class="line">	Tag     <span class="type">string</span> <span class="string">`config:&quot;tag&quot;`</span></span><br><span class="line">	<span class="comment">// 发布日志事件的 worker goroutines 数量</span></span><br><span class="line">	Workers <span class="type">int</span> <span class="string">`config:&quot;workers&quot; validate:&quot;min=1&quot;`</span></span><br><span class="line">	<span class="comment">// Max number of events in a batch to send to a single client</span></span><br><span class="line">	BatchSize <span class="type">int</span> <span class="string">`config:&quot;batch_size&quot; validate:&quot;min=1&quot;`</span></span><br><span class="line">	<span class="comment">// Max number of retries for single batch of events</span></span><br><span class="line">	RetryLimit <span class="type">int</span> <span class="string">`config:&quot;retry_limit&quot; validate:&quot;min=1&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="初始化加载插件"><a href="#初始化加载插件" class="headerlink" title="初始化加载插件"></a>初始化加载插件</h4><h4 id="加载插件"><a href="#加载插件" class="headerlink" title="加载插件"></a>加载插件</h4><p>在某个init函数中注册插件</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	outputs.RegisterType(<span class="string">&quot;syslog&quot;</span>, newSyslogOutPut)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>newSyslogOutPut</code>中卸载配置，并提供配置给<code>Syslog</code>客户端</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">newSyslogOutPut</span><span class="params">(_ outputs.IndexManager, _ beat.Info, stats outputs.Observer, cfg *common.Config)</span></span> (outputs.Group, <span class="type">error</span>) &#123;</span><br><span class="line">	config := syslogConfig&#123;Workers: <span class="number">1</span>, BatchSize: <span class="number">1</span>, RetryLimit: <span class="number">1</span>&#125;</span><br><span class="line">	<span class="keyword">if</span> err := cfg.Unpack(&amp;config); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> outputs.Fail(err)</span><br><span class="line">	&#125;</span><br><span class="line">	clients := <span class="built_in">make</span>([]outputs.NetworkClient, config.Workers)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; config.Workers; i++ &#123;</span><br><span class="line">		clients[i] = &amp;SyslogClient&#123;</span><br><span class="line">			network: config.Network,</span><br><span class="line">			addr:    config.Addr,</span><br><span class="line">			tag:     config.Tag,</span><br><span class="line">			stats:   stats,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> outputs.SuccessNet(<span class="literal">true</span>, config.BatchSize, config.RetryLimit, clients)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="初始化syslog客户端"><a href="#初始化syslog客户端" class="headerlink" title="初始化syslog客户端"></a>初始化<code>syslog</code>客户端</h4><p><code>syslog</code>客户端不仅仅是一个<code>syslog</code>客户端，而且还需要实现<code>filebeat</code>中的<code>NetworkClient</code>接口，接下来，让我们来关注接口中的每一个方法的作用及实现</p>
+<h3 id="String-接口"><a href="#String-接口" class="headerlink" title="String()接口"></a>String()接口</h3><p><code>String</code>作为客户端的名字，用来标识日志以及指标。是最简单的一个接口</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *SyslogClient)</span></span> String() <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;syslog&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Connect-接口"><a href="#Connect-接口" class="headerlink" title="Connect()接口"></a>Connect()接口</h3><p><code>Connect</code>用来初始化客户端</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *SyslogClient)</span></span> Connect() <span class="type">error</span> &#123;</span><br><span class="line">	dial, err := gsyslog.DialLogger(c.network, c.addr, gsyslog.LOG_NOTICE, <span class="string">&quot;LOCAL0&quot;</span>, c.tag)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	c.client = dial</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，这里初始化失败，需要<code>Sleep</code>一段时间，否则，filebeat会一直重试。这绝非是你想要的。或许对于场景来说，退避重试可能会更好</p>
+<h3 id="Close-接口"><a href="#Close-接口" class="headerlink" title="Close()接口"></a>Close()接口</h3><p>关闭客户端，也是很简单的接口</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *SyslogClient)</span></span> Close() <span class="type">error</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.client.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Publish-接口"><a href="#Publish-接口" class="headerlink" title="Publish()接口"></a>Publish()接口</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *SyslogClient)</span></span> Publish(_ context.Context, batch publisher.Batch) <span class="type">error</span> &#123;</span><br><span class="line">	events := batch.Events()</span><br><span class="line">	<span class="comment">// 记录这批日志</span></span><br><span class="line">	c.stats.NewBatch(<span class="built_in">len</span>(events))</span><br><span class="line">	retryEvents, err := c.PublishEvents(events)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// 发送失败，则重试 受RetryLimit的限制</span></span><br><span class="line">		batch.RetryEvents(retryEvents)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		c.stats.Acked(<span class="built_in">len</span>(events))</span><br><span class="line">		batch.ACK()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发布 syslog 数据</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *SyslogClient)</span></span> PublishEvents(events []publisher.Event) ([]publisher.Event, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">for</span> i, event := <span class="keyword">range</span> events &#123;</span><br><span class="line">		message, err := event.Content.Fields.GetValue(<span class="string">&quot;message&quot;</span>)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> events[i:], err</span><br><span class="line">		&#125;</span><br><span class="line">		m, ok := message.(<span class="type">string</span>)</span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			<span class="keyword">return</span> events[i:], errors.New(<span class="string">&quot;cast log to str failed&quot;</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// syslog 发送数据</span></span><br><span class="line">		_, err = c.client.Write([]<span class="type">byte</span>(m))</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> events[i:], err</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="最后是SyslogClient"><a href="#最后是SyslogClient" class="headerlink" title="最后是SyslogClient"></a>最后是<code>SyslogClient</code></h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> SyslogClient <span class="keyword">struct</span> &#123;</span><br><span class="line">	network <span class="type">string</span></span><br><span class="line">	addr    <span class="type">string</span></span><br><span class="line">	tag     <span class="type">string</span></span><br><span class="line"></span><br><span class="line">	stats  outputs.Observer</span><br><span class="line">	client gsyslog.Syslogger</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+</div>
+          <nav class="post-nav">
+    
+    
+    <a class="post-nav-item post-nav-next" href="/2023/01/02/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84GoCLI%E5%91%BD%E4%BB%A4/">
+      <div class="nav-arrow">OLDER&nbsp;&gt;</div>
+      <span class="post-title">这些最常用的 Go CLI 命令，新手 Gopher 应该掌握</span>
+    </a>
+    
+  </nav>
+          <div class="dis">
+    
+        <div class="btn" id="comments-btn">给我留言</div>
+      
+     
+    <script src='//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js'></script>
+    <div id="waline"></div>
+    <script>
+        window.onload = function () {
+            var loadWaline = function () {
+                new Waline({
+                el: '#waline',
+                path: location.pathname,
+                avatarCDN: '',
+                serverURL: 'comment-vercel.ch3nnn.cn',
+                avatar: 'monsterid',
+                placeholder: "Let me know what you think！"
+            });
+            }
+            if (true) {
+                document.getElementById("comments-btn").onclick=function(){
+                    document.getElementById("comments-btn").style.display="none";
+                    loadWaline();
+		    }} else {
+            loadWaline();
+            }
+        };
+    </script>
+
+
+  </div>
+
+   </main>
+</div>
+
+  <footer class="footer">
+    <small class="footer_copyright">
+      <div id="bottom-inner">
+        © 2021 Site by Ch3nnn using
+        <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+        <br>
+        <p> Theme is <a target="_blank" rel="noopener" href="https://github.com/dewjohn/hexo-theme-klise">Klise</a></p>
+      </div>
+    </small>
+  </footer>
+  
+  
+
+    
+      <script src="/js/main.js"></script>
+    
+  
+  <script>
+    window.FPConfig = {
+      delay: 0,
+      ignoreKeywords: [],
+      maxRPS: 3,
+      hoverDelay: 50,
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+</body>
+</html>
