@@ -8,7 +8,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Archives  [ Ch3nnn个人博客 ]</title>
+<title>Golang-Modules的演进史 [ Ch3nnn个人博客 ]</title>
 
   <link rel="icon" href="/img/favicon.ico">
 
@@ -240,7 +240,7 @@
             
             
             
-            <a class="menu-link active" href="/archives/"> Archives 📆</a>
+            <a class="menu-link " href="/archives/"> Archives 📆</a>
           
             
             
@@ -274,120 +274,108 @@
   </div>
 
   
+<div class="wrapper post">
+  <main class="page-content" aria-label="Content">
+      <header class="header">
+        
+          <div class="tags">
+            <a href="/tags/Go/" class="tag"># Go</a>
+          </div>
+        
+        <h1 class="header-title" itemprop="headline">Golang-Modules的演进史</h1>
+          <div class="post-meta">
+            <time>3月 13, 2023</time>
+            <span itemprop="author">
+              <span itemprop="name">Ch3nnn</span>
+            </span>
+          </div>
+        </header>
+
+          <div class="page-content"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Go 语言在 v1.11 开始支持 Modules，本文我们介绍一下 Go 语言各个版本支持 Go Modules 的演进史。</p>
+<p>使用<code> Go Modules</code> 模式，一般分为以下几个流程：</p>
+<ul>
+<li><code>go mod init</code> 创建一个新模块，初始化 <code>go.mod</code> 文件。</li>
+<li><code>go build</code>、<code>go test</code>、<code>go run</code>、<code>go install</code> 等构建命令，向 <code>go.mod</code>文件中添加模块所需的依赖项。</li>
+<li><code>go list -m -json all</code> 打印当前模块的依赖项。</li>
+<li><code>go get</code> 添加依赖项，或修改依赖项版本。</li>
+<li><code>go mod tidy</code> 删除未使用的依赖项。</li>
+</ul>
+<h2 id="Go-Modules-演进史"><a href="#Go-Modules-演进史" class="headerlink" title="Go Modules 演进史"></a>Go Modules 演进史</h2><p><strong>Go v1.11</strong><br>从 Go v1.11 开始支持 Go Moduls。<br>为了兼容使用 Go v1.11 之前的任意版本的项目，当设置 <code>GO111MODULE=auto</code> 或 <code>GO111MODULE=off</code> 时，Go v1.11 在 <code>$GOPATH/src</code> 中，继续使用 <code>GOPATH</code> 模式。<br>当设置 <code>GO111MODULE=auto</code> 时，其它任意位置，如果当前目录或父目录包含 go.mod 文件，则使用 Modules 模式。</p>
+<blockquote>
+<p>注意：GO111MODULE 包含三个模式，分别是 auto、on 和 off，其中默认值是 auto，即不显式设置 GO111MODULE 的值，默认是 auto 模式。</p>
+</blockquote>
+<p><strong>Go v1.13</strong><br>在 Go v1.13 中，Go Modules 发生一些变化：</p>
+<p>当设置 <code>GO111MODULE=auto</code> 时，如果在任意位置找到 go.mod 文件，则使用 Go Modules 模式，即使在 <code>$GOPATH/src</code> 中。</p>
+<blockquote>
+<p>注意：在 Go v1.13 之前，即使 GO111MODULE&#x3D;auto，在 $GOPATH&#x2F;src 目录中也不会启动 Go Modules 模式。</p>
+</blockquote>
+<p>go get 的变化：</p>
+<ul>
+<li><code>go get -u （不包含任何参数）</code>，现在只升级当前包的直接和间接依赖，并且不再检查整个模块。</li>
+<li><code>go get -u ./...</code> 从模块根升级模块的所有直接和间接依赖项，现在排除测试依赖项。</li>
+<li><code>go get -u -t ./... </code>从模块根升级模块的所有直接和间接依赖项，而且还会升级测试依赖项。</li>
+</ul>
+<p><strong>Go v1.14</strong><br>从 Go v1.14 开始，模块被认为可以用于生产环境，并且鼓励所有用户从其他依赖管理系统迁移到模块。<br>当主模块包含一个顶级 vendor 目录，并且它的 go.mod 文件指定 go 1.14 或更高版本时，对于支持 <code>-mod=vendor</code> 的 go 命令，将默认添加 <code>-mod=vendor</code>。</p>
+<p><strong>Go v1.15</strong><br>模块缓存的位置现在可以使用 <code>GOMODCACHE</code> 环境变量进行设置。<code>GOMODCACHE</code> 的默认值是 <code>GOPATH[0]/pkg/mod</code>，这也是不支持使用 <code>GOMODCACHE</code> 环境变量进行设置之前的模块缓存的位置。</p>
+<blockquote>
+<p>注意：可以使用 GOPATH 环境变量设置多个目录。</p>
+</blockquote>
+<p><strong>Go v1.16</strong><br>模块模式（<code>GO111MODULE=on</code>）默认开启，也就是说默认启用 Go Modules 模式，如果用户想要使用 GOPATH 模式，需要显式设置 <code>GO111MODULE=off</code> 或 <code>GO111MODULE=auto</code>（并且需要在 <code>$GOPATH/src</code> 目录）。<br>使用 <code>go install pkg@version</code> 替换 <code>go get pkg@version</code> 全局安装包和可执行文件。</p>
+<blockquote>
+<p>注意：在 Modules 模式 go get 不再用于构建或安装包，而是专门用于调整 go.mod 中的依赖项，如果在模块外执行 go get 将会报错，因为没有可更新的 go.mod 文件；在 GOPATH 模式（GO111MODULE&#x3D;off） go get 仍然构建和安装包。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文介绍 Go Modules 模式在 Go 语言各个版本中的演进史，限于篇幅，仅介绍的在使用时常用操作的变化，我们最后做一下总结：</p>
+<ol>
+<li>Go v1.11  开始支持 Go Modules 模式</li>
+<li>Go v1.13 在（包含 $GOPATH&#x2F;src ）任意目录找到 go.mod 文件，都开启 Go Modules 模式</li>
+<li>Go v1.14 推荐在生产环境使用</li>
+<li>Go v1.16 默认开启 Go Modules 模式。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/wVUVcppCZ89o7ViMNyTHfw">Go 语言各个版本支持 Go Modules 的演进史</a></p>
+</div>
+          <nav class="post-nav">
+    
+    
+    <a class="post-nav-item post-nav-next" href="/2023/03/07/Golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/">
+      <div class="nav-arrow">OLDER&nbsp;&gt;</div>
+      <span class="post-title">Golang-逃逸分析</span>
+    </a>
+    
+  </nav>
+          <div class="dis">
+    
+        <div class="btn" id="comments-btn">给我留言</div>
+      
+     
+    <script src='//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js'></script>
+    <div id="waline"></div>
+    <script>
+        window.onload = function () {
+            var loadWaline = function () {
+                new Waline({
+                el: '#waline',
+                path: location.pathname,
+                avatarCDN: '',
+                serverURL: 'comment-vercel.ch3nnn.cn',
+                avatar: 'monsterid',
+                placeholder: "Let me know what you think！"
+            });
+            }
+            if (true) {
+                document.getElementById("comments-btn").onclick=function(){
+                    document.getElementById("comments-btn").style.display="none";
+                    loadWaline();
+		    }} else {
+            loadWaline();
+            }
+        };
+    </script>
 
 
-  <div class="wrapper">
-    <main class="page-content">
-    <header class="header">
-      <h1 class="header-title center">Archives</h1>
-    </header>
-      
-      
-        
-        
-        <h2 class="list-year">2023<svg xml="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" class="icon"><path d="M655 927q1-3 11-8 9-5 18-15t8-27q1-34-53-30-2 1-5 1-13-24 4-41 8 4 19 7 12 3 20 6 3 0 8 1 21-7 2-52-18-45-36-58-4-2-9-6-3-2-9-7-4-3-7-8t-6-7q-4-2-7-7-1-2-5-6 30-13 44-38 15-24 15-49 0-24-5-47-6-22-11-37-2-4-7-13 22-45 37-84t19-66q3-16 8-49 3-22-1-35-5-14-6-24t-6-12q-1-2-3-4-32 7-59 35-28 29-44 64-17 35-28 69-11 33-17 57-2 7-5 22h-35q1-3 4-15 18-42 29-80 10-38 12-61 2-24-1-45-3-22-9-32-7-10-12-21-5-10-10-10-2-1-5-3-39 28-65 67-25 39-34 75-10 37-13 69t0 53q3 22 5 23t3 5q0 2 2 7 1 3 1 7t1 7v3q-24 19-35 39-11 21-11 38 0 18 7 33t14 27q7 11 17 19 11 8 10 11 4 6 1 16h-1q-10 4-38 16-62 29-72 71-8 27 12 37 11 4 24-2 49-20 51-10-2 19-7 55-80-21-83 16-2 23 22 42 5 3 10 5 28 14 6 19-90 6-89 33v2q2 10 10 17 27 6 52 8 26 2 45 2 20 0 37-2 18-2 31-6 8-2 25-7 11-3 18-8 7-6 12-8t7-6q1-1 2-3-16-20-14-31 2-10 10-14 9-4 15-1 34 13 43 27 3 4-2 5-7 2-21 5-7 2-9 5t-3 6 4 7 16 9q77 29 202-10l9-3q-16-39-84-40zM457 581v-1q-4-7 4-23l9-3q5 0 7 3t2 7-1 9-2 6q-2 4-6 10-10-2-13-8zm86-24q1-2 5-4t6-2q7 2 11 10-4 23-16 21-3-1-4-4-1-2-2-6-1-3-1-7t1-6v-2zm-13 76q-1 7-4 11t-6 7h-31q-14 0-13-8 1-7 21-14h2q24-7 31 4z"/>" class="icon"></svg></h2>
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/03/13/Golang-Modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/">
-              Golang-Modules的演进史
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/03/07/Golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/">
-              Golang-逃逸分析
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/03/02/Golang-GMP%E6%A8%A1%E5%9E%8B/">
-              Golang-GMP模型
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/02/23/Filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/">
-              Filebeat轻量型日志采集器-自定义processors处理器
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/02/15/Golang-%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E5%8F%8A%E9%99%B7%E9%98%B1/">
-              Golang-数组与切片常见错误及陷阱
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/02/02/Golang-%E4%BB%A3%E7%A0%81%E6%96%AD%E8%A1%8C%E8%A7%84%E5%88%99/">
-              Golang-代码断行规则
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/01/16/facebook-ent%E5%BC%80%E6%BA%90%E5%AE%9E%E4%BD%93%E6%A1%86%E6%9E%B6/">
-              Facebook 开源 Golang 实体框架 Ent
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/01/12/Golang-%E5%81%9C%E6%AD%A2Goroutine%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/">
-              Golang:停止Goroutine有几种方法
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/01/09/Golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/">
-              Golang:值传递还是引用传递
-            </a>
-          </h3>
-        </article>
-      
-        
-        
-        <article class="post-item">
-          <h3 class="post-item-title">
-            <a href="/2023/01/09/Filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/">
-              Filebeat轻量型日志采集器及output插件开发
-            </a>
-          </h3>
-        </article>
-      
-    </main>
   </div>
 
+   </main>
+</div>
 
   <footer class="footer">
     <small class="footer_copyright">
