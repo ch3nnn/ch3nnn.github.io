@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golang-垃圾回收 [ Ch3nnn个人博客 ]</title>
+
+  <link rel="icon" href="/img/favicon.ico">
+
+
+    <meta name="author" content="Ch3nnn">
+
+
+    <meta name="subtitle" content="Ch3nnn 个人博客 | 折腾不息 · 乐此不疲.">
+
+
+    <meta name="Description" content="小站主要用来分享和记录学习经验,教程,记录个人生活的点滴以及一些随笔.">
+
+
+    <meta name="keywords" content=",linux, nginx, mysql, 服务器, ubuntu, shell, web, mac, python, django, es">
+
+
+  <link rel="alternate" href="/feed.xml " title="Ch3nnn个人博客" type="application/atom+xml">
+
+
+  
+    <link rel="stylesheet" href="/css/main.css">
+  
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body data-theme="light" class="notransition">
+    <script>
+      const body = document.body;
+      const data = body.getAttribute("data-theme");
+      const initTheme = (state) => {
+        if (state === "dark") {
+          body.setAttribute("data-theme", "dark");
+        } else if (state === "light") {
+          body.removeAttribute("data-theme");
+        } else {
+          localStorage.setItem("theme", data);
+        }
+      };
+   
+      initTheme(localStorage.getItem("theme"));
+      
+      setTimeout(() => body.classList.remove("notransition"), 75);
+    </script>
+  <div class="navbar" role="navigation">
+    <nav class="menu">
+      <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+      <label for="menu-trigger">
+        <span class="menu-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z"
+            />
+          </svg>
+        </span>
+      </label>
+      <a id="mode">
+        <svg
+          class="mode-sunny"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>LIGHT</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+        <svg
+          class="mode-moon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>DARK</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+      </a>
+      <div class="trigger">
+        <div class="trigger-container">
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/"> Home 🏠</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/about/"> About 👨‍💻</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/archives/"> Archives 📆</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/tags/"> Tags 🏷️</a>
+          
+              <a class="menu-link" href="/feed.xml"><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 512 512"
+            fill="#ED812E"
+          >
+            <title>RSS</title>
+            <path
+              d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"
+            />
+            <path
+              d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"
+            />
+            <path
+              d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"
+            />
+          </svg></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  
+<div class="wrapper post">
+  <main class="page-content" aria-label="Content">
+      <header class="header">
+        
+          <div class="tags">
+            <a href="/tags/Go/" class="tag"># Go</a>
+          </div>
+        
+        <h1 class="header-title" itemprop="headline">Golang-垃圾回收</h1>
+          <div class="post-meta">
+            <time>3月 18, 2023</time>
+            <span itemprop="author">
+              <span itemprop="name">Ch3nnn</span>
+            </span>
+          </div>
+        </header>
+
+          <div class="page-content"><p>垃圾回收(Garbage Collection，简称GC)是编程语言中提供的自动的内存管理机制，自动释放不需要的内存对象，让出存储器资源。 GC过程中无需程序员手动执行。GC机制在现代很多编程语言都支持，GC能力的性能与优劣也是不同语言之间对比度指标之一。</p>
+<h3 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h3><p>目前比较常见的垃圾回收算法有三种：<br><strong>引用计数</strong>：为每个对象维护一个引用计数，当引用该对象的对象销毁时，引用计数 -1，当对象引用计数为 0 时回收该对象。</p>
+<ul>
+<li>代表语言：Python、PHP、Swift </li>
+<li>优点：对象回收快，不会出现内存耗尽或达到某个阈值时才回收。 </li>
+<li>缺点：不能很好的处理循环引用，而实时维护引用计数也是有损耗的。</li>
+</ul>
+<p><strong>标记-清除</strong>：从根变量开始遍历所有引用的对象，标记引用的对象，没有被标记的进行回收。</p>
+<ul>
+<li>代表语言：Golang（三色标记法） </li>
+<li>优点：解决了引用计数的缺点。 </li>
+<li>缺点：需要 STW，暂时停掉程序运行。</li>
+</ul>
+<p><strong>分代收集</strong>：按照对象生命周期长短划分不同的代空间，生命周期长的放入老年代，短的放入新生代，不同代有不同的回收算法和回收频率。</p>
+<ul>
+<li>代表语言：Java</li>
+<li>优点：回收性能好</li>
+<li>缺点：算法复杂</li>
+</ul>
+<h3 id="Golang-垃圾回收"><a href="#Golang-垃圾回收" class="headerlink" title="Golang 垃圾回收"></a>Golang 垃圾回收</h3><h4 id="Go1-3之前-标记清除法"><a href="#Go1-3之前-标记清除法" class="headerlink" title="Go1.3之前 标记清除法"></a>Go1.3之前 标记清除法</h4><ol>
+<li>进行 STW（stop the world 即暂停程序业务逻辑），然后从 main 函数开始找到不可达的内存占用和可达的内存占用</li>
+<li>开始标记，程序找出可达内存占用并做标记</li>
+<li>标记结束清除未标记的内存占用</li>
+<li>结束 STW 停止暂停，让程序继续运行，循环该过程直到 main 生命周期结束</li>
+</ol>
+<p><img src="https://s2.loli.net/2023/03/18/eaq4SfrMFOHYxVI.png"></p>
+<p>一开始的做法是将垃圾清理结束时才停止 STW，后来优化了方案将清理垃圾放到了 STW 之后，与程序运行同时进行，这样做减小了 STW 的时长。<br>但是 STW 会暂停用户逻辑对程序的性能影响是非常大的，这种粒度的 STW 对于性能较高的程序还是无法接受，但是无论怎么优化，Go V1.3都面临这个一个重要问题，就是mark-and-sweep 算法会暂停整个程序 。<br>因此 Go1.5 采用了三色标记法优化了 STW。</p>
+<h4 id="Go1-5之后-三色并发标记法"><a href="#Go1-5之后-三色并发标记法" class="headerlink" title="Go1.5之后 三色并发标记法"></a>Go1.5之后 三色并发标记法</h4><p>三色标记法只是为了叙述方便而抽象出来的一种说法，实际上的对象是没有三色之分的。这里的三色，对应了垃圾回收过程中对象的三种状态：</p>
+<p>灰色：对象还在标记队列中等待<br>黑色：对象已被标记，gcmarkBits对应位为 1 – 该对象不会在本次 GC 中被回收<br>白色：对象未被标记，gcmarkBits对应位为 0 – 该对象将会在本次 GC 中被清理</p>
+<p>三色标记法分五步进行:</p>
+<ol>
+<li>将所有对象标记为白色</li>
+<li>从根节点集合出发，将第一次遍历到的节点标记为灰色放入集合列表中</li>
+<li>遍历灰色集合，将灰色节点遍历到的白色节点标记为灰色，并把灰色节点标记为黑色</li>
+<li>循环这个过程</li>
+<li>直到灰色节点集合为空，回收所有的白色节点</li>
+</ol>
+<p>具体流程如下图:<br><img src="https://s2.loli.net/2023/03/19/Ob69hxsuAJZYmGE.png"></p>
+<p>回收原理:<br>通过上图，应该对三色标记法有了一个比较直观的了解，那么我们现在来讲讲原理。简单的讲，就是标记内存中那些还在使用中（即被引用了）的部分，而内存中不再使用（即未被引用）的部分，就是要回收的垃圾，需要将其回收，以供后续内存分配使用。上图中的 A、B、D 就是被引用正在使用的内存，而C、F、E 曾经被使用过，但现在没有任何对象引用，就需要被回收掉。</p>
+<p><strong>三色标记法缺点</strong><br>将 GC 和程序会放一起执行，会因为 cpu 的调度出现下面这种情况，导致被引用的对象 3 却被GC给“误杀”回收掉了，从而出现错误。<br><img src="https://s2.loli.net/2023/03/19/p1ANEKigV8PbHWS.png"></p>
+<p>可以看出，有两种情况，在三色标记法中，是不希望被发生的。</p>
+<ul>
+<li>条件1: 一个白色对象被黑色对象引用(白色被挂在黑色下)</li>
+<li>条件2: 灰色对象与它之间的可达关系的白色对象遭到破坏(灰色同时丢了该白色)</li>
+</ul>
+<p>如果当以上两个条件同时满足时，就会出现对象丢失现象!</p>
+<p><strong>屏障机制</strong><br>强三色不变式和弱三色不变式</p>
+<ul>
+<li>强三色不变式</li>
+</ul>
+<p><img src="https://s2.loli.net/2023/03/19/nBHRLtXmIQebVgK.png"><br>强三色不变色实际上是强制性的不允许黑色对象引用白色对象，这样就不会出现有白色对象被误删的情况。</p>
+<ul>
+<li>弱三色不变式</li>
+</ul>
+<p><img src="https://s2.loli.net/2023/03/19/9QA7HSeZYVUtbIj.png"><br>弱三色不变式强调，黑色对象可以引用白色对象，但是这个白色对象必须存在其他灰色对象对它的引用，或者可达它的链路上游存在灰色对象。 这样实则是黑色对象引用白色对象，白色对象处于一个危险被删除的状态，但是上游灰色对象的引用，可以保护该白色对象，使其安全。</p>
+<p><strong>插入屏障和删除屏障</strong></p>
+<p>为了遵循上述的两个方式，GC算法演进到两种屏障方式，他们“插入屏障”, “删除屏障”。</p>
+<ul>
+<li>插入屏障<br>对象被引用时触发的机制，当白色对象被黑色对象引用时，白色对象被标记为灰色（栈上对象无插入屏障）<br><img src="https://s2.loli.net/2023/03/19/zobvNwRKp8nyZj3.png"></li>
+</ul>
+<p>缺点在于：如果对象 1 在栈上新创建了一个对象 6，<strong>由于栈没有屏障机制，所以对象 6 仍为白色节点会被回收</strong><br>栈空间的特点是容量小,但是要求相应速度快,因为函数调用弹出频繁使用, 所以<strong>“插入屏障”机制,在栈空间的对象操作中不使用. 而仅仅使用在堆空间对象的操作中</strong>.</p>
+<p><img src="https://s2.loli.net/2023/03/19/R143m69xfcUSeBI.png"><br>所以栈在 GC 迭代结束时（没有灰色节点），会对栈执行 STW，重新进行扫描清除白色节点。（STW 时间为 10-100ms）</p>
+<ul>
+<li>删除屏障<br>对象被删除时触发的机制。如果灰色对象引用的白色对象被删除时，那么白色对象会被标记为灰色。<br><img src="https://s2.loli.net/2023/03/19/WUq9Yv2MjfoCKeP.png"></li>
+</ul>
+<p>缺点在于：这种做法回收精度较低，一个对象即使被删除仍可以活过这一轮再下一轮被回收。（如果对象 4 没有引用对象 3，此时对象 3 应该作为垃圾被回收，但是对象 3 却要等到下一轮 GC 才会被回收）<br><img src="https://s2.loli.net/2023/03/19/jxFnmhskMlfNqCX.png"><br>同样也存在对栈的二次扫描影响程序的效率。</p>
+<h3 id="Go1-8-三色标记-混合写屏障-hybrid-write-barrier-机制"><a href="#Go1-8-三色标记-混合写屏障-hybrid-write-barrier-机制" class="headerlink" title="Go1.8 三色标记 + 混合写屏障(hybrid write barrier)机制"></a>Go1.8 三色标记 + 混合写屏障(hybrid write barrier)机制</h3><p><strong>插入写屏障和删除写屏障的短板：</strong></p>
+<ul>
+<li>插入写屏障：结束时需要STW来重新扫描栈，标记栈上引用的白色对象的存活； </li>
+<li>删除写屏障：回收精度低，GC开始时STW扫描堆栈来记录初始快照，这个过程会保护开始时刻的所有存活对象。<br>Go V1.8版本引入了混合写屏障机制（hybrid write barrier），避免了对栈re-scan的过程，极大的减少了STW的时间。结合了两者的优点。</li>
+</ul>
+<p><strong>混合写屏障规则</strong></p>
+<ol>
+<li>GC开始将栈上的对象全部扫描并标记为黑色(之后不再进行第二次重复扫描，无需STW)，</li>
+<li>GC期间，任何在栈上创建的新对象，均为黑色。</li>
+<li>被删除的对象标记为灰色。</li>
+<li>被添加的对象标记为灰色。</li>
+</ol>
+<p><img src="https://s2.loli.net/2023/03/19/kIz3o62gVsfSO4r.png"></p>
+<h2 id="触发垃圾回收的时机"><a href="#触发垃圾回收的时机" class="headerlink" title="触发垃圾回收的时机"></a>触发垃圾回收的时机</h2><p>主动触发: </p>
+<ul>
+<li>通过调用 <code>runtime.GC</code> 来触发 GC, 此调用阻塞式等待当前 GC 运行完毕</li>
+</ul>
+<p>被动触发:</p>
+<ul>
+<li>定期触发GC (使用系统监控, 当超过 2 分钟没有产生任何 GC 时, 强制触发 GC)</li>
+<li>内存分配量达到阀值触发GC (堆内存的分配达到控制器计算的触发堆大小，初始大小环境变量 GOGC，之后堆内存达到上一次垃圾收集的 2 倍时才会触发 GC)</li>
+</ul>
+<h2 id="GO-GC-调优"><a href="#GO-GC-调优" class="headerlink" title="GO GC 调优"></a>GO GC 调优</h2><ol>
+<li>控制内存分配的速度, 限制 <code>goroutine</code> 的数量, 从而提高对 CPU 的利用率</li>
+<li>减少并复用内存, 例如使用<code>sysnc.Poll</code> 来复用需要频繁创建的临时对象, 例如提前分配足够的内存来降低多余的复制</li>
+<li>增大 <code>GOGC</code> 的值, 降低 GC 的运行频率</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.yuque.com/aceld/golang/zhzanb#d067ac74">Golang三色标记混合写屏障GC模式全分析</a><br><a target="_blank" rel="noopener" href="https://learnku.com/articles/59021#:~:text=%E5%9C%A8Go%20%E4%B8%AD%E6%A0%88%E4%B8%8A,%E5%9E%83%E5%9C%BE%E4%B9%9F%E5%B0%B1%E6%98%AF%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E3%80%82">图解Golang垃圾回收机制！</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_35246620/article/details/53790350">浅析 Golang 垃圾回收机制</a></p>
+</div>
+          <nav class="post-nav">
+    
+    
+    <a class="post-nav-item post-nav-next" href="/2023/03/13/Golang-Modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/">
+      <div class="nav-arrow">OLDER&nbsp;&gt;</div>
+      <span class="post-title">Golang-Modules的演进史</span>
+    </a>
+    
+  </nav>
+          <div class="dis">
+    
+        <div class="btn" id="comments-btn">给我留言</div>
+      
+     
+    <script src='//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js'></script>
+    <div id="waline"></div>
+    <script>
+        window.onload = function () {
+            var loadWaline = function () {
+                new Waline({
+                el: '#waline',
+                path: location.pathname,
+                avatarCDN: '',
+                serverURL: 'comment-vercel.ch3nnn.cn',
+                avatar: 'monsterid',
+                placeholder: "Let me know what you think！"
+            });
+            }
+            if (true) {
+                document.getElementById("comments-btn").onclick=function(){
+                    document.getElementById("comments-btn").style.display="none";
+                    loadWaline();
+		    }} else {
+            loadWaline();
+            }
+        };
+    </script>
+
+
+  </div>
+
+   </main>
+</div>
+
+  <footer class="footer">
+    <small class="footer_copyright">
+      <div id="bottom-inner">
+        © 2021 Site by Ch3nnn using
+        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo Blog Framework</a>.
+        <br>
+        <span> Theme is <a target="_blank" rel="noopener" href="https://github.com/dewjohn/hexo-theme-klise">Klise</a></span>
+        |
+        <span id="busuanzi_container_site_pv">
+          Total view <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> times
+        </span>
+      </div>
+      <!-- 备案主体-->
+      <a href="https://beian.miit.gov.cn/" rel="nofollow" target="_blank">
+            <p style=" height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">
+                京ICP备19017311号
+            </p>
+        </a>
+    </small>
+  </footer>
+
+  
+
+    
+      <script src="/js/main.js"></script>
+    
+  
+  <script>
+    window.FPConfig = {
+      delay: 0,
+      ignoreKeywords: [],
+      maxRPS: 3,
+      hoverDelay: 50,
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+  <!-- 不蒜子计数器 http://busuanzi.ibruce.info/  -->
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
