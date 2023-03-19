@@ -370,7 +370,12 @@ printUser goRoutine called &amp;&#123;Ankur 25&#125;
 <li>无缓冲的channel是同步的，而有缓冲的channel是非同步的</li>
 </ol>
 <p>以上5个特性是死东西，也可以通过口诀来记忆：<strong>“空读写阻塞，写关闭异常，读关闭空零”</strong>。</p>
-<p>总结一下，发生 panic 的情况有三种：向一个关闭的 channel 进行写操作；关闭一个 nil 的 channel；重复关闭一个 channel。<br>读、写一个 nil channel 都会被阻塞。</p>
+<p>总结一下，发生 panic 的情况有三种：</p>
+<ol>
+<li>向一个关闭的 channel 进行写操作；</li>
+<li>关闭一个 nil 的 channel；</li>
+<li>重复关闭一个 channel。</li>
+</ol>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://qcrao91.gitbook.io/go/channel">码农桃花源-channel</a><br><a target="_blank" rel="noopener" href="https://www.yuque.com/aceld/golang/ahkkr1">Golang修养之路-channel</a></p>
 </div>
           <nav class="post-nav">
