@@ -8,7 +8,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ch3nnn 个人博客 | 折腾不息 · 乐此不疲. [ Ch3nnn个人博客 ]</title>
+<title>微服务为什么要用到 API 网关 [ Ch3nnn个人博客 ]</title>
 
   <link rel="icon" href="/img/favicon.ico">
 
@@ -224,7 +224,7 @@
             
             
             
-            <a class="menu-link active" href="/"> Home 🏠</a>
+            <a class="menu-link " href="/"> Home 🏠</a>
           
             
             
@@ -274,98 +274,72 @@
   </div>
 
   
-  <div class="wrapper">
-    <div class="author">
-        <div class="author-avatar-wrapper">
-          <img
-            class="author-avatar"
-            src="https://s2.loli.net/2023/02/20/H1k52mlXNYKWDrU.png"
-            alt="avatar"
-            loading="lazy"
-          />
-      </div>
-      <h2 class="author-name">Ch3nnn</h2>
-      <p class="author-bio">👨🏻‍💻 一名努力搬砖的后端程序猿</p>
-    </div>
-    <main aria-label="Content">
+<div class="wrapper post">
+  <main class="page-content" aria-label="Content">
+      <header class="header">
+        
+          <div class="tags">
+            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="tag"># 微服务</a>
+          </div>
+        
+        <h1 class="header-title" itemprop="headline">微服务为什么要用到 API 网关</h1>
+          <div class="post-meta">
+            <time>4月 04, 2023</time>
+            <span itemprop="author">
+              <span itemprop="name">Ch3nnn</span>
+            </span>
+          </div>
+        </header>
+
+          <div class="page-content"><h2 id="什么是微服务"><a href="#什么是微服务" class="headerlink" title="什么是微服务"></a>什么是微服务</h2><p>微服务架构（通常简称为微服务）是指开发应用所用的一种架构形式。通过微服务，可将大型应用分解成多个独立的组件，其中每个组件都有各自的责任领域。<br>在处理一个用户请求时，基于微服务的应用可能会调用许多内部微服务来共同生成其响应。微服务是互联网业务发展的结果，互联网业务的飞速发展导致系统的架构也在不断地发生变化，总体来说，系统的架构大致经历了：单体应用架构—&gt; SOA 架构—&gt;微服务架构 的演变，具体发展历程和各自的优缺点如下表所示。<br><img src="https://cdn.ch3nnn.cn/img202304041708571.png"></p>
+<h2 id="什么是微服务网关"><a href="#什么是微服务网关" class="headerlink" title="什么是微服务网关"></a>什么是微服务网关</h2><p>网关，就是指一个流量的集中式出入口。而 API Gateway，顾名思义，就是在 Gateway 上再添加了一些 API 相关的功能后得到的东西。</p>
+<p>API 网关作为一个系统访问的切面，对外提供统一的入口供客户端访问，隐藏系统架构实现的细节，让微服务使用更为友好；并集成了一些通用特性（如鉴权、限流、熔断），避免每个微服务单独开发，提升效率，使系统更加标准化，比如身份验证、监控、负载均衡、限流、降级与应用检测等功能。</p>
+<p><img src="https://cdn.ch3nnn.cn/img202304041647794.png"></p>
+<p>如上图所示，API 网关作为客户端和微服务的中间层，它可以将微服务以统一的地址对外提供服务，将外部访问这个地址的流量，根据适当的规则路由到内部集群中正确的服务节点之上，如果没有 API 网关，流量的出入口则不统一，客户端就需要知道所有服务的访问信息，微服务的意义将不复存在，所以，微服务网关在微服务系统架构中的存在是必要的。此外，API 网关在系统的可观测性、身份鉴权认证、稳定性和服务发现等方面也会发挥重要作用。</p>
+</div>
+          <nav class="post-nav">
+    
+    
+    <a class="post-nav-item post-nav-next" href="/2023/03/19/Golang-channel%E9%80%9A%E9%81%93/">
+      <div class="nav-arrow">OLDER&nbsp;&gt;</div>
+      <span class="post-title">Golang-channel通道</span>
+    </a>
+    
+  </nav>
+          <div class="dis">
+    
+        <div class="btn" id="comments-btn">给我留言</div>
       
-
-    <h3 class="posts-item-note" aria-label="Recent Posts">Recent Posts</h3>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-04-04T08:45:00.000Z">4月 04, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/04/04/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%88%B0API%E7%BD%91%E5%85%B3/">微服务为什么要用到 API 网关</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-03-19T09:41:05.000Z">3月 19, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/03/19/Golang-channel%E9%80%9A%E9%81%93/">Golang-channel通道</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-03-18T15:21:06.000Z">3月 18, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/03/18/Golang-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">Golang-垃圾回收</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-03-13T03:53:48.000Z">3月 13, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/03/13/Golang-Modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/">Golang-Modules的演进史</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-03-07T05:38:48.000Z">3月 07, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/03/07/Golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/">Golang-逃逸分析</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-03-02T08:45:39.000Z">3月 02, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/03/02/Golang-GMP%E6%A8%A1%E5%9E%8B/">Golang-GMP模型</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-02-23T10:14:25.000Z">2月 23, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/02/23/Filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/">Filebeat轻量型日志采集器-自定义processors处理器</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-02-15T08:34:35.000Z">2月 15, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/02/15/Golang-%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E5%8F%8A%E9%99%B7%E9%98%B1/">Golang-数组与切片常见错误及陷阱</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-02-02T08:37:59.000Z">2月 02, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/02/02/Golang-%E4%BB%A3%E7%A0%81%E6%96%AD%E8%A1%8C%E8%A7%84%E5%88%99/">Golang-代码断行规则</a>
-        </h4>
-      </article>
-    
-      <article class="post-item">
-        <span class="post-item-date" datetime="2023-01-16T09:29:45.000Z">1月 16, 2023</span>
-        <h4 class="post-item-title">
-          <a href="/2023/01/16/facebook-ent%E5%BC%80%E6%BA%90%E5%AE%9E%E4%BD%93%E6%A1%86%E6%9E%B6/">Facebook 开源 Golang 实体框架 Ent</a>
-        </h4>
-      </article>
-    
+     
+    <script src='//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js'></script>
+    <div id="waline"></div>
+    <script>
+        window.onload = function () {
+            var loadWaline = function () {
+                new Waline({
+                el: '#waline',
+                path: location.pathname,
+                avatarCDN: '',
+                serverURL: 'comment-vercel.ch3nnn.cn',
+                avatar: 'monsterid',
+                placeholder: "Let me know what you think！"
+            });
+            }
+            if (true) {
+                document.getElementById("comments-btn").onclick=function(){
+                    document.getElementById("comments-btn").style.display="none";
+                    loadWaline();
+		    }} else {
+            loadWaline();
+            }
+        };
+    </script>
 
 
-    </main>
   </div>
+
+   </main>
+</div>
 
   <footer class="footer">
     <small class="footer_copyright">
