@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golang-常见数据结构Slice [ Ch3nnn个人博客 ]</title>
+
+  <link rel="icon" href="/img/favicon.ico">
+
+
+    <meta name="author" content="Ch3nnn">
+
+
+    <meta name="subtitle" content="Ch3nnn 个人博客 | 折腾不息 · 乐此不疲.">
+
+
+    <meta name="Description" content="小站主要用来分享和记录学习经验,教程,记录个人生活的点滴以及一些随笔.">
+
+
+    <meta name="keywords" content=",linux, nginx, mysql, 服务器, ubuntu, shell, web, mac, python, django, es">
+
+
+  <link rel="alternate" href="/feed.xml " title="Ch3nnn个人博客" type="application/atom+xml">
+
+
+  
+    <link rel="stylesheet" href="/css/main.css">
+  
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body data-theme="light" class="notransition">
+    <script>
+      const body = document.body;
+      const data = body.getAttribute("data-theme");
+      const initTheme = (state) => {
+        if (state === "dark") {
+          body.setAttribute("data-theme", "dark");
+        } else if (state === "light") {
+          body.removeAttribute("data-theme");
+        } else {
+          localStorage.setItem("theme", data);
+        }
+      };
+   
+      initTheme(localStorage.getItem("theme"));
+      
+      setTimeout(() => body.classList.remove("notransition"), 75);
+    </script>
+  <div class="navbar" role="navigation">
+    <nav class="menu">
+      <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+      <label for="menu-trigger">
+        <span class="menu-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z"
+            />
+          </svg>
+        </span>
+      </label>
+      <a id="mode">
+        <svg
+          class="mode-sunny"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>LIGHT</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+        <svg
+          class="mode-moon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>DARK</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+      </a>
+      <div class="trigger">
+        <div class="trigger-container">
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/"> Home 🏠</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/about/"> About 👨‍💻</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/archives/"> Archives 📆</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/tags/"> Tags 🏷️</a>
+          
+              <a class="menu-link" href="/feed.xml"><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 512 512"
+            fill="#ED812E"
+          >
+            <title>RSS</title>
+            <path
+              d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"
+            />
+            <path
+              d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"
+            />
+            <path
+              d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"
+            />
+          </svg></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  
+<div class="wrapper post">
+  <main class="page-content" aria-label="Content">
+      <header class="header">
+        
+          <div class="tags">
+            <a href="/tags/Go/" class="tag"># Go</a>
+          </div>
+        
+        <h1 class="header-title" itemprop="headline">Golang-常见数据结构Slice</h1>
+          <div class="post-meta">
+            <time>4月 30, 2023</time>
+            <span itemprop="author">
+              <span itemprop="name">Ch3nnn</span>
+            </span>
+          </div>
+        </header>
+
+          <div class="page-content"><h1 id="Golang-常见数据结构Slice"><a href="#Golang-常见数据结构Slice" class="headerlink" title="Golang-常见数据结构Slice"></a>Golang-常见数据结构Slice</h1><h2 id="Slice"><a href="#Slice" class="headerlink" title="Slice"></a>Slice</h2><p>slice 翻译成中文就是切片，它和数组（array）很类似，可以用下标的方式进行访问，如果越界，就会产生 panic。但是它比数组更灵活，可以自动地进行扩容。</p>
+<p>了解 slice 的本质, 最简单的方法就是看它的源码:</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// runtime/slice.go</span></span><br><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer <span class="comment">// 元素指针</span></span><br><span class="line">    <span class="built_in">len</span>   <span class="type">int</span> <span class="comment">// 长度 </span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="type">int</span> <span class="comment">// 容量</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>slice 共有三个属性: </p>
+<ol>
+<li><strong>指针</strong> 指向底层数组</li>
+<li><strong>长度</strong> 表示切片可用元素的个数，也就是说使用下标对 slice 的元素进行访问时，下标不能超过 slice 的长度</li>
+<li><strong>容量</strong> 底层数组的元素个数，容量 &gt;&#x3D; 长度。在底层数组不进行扩容的情况下，容量也是 slice 可以扩张的最大限度。</li>
+</ol>
+<p><img src="https://cdn.ch3nnn.cn/blog/202304191511106.png"></p>
+<p><strong>注意</strong>: 底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。</p>
+<h2 id="slice-创建"><a href="#slice-创建" class="headerlink" title="slice 创建"></a>slice 创建</h2><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>直接声明</td>
+<td>var slice []int</td>
+</tr>
+<tr>
+<td>new</td>
+<td>slice :&#x3D; *new([]int)</td>
+</tr>
+<tr>
+<td>字面量</td>
+<td>slice :&#x3D; []int{1,2,3,4}</td>
+</tr>
+<tr>
+<td>make</td>
+<td>slice :&#x3D; make(int[], 5, 10)</td>
+</tr>
+<tr>
+<td>从切片或者数组”截取”</td>
+<td>slice :&#x3D; array[1:5] 或 slice :&#x3D; sourceSlice[1:5]</td>
+</tr>
+</tbody></table>
+<p><strong>直接声明</strong></p>
+<p>第一种创建出来的 <code>slice</code> 其实是一个 <code>nil slice</code>。它的长度和容量都为0。和<code>nil</code>比较的结果为<strong>true</strong>。</p>
+<p>这里比较混淆的是<code>empty slice</code>，它的长度和容量也都为0，但是所有的空切片的数据指针都指向同一个地址 <code>0xc42003bda0</code>。空切片和 <code>nil</code> 比较的结果为<strong>false</strong>。<br><img src="https://cdn.ch3nnn.cn/blog/2023041916818915555725.jpg" alt="16818915555725"></p>
+<table>
+<thead>
+<tr>
+<th>创建方式</th>
+<th>nil切片</th>
+<th>空切片</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>方式一</td>
+<td>var s1 []int</td>
+<td>var s2 &#x3D; []int{}</td>
+</tr>
+<tr>
+<td>方式二</td>
+<td>var s4 &#x3D; *new([]int)</td>
+<td>var s3 &#x3D; make([]int, 0)</td>
+</tr>
+<tr>
+<td>len</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>cap</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>和 nil 比较</td>
+<td>true</td>
+<td>false</td>
+</tr>
+</tbody></table>
+<p><code>nil</code> 切片和空切片很相似，长度和容量都是0，官方建议尽量使用 <code>nil</code> 切片。</p>
+<p>关于nil slice和empty slice的探索可以参考 - <a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903712654098446">深度解析 Go 语言中「切片」的三种特殊状态</a></p>
+<p><strong>字面量</strong></p>
+<p>比较简单，直接用初始化表达式创建。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s1 := []<span class="type">int</span>&#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">8</span>: <span class="number">100</span>&#125;</span><br><span class="line">    fmt.Println(s1, <span class="built_in">len</span>(s1), <span class="built_in">cap</span>(s1))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><code>[0 1 2 3 0 0 0 0 100] 9 9</code></p>
+<p>唯一值得注意的是上面的代码例子中使用了索引号，直接赋值，这样，其他未注明的元素则默认 0 值</p>
+<p><strong>make</strong></p>
+<p><code>make</code> 函数需要传入三个参数：切片类型，长度，容量。当然，容量可以不传，默认和长度相等。</p>
+<p>使用 <code>make</code> 关键字创建 <code>slice</code>:</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">packge main</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 长度为 5, 容量为 10</span></span><br><span class="line">    slice := <span class="built_in">make</span>(<span class="type">int</span>[], <span class="number">5</span>, <span class="number">10</span>)</span><br><span class="line">    <span class="comment">// 索引为 2 的元素赋值为 2</span></span><br><span class="line">    slice[<span class="number">2</span>] = <span class="number">2</span> </span><br><span class="line">    fmt.Println(slice)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>截取</strong></p>
+<p>截取也是比较常见的一种创建 slice 的方法，可以从数组或者 slice 直接截取，当然需要指定起止索引位置。</p>
+<p>基于已有 slice 创建新 slice 对象，被称为 reslice。新 slice 和老 slice 共用底层数组，新老 slice 对底层数组的更改都会影响到彼此。</p>
+<p>基于数组创建的新 slice 对象也是同样的效果：对数组或 slice 元素作的更改都会影响到彼此。</p>
+<p>值得注意的是，新老 slice 或者新 slice 老数组互相影响的前提是两者共用底层数组，如果因为执行 <code>append</code> 操作使得新 slice 底层数组扩容，移动到了新的位置，两者就不会相互影响了。所以，问题的关键在于两者<strong>是否会共用底层数组</strong>。</p>
+<p>截取操作采用如下方式：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">data := [...]<span class="type">int</span>&#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>&#125;</span><br><span class="line"><span class="comment">// data[low, high, max]</span></span><br><span class="line">slice := data[<span class="number">2</span>:<span class="number">4</span>:<span class="number">6</span>] </span><br></pre></td></tr></table></figure>
+
+<h2 id="其他易错点"><a href="#其他易错点" class="headerlink" title="其他易错点"></a>其他易错点</h2><p><strong>slice 和数组的区别在哪</strong></p>
+<p>slice 的底层数据是数组，slice 是对数组的封装，它描述一个数组的片段。两者都可以通过下标来访问单个元素。</p>
+<p>数组是定长的，长度定义好之后，不能再更改。在 Go 中，数组是不常见的，因为其长度是类型的一部分，限制了它的表达能力，比如 [3]int 和 [4]int 就是不同的类型。</p>
+<p>而切片则非常灵活，它可以动态地扩容。切片的类型和长度无关。</p>
+<p><strong>append 到底做了什么</strong></p>
+<p>先来看看 append 函数的原型：<br><code>func append(slice []Type, elems ...Type) []Type</code></p>
+<p>append 函数的参数长度可变，因此可以追加多个值到 slice 中，还可以用 … 传入 slice，直接追加一个切片。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">slice = <span class="built_in">append</span>(slice, elem1, elem2)</span><br><span class="line">slice = <span class="built_in">append</span>(slice, anotherSlice...)</span><br></pre></td></tr></table></figure>
+
+<p>注: append函数返回值是一个新的slice，Go编译器不允许调用了 append 函数后不使用返回值。</p>
+<p><strong>slice 扩容</strong></p>
+<p>在分配内存空间之前需要先确定新的切片容量，运行时根据切片的当前容量选择不同的策略进行扩容：</p>
+<p>大多数的文章都是这样描述的:</p>
+<blockquote>
+<p>当原 slice 容量小于 1024 的时候，新 slice 容量变成原来的 2 倍；原 slice 容量超过 1024，新 slice 容量变成原来的1.25倍。</p>
+</blockquote>
+<p>其实结论不太准确的</p>
+<p>为了说明上面的规律是错误的，如下代码：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    s := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    oldCap := <span class="built_in">cap</span>(s)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">2048</span>; i++ &#123;</span><br><span class="line">        s = <span class="built_in">append</span>(s, i)</span><br><span class="line"></span><br><span class="line">        newCap := <span class="built_in">cap</span>(s)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> newCap != oldCap &#123;</span><br><span class="line">            fmt.Printf(<span class="string">&quot;[%d -&gt; %4d] cap = %-4d  |  after append %-4d  cap = %-4d\n&quot;</span>, <span class="number">0</span>, i<span class="number">-1</span>, oldCap, i, newCap)</span><br><span class="line">            oldCap = newCap</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">[<span class="number">0</span> -&gt;   <span class="number">-1</span>] <span class="built_in">cap</span> = <span class="number">0</span>     |  after <span class="built_in">append</span> <span class="number">0</span>     <span class="built_in">cap</span> = <span class="number">1</span>   </span><br><span class="line">[<span class="number">0</span> -&gt;    <span class="number">0</span>] <span class="built_in">cap</span> = <span class="number">1</span>     |  after <span class="built_in">append</span> <span class="number">1</span>     <span class="built_in">cap</span> = <span class="number">2</span>   </span><br><span class="line">[<span class="number">0</span> -&gt;    <span class="number">1</span>] <span class="built_in">cap</span> = <span class="number">2</span>     |  after <span class="built_in">append</span> <span class="number">2</span>     <span class="built_in">cap</span> = <span class="number">4</span>   </span><br><span class="line">[<span class="number">0</span> -&gt;    <span class="number">3</span>] <span class="built_in">cap</span> = <span class="number">4</span>     |  after <span class="built_in">append</span> <span class="number">4</span>     <span class="built_in">cap</span> = <span class="number">8</span>   </span><br><span class="line">[<span class="number">0</span> -&gt;    <span class="number">7</span>] <span class="built_in">cap</span> = <span class="number">8</span>     |  after <span class="built_in">append</span> <span class="number">8</span>     <span class="built_in">cap</span> = <span class="number">16</span>  </span><br><span class="line">[<span class="number">0</span> -&gt;   <span class="number">15</span>] <span class="built_in">cap</span> = <span class="number">16</span>    |  after <span class="built_in">append</span> <span class="number">16</span>    <span class="built_in">cap</span> = <span class="number">32</span>  </span><br><span class="line">[<span class="number">0</span> -&gt;   <span class="number">31</span>] <span class="built_in">cap</span> = <span class="number">32</span>    |  after <span class="built_in">append</span> <span class="number">32</span>    <span class="built_in">cap</span> = <span class="number">64</span>  </span><br><span class="line">[<span class="number">0</span> -&gt;   <span class="number">63</span>] <span class="built_in">cap</span> = <span class="number">64</span>    |  after <span class="built_in">append</span> <span class="number">64</span>    <span class="built_in">cap</span> = <span class="number">128</span> </span><br><span class="line">[<span class="number">0</span> -&gt;  <span class="number">127</span>] <span class="built_in">cap</span> = <span class="number">128</span>   |  after <span class="built_in">append</span> <span class="number">128</span>   <span class="built_in">cap</span> = <span class="number">256</span> </span><br><span class="line">[<span class="number">0</span> -&gt;  <span class="number">255</span>] <span class="built_in">cap</span> = <span class="number">256</span>   |  after <span class="built_in">append</span> <span class="number">256</span>   <span class="built_in">cap</span> = <span class="number">512</span> </span><br><span class="line">[<span class="number">0</span> -&gt;  <span class="number">511</span>] <span class="built_in">cap</span> = <span class="number">512</span>   |  after <span class="built_in">append</span> <span class="number">512</span>   <span class="built_in">cap</span> = <span class="number">1024</span></span><br><span class="line">[<span class="number">0</span> -&gt; <span class="number">1023</span>] <span class="built_in">cap</span> = <span class="number">1024</span>  |  after <span class="built_in">append</span> <span class="number">1024</span>  <span class="built_in">cap</span> = <span class="number">1280</span></span><br><span class="line">[<span class="number">0</span> -&gt; <span class="number">1279</span>] <span class="built_in">cap</span> = <span class="number">1280</span>  |  after <span class="built_in">append</span> <span class="number">1280</span>  <span class="built_in">cap</span> = <span class="number">1696</span></span><br><span class="line">[<span class="number">0</span> -&gt; <span class="number">1695</span>] <span class="built_in">cap</span> = <span class="number">1696</span>  |  after <span class="built_in">append</span> <span class="number">1696</span>  <span class="built_in">cap</span> = <span class="number">2304</span></span><br></pre></td></tr></table></figure>
+
+<p>在老 slice 容量小于1024的时候，新 slice 的容量的确是老 slice 的2倍。目前还算正确。</p>
+<p>但是，当老 slice 容量大于等于 1024 的时候，情况就有变化了。当向 slice 中添加元素 1280 的时候，老 slice 的容量为 1280，之后变成了 1696，两者并不是 1.25 倍的关系（1696&#x2F;1280&#x3D;1.325）。添加完 1696 后，新的容量 2304 当然也不是 1696 的 1.25 倍。</p>
+<p>可见，现在网上各种文章中的扩容策略并不正确。我们直接搬出源码：源码面前，了无秘密。</p>
+<p>从前面汇编代码我们也看到了，向 slice 追加元素的时候，若容量不够，会调用 <code>growslice</code> 函数，所以我们直接看它的代码。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// go 1.9.5 src/runtime/slice.go:82</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">growslice</span><span class="params">(et *_type, old slice, <span class="built_in">cap</span> <span class="type">int</span>)</span></span> slice &#123;</span><br><span class="line">    <span class="comment">// ……</span></span><br><span class="line">    newcap := old.<span class="built_in">cap</span></span><br><span class="line">    doublecap := newcap + newcap</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">cap</span> &gt; doublecap &#123;</span><br><span class="line">        newcap = <span class="built_in">cap</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> old.<span class="built_in">len</span> &lt; <span class="number">1024</span> &#123;</span><br><span class="line">            newcap = doublecap</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> newcap &lt; <span class="built_in">cap</span> &#123;</span><br><span class="line">                newcap += newcap / <span class="number">4</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ……</span></span><br><span class="line"></span><br><span class="line">    capmem = roundupsize(<span class="type">uintptr</span>(newcap) * ptrSize)</span><br><span class="line">    newcap = <span class="type">int</span>(capmem / ptrSize)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看到了吗？如果只看前半部分，现在网上各种文章里说的 newcap 的规律是对的。现实是，后半部分还对 newcap 作了一个内存对齐，这个和内存分配策略相关。进行内存对齐之后，新 slice 的容量是要 大于等于 老 slice 容量的 2倍或者1.25倍。</p>
+<p>之后，向 Go 内存管理器申请内存，将老 slice 中的数据复制过去，并且将 append 的元素添加到新的底层数组中。</p>
+<p><strong>为什么 nil slice 可以直接 append</strong></p>
+<p>其实 nil slice 或者 empty slice 都是可以通过调用 append 函数来获得底层数组的扩容。最终都是调用 mallocgc 来向 Go 的内存管理器申请到一块内存，然后再赋给原来的nil slice 或 empty slice，然后摇身一变，成为“真正”的 slice 了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>切片是对底层数组的一个抽象，描述了它的一个片段。</li>
+<li>切片实际上是一个结构体，它有三个字段：长度，容量，底层数据的地址。</li>
+<li>多个切片可能共享同一个底层数组，这种情况下，对其中一个切片或者底层数组的更改，会影响到其他切片。</li>
+<li>append 函数会在切片容量不够的情况下，调用 growslice 函数获取所需要的内存，这称为扩容，扩容会改变元素原来的位置。</li>
+<li>扩容策略并不是简单的扩为原切片容量的 2 倍或 1.25 倍，还有内存对齐的操作。扩容后的容量 &gt;&#x3D; 原容量的 2 倍或 1.25 倍。</li>
+<li>当直接用切片作为函数参数时，可以改变切片的元素，不能改变切片本身；想要改变切片本身，可以将改变后的切片返回，函数调用者接收改变后的切片或者将切片指针作为函数参数。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/MTZ0C9zYsNrb8wyIm2D8BA">深度解密Go语言之Slice</a></p>
+</div>
+          <nav class="post-nav">
+    
+    
+    <a class="post-nav-item post-nav-next" href="/2023/04/11/Golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84Map/">
+      <div class="nav-arrow">OLDER&nbsp;&gt;</div>
+      <span class="post-title">Golang-常见数据结构Map</span>
+    </a>
+    
+  </nav>
+          <div class="dis">
+    
+     
+
+  </div>
+
+   </main>
+</div>
+
+  <footer class="footer">
+    <small class="footer_copyright">
+      <div id="bottom-inner">
+        © 2021 Site by Ch3nnn using
+        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo Blog Framework</a>.
+        <br>
+        <span> Theme is <a target="_blank" rel="noopener" href="https://github.com/dewjohn/hexo-theme-klise">Klise</a></span>
+        |
+        <span id="busuanzi_container_site_pv">
+          Total view <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> times
+        </span>
+      </div>
+      <!-- 备案主体-->
+      <a href="https://beian.miit.gov.cn/" rel="nofollow" target="_blank">
+            <p style=" height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">
+                京ICP备19017311号
+            </p>
+        </a>
+    </small>
+  </footer>
+
+  
+
+    
+      <script src="/js/main.js"></script>
+    
+  
+  <script>
+    window.FPConfig = {
+      delay: 0,
+      ignoreKeywords: [],
+      maxRPS: 3,
+      hoverDelay: 50,
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+  <!-- 不蒜子计数器 http://busuanzi.ibruce.info/  -->
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
