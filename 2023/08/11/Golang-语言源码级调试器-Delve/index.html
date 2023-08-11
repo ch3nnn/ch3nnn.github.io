@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golang-语言源码级调试器 Delve [ Ch3nnn个人博客 ]</title>
+
+  <link rel="icon" href="/img/favicon.ico">
+
+
+    <meta name="author" content="Ch3nnn">
+
+
+    <meta name="subtitle" content="Ch3nnn 个人博客 | 折腾不息 · 乐此不疲.">
+
+
+    <meta name="Description" content="小站主要用来分享和记录学习经验,教程,记录个人生活的点滴以及一些随笔.">
+
+
+    <meta name="keywords" content=",linux, nginx, mysql, 服务器, ubuntu, shell, web, mac, python, django, es">
+
+
+  <link rel="alternate" href="/feed.xml " title="Ch3nnn个人博客" type="application/atom+xml">
+
+
+  
+    <link rel="stylesheet" href="/css/main.css">
+  
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body data-theme="light" class="notransition">
+    <script>
+      const body = document.body;
+      const data = body.getAttribute("data-theme");
+      const initTheme = (state) => {
+        if (state === "dark") {
+          body.setAttribute("data-theme", "dark");
+        } else if (state === "light") {
+          body.removeAttribute("data-theme");
+        } else {
+          localStorage.setItem("theme", data);
+        }
+      };
+   
+      initTheme(localStorage.getItem("theme"));
+      
+      setTimeout(() => body.classList.remove("notransition"), 75);
+    </script>
+  <div class="navbar" role="navigation">
+    <nav class="menu">
+      <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+      <label for="menu-trigger">
+        <span class="menu-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z"
+            />
+          </svg>
+        </span>
+      </label>
+      <a id="mode">
+        <svg
+          class="mode-sunny"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>LIGHT</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+        <svg
+          class="mode-moon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 512 512"
+        >
+          <title>DARK</title>
+          <line
+            x1="256"
+            y1="48"
+            x2="256"
+            y2="96"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="256"
+            y1="416"
+            x2="256"
+            y2="464"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="108.92"
+            x2="369.14"
+            y2="142.86"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="369.14"
+            x2="108.92"
+            y2="403.08"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="464"
+            y1="256"
+            x2="416"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="96"
+            y1="256"
+            x2="48"
+            y2="256"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="403.08"
+            y1="403.08"
+            x2="369.14"
+            y2="369.14"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <line
+            x1="142.86"
+            y1="142.86"
+            x2="108.92"
+            y2="108.92"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+          <circle
+            cx="256"
+            cy="256"
+            r="80"
+            style="stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
+          />
+        </svg>
+      </a>
+      <div class="trigger">
+        <div class="trigger-container">
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/"> Home 🏠</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/about/"> About 👨‍💻</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/archives/"> Archives 📆</a>
+          
+            
+            
+            
+            
+            
+            
+            <a class="menu-link " href="/tags/"> Tags 🏷️</a>
+          
+              <a class="menu-link" href="/feed.xml"><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 512 512"
+            fill="#ED812E"
+          >
+            <title>RSS</title>
+            <path
+              d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z"
+            />
+            <path
+              d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z"
+            />
+            <path
+              d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z"
+            />
+          </svg></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  
+<div class="wrapper post">
+  <main class="page-content" aria-label="Content">
+      <header class="header">
+        
+          <div class="tags">
+            <a href="/tags/Go/" class="tag"># Go</a>
+          </div>
+        
+        <h1 class="header-title" itemprop="headline">Golang-语言源码级调试器 Delve</h1>
+          <div class="post-meta">
+            <time>8月 11, 2023</time>
+            <span itemprop="author">
+              <span itemprop="name">Ch3nnn</span>
+            </span>
+          </div>
+        </header>
+
+          <div class="page-content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Go 目前的调试器有如下几种：</p>
+<ul>
+<li><code>GDB</code> 最早期的调试工具，现在用的很少。</li>
+<li><code>LLDB</code> macOS 系统推荐的标准调试工具，单 Go 的一些专有特性支持的比较少。</li>
+<li><code>Delve</code> 专门为 Go 语言打造的调试工具，使用最为广泛。</li>
+</ul>
+<p>本篇简单说明如何使用 <code>Delve</code> 工具来调试 Go 程序，使用的 <code>delve</code> 版本为 1.20.1。</p>
+<p>delve 的汉语意思是：钻研、探索；用这个来命名一个debug工具还是非常的形象。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>已知以下说明适用于 Linux、macOS、Windows 和 FreeBSD。</p>
+<p>克隆 git 存储库并构建：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">clone</span> https://github.com/go-delve/delve</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> delve</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go install github.com/go-delve/delve/cmd/dlv</span></span><br></pre></td></tr></table></figure>
+<p>或者，在 Go 版本 1.16 或更高版本上：</p>
+<p><strong>Install the latest release:</strong><br><code>$ go install github.com/go-delve/delve/cmd/dlv@latest</code></p>
+<p><strong>Install at tree head:</strong><br><code>$ go install github.com/go-delve/delve/cmd/dlv@master</code></p>
+<p><strong>安装在一个特定的版本或:</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go install github.com/go-delve/delve/cmd/dlv@v1.7.3</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go install github.com/go-delve/delve/cmd/dlv@v1.7.4-0.20211208103735-2f13672765fe</span></span><br></pre></td></tr></table></figure>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Usage:</span><br><span class="line">  dlv [command]</span><br><span class="line"></span><br><span class="line">Available Commands:</span><br><span class="line">  attach      附加到正在运行的进程并开始调试.</span><br><span class="line">  connect     使用终端客户端连接到无头调试服务器.</span><br><span class="line">  core        检查核心转储.</span><br><span class="line">  dap         启动一个通过调试适配器协议(DAP)通信的无头TCP服务器.</span><br><span class="line">  debug       编译并开始调试当前目录中的主包或指定的包.</span><br><span class="line">  exec        执行预编译的二进制文件，并开始调试会话.</span><br><span class="line">  help        Help about any command</span><br><span class="line">  run         弃用的命令。使用&#x27;debug&#x27;代替.</span><br><span class="line">  test        编译测试二进制文件并开始调试程序.</span><br><span class="line">  trace       编译并开始跟踪程序.</span><br><span class="line">  version     Prints version.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="操作-示例代码"><a href="#操作-示例代码" class="headerlink" title="[操作] 示例代码"></a>[操作] 示例代码</h2><p>下面是检查操作的代码</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">.test/</span><br><span class="line">├── go.mod</span><br><span class="line">├── main.go</span><br><span class="line">└── main_test.go</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">module debug_sample</span><br><span class="line"></span><br><span class="line">go 1.18</span><br></pre></td></tr></table></figure>
+<p><code>main.go</code> 执行以下处理：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> abc <span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	abc = <span class="string">&quot;wakuwaku bank&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(a, b <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;func add %v\n&quot;</span>, abc)</span><br><span class="line">	<span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sub</span><span class="params">(a, b <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;func sub %v\n&quot;</span>, abc)</span><br><span class="line">	<span class="keyword">return</span> a - b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">calculate</span><span class="params">(a, b <span class="type">int</span>)</span></span> (addValue, subValue <span class="type">int</span>) &#123;</span><br><span class="line">	addValue = add(a, b)</span><br><span class="line">	subValue = sub(a, b)</span><br><span class="line">	<span class="keyword">return</span> addValue, subValue</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sampleFunc1</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		a := i + <span class="number">10</span></span><br><span class="line">		b := i</span><br><span class="line">		addValue, subValue := calculate(a, b)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;addValue: %v subValue: %v\n&quot;</span>, addValue, subValue)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	sampleFunc1()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>main_test.go 执行以下处理：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;testing&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test_add</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="keyword">type</span> args <span class="keyword">struct</span> &#123;</span><br><span class="line">		a <span class="type">int</span></span><br><span class="line">		b <span class="type">int</span></span><br><span class="line">	&#125;</span><br><span class="line">	tests := []<span class="keyword">struct</span> &#123;</span><br><span class="line">		name <span class="type">string</span></span><br><span class="line">		args args</span><br><span class="line">		want <span class="type">int</span></span><br><span class="line">	&#125;&#123;&#123;name: <span class="string">&quot;Both positive values&quot;</span>, args: args&#123;<span class="number">10</span>, <span class="number">3</span>&#125;, want: <span class="number">13</span>&#125;&#125;</span><br><span class="line">	<span class="keyword">for</span> _, tt := <span class="keyword">range</span> tests &#123;</span><br><span class="line">		t.Run(tt.name, <span class="function"><span class="keyword">func</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">			<span class="keyword">if</span> got := add(tt.args.a, tt.args.b); got != tt.want &#123;</span><br><span class="line">				t.Errorf(<span class="string">&quot;add() = %v, want %v&quot;</span>, got, tt.want)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test_sub</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="keyword">type</span> args <span class="keyword">struct</span> &#123;</span><br><span class="line">		a <span class="type">int</span></span><br><span class="line">		b <span class="type">int</span></span><br><span class="line">	&#125;</span><br><span class="line">	tests := []<span class="keyword">struct</span> &#123;</span><br><span class="line">		name <span class="type">string</span></span><br><span class="line">		args args</span><br><span class="line">		want <span class="type">int</span></span><br><span class="line">	&#125;&#123;&#123;name: <span class="string">&quot;Both positive values&quot;</span>, args: args&#123;<span class="number">10</span>, <span class="number">3</span>&#125;, want: <span class="number">7</span>&#125;&#125;</span><br><span class="line">	<span class="keyword">for</span> _, tt := <span class="keyword">range</span> tests &#123;</span><br><span class="line">		t.Run(tt.name, <span class="function"><span class="keyword">func</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">			<span class="keyword">if</span> got := sub(tt.args.a, tt.args.b); got != tt.want &#123;</span><br><span class="line">				t.Errorf(<span class="string">&quot;sub() = %v, want %v&quot;</span>, got, tt.want)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调试-dlv-调试"><a href="#调试-dlv-调试" class="headerlink" title="[调试] dlv 调试"></a>[调试] dlv 调试</h2><h3 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">dlv debug main.go</span></span><br><span class="line">Type &#x27;help&#x27; for list of commands.</span><br><span class="line">(dlv) </span><br></pre></td></tr></table></figure>
+
+<h3 id="检查功能-x2F-代码-funcs-list"><a href="#检查功能-x2F-代码-funcs-list" class="headerlink" title="检查功能&#x2F;代码( funcs list )"></a>检查功能&#x2F;代码( funcs list )</h3><p><code>funcs main\..*</code> 查看 main 文件 所有定义的方法</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) funcs main\..*</span><br><span class="line">main.add</span><br><span class="line">main.calculate</span><br><span class="line">main.init.0</span><br><span class="line">main.main</span><br><span class="line">main.sampleFunc1</span><br><span class="line">main.sub</span><br><span class="line">runtime.main.func1</span><br><span class="line">runtime.main.func2</span><br></pre></td></tr></table></figure>
+<p><code>list</code> 您可以在以下位置查看某个方法源代码</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) list main.main</span><br><span class="line">Showing /debug_sample/main.go:38 (PC: 0x1029dda10)</span><br><span class="line">    33:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    34:                 fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:         &#125;</span><br><span class="line">    36: &#125;</span><br><span class="line">    37: </span><br><span class="line">    38: func main() &#123;</span><br><span class="line">    39:         sampleFunc1()</span><br><span class="line">    40: &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) list main.sampleFunc1:3</span><br><span class="line">Showing /debug_sample/main.go:32 (PC: 0x1029dd8c0)</span><br><span class="line">    27: &#125;</span><br><span class="line">    28: </span><br><span class="line">    29: func sampleFunc1() &#123;</span><br><span class="line">    30:         for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    31:                 a := i + 10</span><br><span class="line">    32:                 b := i</span><br><span class="line">    33:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    34:                 fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:         &#125;</span><br><span class="line">    36: &#125;</span><br><span class="line">    37: </span><br></pre></td></tr></table></figure>
+
+<h3 id="设置-x2F-删除断点-break-clear"><a href="#设置-x2F-删除断点-break-clear" class="headerlink" title="设置&#x2F;删除断点 (  break clear )"></a>设置&#x2F;删除断点 (  break clear )</h3><p><code>break</code> 您可以使用以下命令设置断点</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) break main.main</span><br><span class="line">Breakpoint 1 set at 0x1029dda10 for main.main() ./main.go:38</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) break main.sampleFunc1:3</span><br><span class="line">Breakpoint 2 set at 0x1029dd8c0 for main.sampleFunc1() ./main.go:32</span><br></pre></td></tr></table></figure>
+
+<p><code>breakpoints</code> 您可以检查中设置的断点。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) breakpoints</span><br><span class="line">Breakpoint runtime-fatal-throw (enabled) at 0x10296c880 for runtime.throw() /Users/w/.gvm/gos/go1.18/src/runtime/panic.go:982 (0)</span><br><span class="line">Breakpoint unrecovered-panic (enabled) at 0x10296cb90 for runtime.fatalpanic() /Users/w/.gvm/gos/go1.18/src/runtime/panic.go:1065 (0)</span><br><span class="line">        print runtime.curg._panic.arg</span><br><span class="line">Breakpoint 1 (enabled) at 0x1029dda10 for main.main() ./main.go:38 (0)</span><br><span class="line">Breakpoint 2 (enabled) at 0x1029dd8c0 for main.sampleFunc1() ./main.go:32 (0)</span><br></pre></td></tr></table></figure>
+
+<p><code>clear</code> 您可以使用 删除指定的断点。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) clear 1</span><br><span class="line">Breakpoint 1 cleared at 0x1029dda10 for main.main() ./main.go:38</span><br><span class="line">(dlv) breakpoints</span><br><span class="line">Breakpoint runtime-fatal-throw (enabled) at 0x10296c880 for runtime.throw() /Users/w/.gvm/gos/go1.18/src/runtime/panic.go:982 (0)</span><br><span class="line">Breakpoint unrecovered-panic (enabled) at 0x10296cb90 for runtime.fatalpanic() /Users/w/.gvm/gos/go1.18/src/runtime/panic.go:1065 (0)</span><br><span class="line">        print runtime.curg._panic.arg</span><br><span class="line">Breakpoint 2 (enabled) at 0x1029dd8c0 for main.sampleFunc1() ./main.go:32 (0)</span><br></pre></td></tr></table></figure>
+
+<p><code>clearall</code> 删除所有断点。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) clearall</span><br><span class="line">Breakpoint 1 cleared at 0x4986e6 for main.main() ./main.go:38</span><br><span class="line">Breakpoint 5 cleared at 0x49858c for main.sampleFunc1() ./main.go:32</span><br></pre></td></tr></table></figure>
+
+<h3 id="提前处理到断点-continue"><a href="#提前处理到断点-continue" class="headerlink" title="提前处理到断点(  continue )"></a>提前处理到断点(  continue )</h3><p><code>continue</code> 让我们继续执行中设置的断点。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) continue</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">main.sampleFunc1() ./main.go:32 (hits goroutine(1):1 total:1) (PC: 0x1029dd8c0)</span></span><br><span class="line">    27: &#125;</span><br><span class="line">    28: </span><br><span class="line">    29: func sampleFunc1() &#123;</span><br><span class="line">    30:         for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    31:                 a := i + 10</span><br><span class="line">=&gt;  32:                 b := i</span><br><span class="line">    33:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    34:                 fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:         &#125;</span><br><span class="line">    36: &#125;</span><br><span class="line">    37: </span><br></pre></td></tr></table></figure>
+
+<p><code>continue</code> 或者，您可以继续执行以下命令。</p>
+<p><code>next</code><br>向前迈出一行（跨过）。<br><code>step</code><br>前进一行。<br><code>stepout</code><br>退出当前功能。</p>
+<h3 id="检查并覆盖变量-locals-set"><a href="#检查并覆盖变量-locals-set" class="headerlink" title="检查并覆盖变量 (  locals set )"></a>检查并覆盖变量 (  locals set )</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@cdh2 test]# dlv debug main.go  // 调试</span><br><span class="line">Type &#x27;help&#x27; for list of commands.</span><br><span class="line"></span><br><span class="line">(dlv) break main.sampleFunc1:3  // 设置断点</span><br><span class="line">Breakpoint 1 set at 0x49858c for main.sampleFunc1() ./main.go:32</span><br><span class="line"></span><br><span class="line">(dlv) c  // 跳到断点</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">main.sampleFunc1() ./main.go:32 (hits goroutine(1):1 total:1) (PC: 0x49858c)</span></span><br><span class="line">    27:	&#125;</span><br><span class="line">    28:</span><br><span class="line">    29:	func sampleFunc1() &#123;</span><br><span class="line">    30:		for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    31:			a := i + 10</span><br><span class="line">=&gt;  32:			b := i</span><br><span class="line">    33:			addValue, subValue := calculate(a, b)</span><br><span class="line">    34:			fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:		&#125;</span><br><span class="line">    36:	&#125;</span><br><span class="line">    37:</span><br><span class="line">    </span><br><span class="line">(dlv) locals  // 打印局部变量</span><br><span class="line">i = 0</span><br><span class="line">a = 10</span><br><span class="line"></span><br><span class="line">(dlv) vars main.abc</span><br><span class="line">main.abc = &quot;wakuwaku bank&quot;</span><br><span class="line"></span><br><span class="line">(dlv) print i</span><br><span class="line">0</span><br><span class="line">(dlv) print a</span><br><span class="line">10</span><br><span class="line"></span><br><span class="line">(dlv) set i = 2  // 重新给变量赋值</span><br><span class="line">(dlv) print i</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+<h3 id="堆栈跟踪显示-stack-frame"><a href="#堆栈跟踪显示-stack-frame" class="headerlink" title="堆栈跟踪显示(  stack frame )"></a>堆栈跟踪显示(  stack frame )</h3><p>首先，要检查操作，请继续添加功能。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) break main.add</span><br><span class="line">Breakpoint 3 set at 0x1029dd610 for main.add() ./main.go:13</span><br><span class="line">(dlv) c</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">main.add() ./main.go:13 (hits goroutine(1):1 total:1) (PC: 0x1029dd610)</span></span><br><span class="line">     8: </span><br><span class="line">     9: func init() &#123;</span><br><span class="line">    10:         abc = &quot;wakuwaku bank&quot;</span><br><span class="line">    11: &#125;</span><br><span class="line">    12: </span><br><span class="line">=&gt;  13: func add(a, b int) int &#123;</span><br><span class="line">    14:         fmt.Printf(&quot;func add %v\n&quot;, abc)</span><br><span class="line">    15:         return a + b</span><br><span class="line">    16: &#125;</span><br><span class="line">    17: </span><br><span class="line">    18: func sub(a, b int) int &#123;</span><br></pre></td></tr></table></figure>
+<p>显示堆栈跟踪</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) stack</span><br><span class="line">0  0x00000000004982aa in main.add</span><br><span class="line">   at ./main.go:13</span><br><span class="line">1  0x00000000004984df in main.calculate</span><br><span class="line">   at ./main.go:24</span><br><span class="line">2  0x00000000004985a5 in main.sampleFunc1</span><br><span class="line">   at ./main.go:33</span><br><span class="line">3  0x00000000004986f7 in main.main</span><br><span class="line">   at ./main.go:39</span><br><span class="line">4  0x00000000004372d8 in runtime.main</span><br><span class="line">   at /root/.go/src/runtime/proc.go:250</span><br><span class="line">5  0x0000000000461661 in runtime.goexit</span><br><span class="line">   at /root/.go/src/runtime/asm_amd64.s:1571</span><br></pre></td></tr></table></figure>
+
+<p><code>frame</code> 您可以通过指定堆栈跟踪编号来检查代码和变量</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) frame 2 ls</span><br><span class="line">Goroutine 1 frame 2 at /debug_sample/main.go:33 (PC: 0x1029dd8d0)</span><br><span class="line">    28: </span><br><span class="line">    29: func sampleFunc1() &#123;</span><br><span class="line">    30:         for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    31:                 a := i + 10</span><br><span class="line">    32:                 b := i</span><br><span class="line">=&gt;  33:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    34:                 fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:         &#125;</span><br><span class="line">    36: &#125;</span><br><span class="line">    37: </span><br><span class="line">    38: func main() &#123;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) frame 2 locals</span><br><span class="line">i = 2</span><br><span class="line">a = 10</span><br><span class="line">b = 2</span><br></pre></td></tr></table></figure>
+<h3 id="指定条件-condition"><a href="#指定条件-condition" class="headerlink" title="指定条件 (  condition )"></a>指定条件 (  condition )</h3><p>首先，进行for语句的处理</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">dlv debug main.go</span></span><br><span class="line">Type &#x27;help&#x27; for list of commands.</span><br><span class="line">(dlv) b main.sampleFunc1:3</span><br><span class="line">Breakpoint 1 set at 0x1050958c0 for main.sampleFunc1() ./main.go:32</span><br><span class="line">(dlv) c</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">main.sampleFunc1() ./main.go:32 (hits goroutine(1):1 total:1) (PC: 0x1050958c0)</span></span><br><span class="line">    27: &#125;</span><br><span class="line">    28: </span><br><span class="line">    29: func sampleFunc1() &#123;</span><br><span class="line">    30:         for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    31:                 a := i + 10</span><br><span class="line">=&gt;  32:                 b := i</span><br><span class="line">    33:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    34:                 fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:         &#125;</span><br><span class="line">    36: &#125;</span><br><span class="line">    37: </span><br><span class="line">(dlv) locals</span><br><span class="line">i = 0</span><br><span class="line">a = 10</span><br></pre></td></tr></table></figure>
+<p><code>condition</code> 您可以使用 设置断点条件。<br><code>i==5</code> 让我们将其设置为停止时</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) condition 1 i==5</span><br><span class="line"></span><br><span class="line">(dlv) c</span><br><span class="line">func add wakuwaku bank</span><br><span class="line">func sub wakuwaku bank</span><br><span class="line">addValue: 10 subValue: 10</span><br><span class="line">func add wakuwaku bank</span><br><span class="line">func sub wakuwaku bank</span><br><span class="line">addValue: 12 subValue: 10</span><br><span class="line">func add wakuwaku bank</span><br><span class="line">func sub wakuwaku bank</span><br><span class="line">addValue: 14 subValue: 10</span><br><span class="line">func add wakuwaku bank</span><br><span class="line">func sub wakuwaku bank</span><br><span class="line">addValue: 16 subValue: 10</span><br><span class="line">func add wakuwaku bank</span><br><span class="line">func sub wakuwaku bank</span><br><span class="line">addValue: 18 subValue: 10</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">main.sampleFunc1() ./main.go:32 (hits goroutine(1):2 total:2) (PC: 0x1050958c0)</span></span><br><span class="line">    27: &#125;</span><br><span class="line">    28: </span><br><span class="line">    29: func sampleFunc1() &#123;</span><br><span class="line">    30:         for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    31:                 a := i + 10</span><br><span class="line">=&gt;  32:                 b := i</span><br><span class="line">    33:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    34:                 fmt.Printf(&quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br><span class="line">    35:         &#125;</span><br><span class="line">    36: &#125;</span><br><span class="line">    37: </span><br><span class="line">    </span><br><span class="line">(dlv) locals</span><br><span class="line">i = 5</span><br><span class="line">a = 15</span><br></pre></td></tr></table></figure>
+<h3 id="调试结束-exit"><a href="#调试结束-exit" class="headerlink" title="调试结束(  exit )"></a>调试结束(  exit )</h3><p>exit 您可以使用 完成调试。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) exit</span><br></pre></td></tr></table></figure>
+<h2 id="debug-dlv测试（调试测试）"><a href="#debug-dlv测试（调试测试）" class="headerlink" title="[debug] dlv测试（调试测试）"></a>[debug] dlv测试（调试测试）</h2><p>dlv test 您可以使用以下命令调试您的测试代码</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">dlv <span class="built_in">test</span></span></span><br><span class="line">Type &#x27;help&#x27; for list of commands.</span><br><span class="line">(dlv) funcs test.Test*  // test.Test*  test 包含 Xxx_test.go 文件夹</span><br><span class="line">debug_sample.Test_add</span><br><span class="line">debug_sample.Test_add.func1</span><br><span class="line">debug_sample.Test_sub</span><br><span class="line">debug_sample.Test_sub.func1</span><br><span class="line"></span><br><span class="line">(dlv) b test.Test_add</span><br><span class="line">Breakpoint 1 set at 0x104891e90 for debug_sample.Test_add() ./main_test.go:5</span><br><span class="line"></span><br><span class="line">(dlv) c</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">debug_sample.Test_add() ./main_test.go:5 (hits goroutine(4):1 total:1) (PC: 0x104891e90)</span></span><br><span class="line">     1: package main</span><br><span class="line">     2: </span><br><span class="line">     3: import &quot;testing&quot;</span><br><span class="line">     4: </span><br><span class="line">=&gt;   5: func Test_add(t *testing.T) &#123;</span><br><span class="line">     6:         type args struct &#123;</span><br><span class="line">     7:                 a int</span><br><span class="line">     8:                 b int</span><br><span class="line">     9:         &#125;</span><br><span class="line">    10:         tests := []struct &#123; </span><br></pre></td></tr></table></figure>
+
+<h2 id="debug-dlv-Attach（调试运行进程）"><a href="#debug-dlv-Attach（调试运行进程）" class="headerlink" title="[debug] dlv Attach（调试运行进程）"></a>[debug] dlv Attach（调试运行进程）</h2><p>更正操作检查代码</p>
+<p>对其进行修改以保持作为 Web 服务器运行，如下所示。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> abc <span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	abc = <span class="string">&quot;wakuwaku bank&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(a, b <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;func add %v\n&quot;</span>, abc)</span><br><span class="line">	<span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sub</span><span class="params">(a, b <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;func sub %v\n&quot;</span>, abc)</span><br><span class="line">	<span class="keyword">return</span> a - b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">calculate</span><span class="params">(a, b <span class="type">int</span>)</span></span> (addValue, subValue <span class="type">int</span>) &#123;</span><br><span class="line">	addValue = add(a, b)</span><br><span class="line">	subValue = sub(a, b)</span><br><span class="line">	<span class="keyword">return</span> addValue, subValue</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sampleFunc1</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		a := i * <span class="number">2</span></span><br><span class="line">		b := i</span><br><span class="line">		addValue, subValue := calculate(a, b)</span><br><span class="line">		fmt.Fprintf(w, <span class="string">&quot;addValue: %v subValue: %v\n&quot;</span>, addValue, subValue)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/sample_func_1&quot;</span>, sampleFunc1)</span><br><span class="line">	http.ListenAndServe(<span class="string">&quot;:80&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启动。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go build</span>     </span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">./test</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="调试运行进程"><a href="#调试运行进程" class="headerlink" title="调试运行进程"></a>调试运行进程</h3><p>检查进程 ID。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ps -ef | grep <span class="string">&quot;test&quot;</span></span></span><br><span class="line">root     254882  56889  0 15:24 pts/2    00:00:00 ./test</span><br><span class="line">root     257090  18100  0 15:25 pts/0    00:00:00 grep --color=auto test</span><br></pre></td></tr></table></figure>
+
+<p>调试</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">dlv attach 254882</span></span><br><span class="line">Type &#x27;help&#x27; for list of commands.</span><br><span class="line">(dlv)</span><br></pre></td></tr></table></figure>
+<p>设置断点并等待进程被调用。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) b main.sampleFunc1</span><br><span class="line">Breakpoint 1 set at 0x1010e8470 for main.sampleFunc1() ./main.go:30</span><br><span class="line"></span><br><span class="line">(dlv) c</span><br></pre></td></tr></table></figure>
+
+<p>尝试在另一个控制台中向端点发出请求。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">curl http://localhost/sample_func_1</span></span><br></pre></td></tr></table></figure>
+<p>处理在设置的断点处停止，如下所示。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) c</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">main.sampleFunc1() ./main.go:30 (hits goroutine(21):1 total:1) (PC: 0x1010e8470)</span></span><br><span class="line">Warning: debugging optimized function</span><br><span class="line">    25:         addValue = add(a, b)</span><br><span class="line">    26:         subValue = sub(a, b)</span><br><span class="line">    27:         return addValue, subValue</span><br><span class="line">    28: &#125;</span><br><span class="line">    29: </span><br><span class="line">=&gt;  30: func sampleFunc1(w http.ResponseWriter, r *http.Request) &#123;</span><br><span class="line">    31:         for i := 0; i &lt; 10; i++ &#123;</span><br><span class="line">    32:                 a := i * 2</span><br><span class="line">    33:                 b := i</span><br><span class="line">    34:                 addValue, subValue := calculate(a, b)</span><br><span class="line">    35:                 fmt.Fprintf(w, &quot;addValue: %v subValue: %v\n&quot;, addValue, subValue)</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令说明"><a href="#命令说明" class="headerlink" title="命令说明"></a>命令说明</h2><p>以下是一些最常用的命令。</p>
+<h3 id="断点相关"><a href="#断点相关" class="headerlink" title="断点相关"></a>断点相关</h3><table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th>别名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">break</td>
+<td>b</td>
+<td>设置断点</td>
+</tr>
+<tr>
+<td align="left">breakpoints</td>
+<td>bp</td>
+<td>显示活动断点</td>
+</tr>
+<tr>
+<td align="left">clear</td>
+<td></td>
+<td>删除断点</td>
+</tr>
+<tr>
+<td align="left">clearall</td>
+<td></td>
+<td>删除所有断点</td>
+</tr>
+<tr>
+<td align="left">condition</td>
+<td>cond</td>
+<td>设置断点条件</td>
+</tr>
+</tbody></table>
+<h3 id="继续"><a href="#继续" class="headerlink" title="继续"></a>继续</h3><table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th>别名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">continue</td>
+<td>c</td>
+<td>继续到“下一个断点”或“程序结束”或“指定点”。（例如 c main.add:1 ）</td>
+</tr>
+<tr>
+<td align="left">next</td>
+<td>n</td>
+<td>向前迈出一行（跨过）。</td>
+</tr>
+<tr>
+<td align="left">step</td>
+<td>s</td>
+<td>前进一行。</td>
+</tr>
+<tr>
+<td align="left">stepout</td>
+<td>so</td>
+<td>退出当前功能。</td>
+</tr>
+<tr>
+<td align="left">restart</td>
+<td></td>
+<td>恢复该过程。</td>
+</tr>
+<tr>
+<td align="left">exit</td>
+<td>q</td>
+<td>退出调试器。</td>
+</tr>
+</tbody></table>
+<h2 id="其他的"><a href="#其他的" class="headerlink" title="其他的"></a>其他的</h2><table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th>别名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">funcs</td>
+<td></td>
+<td>检查功能列表。（例如 funcs main..* ）</td>
+</tr>
+<tr>
+<td align="left">list</td>
+<td>l</td>
+<td>显示代码。（例如 l 10 l main.main:3 ）</td>
+</tr>
+<tr>
+<td align="left">locals</td>
+<td></td>
+<td>检查局部变量。</td>
+</tr>
+<tr>
+<td align="left">vars</td>
+<td></td>
+<td>检查包变量。</td>
+</tr>
+<tr>
+<td align="left">print</td>
+<td>p</td>
+<td>评估一个表达式。</td>
+</tr>
+<tr>
+<td align="left">set</td>
+<td></td>
+<td>覆盖变量。</td>
+</tr>
+<tr>
+<td align="left">stack</td>
+<td>bt</td>
+<td>显示堆栈跟踪。</td>
+</tr>
+</tbody></table>
+<p>您还可以通过在调试过程中执行来查看如何使用其他命令 <code>help </code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(dlv) help</span><br><span class="line">The following commands are available:</span><br><span class="line"></span><br><span class="line">Running the program:</span><br><span class="line">    call ------------------------ Resumes process, injecting a function call (EXPERIMENTAL!!!)</span><br><span class="line">    continue (alias: c) --------- Run until breakpoint or program termination.</span><br><span class="line">    next (alias: n) ------------- Step over to next source line.</span><br><span class="line">    rebuild --------------------- Rebuild the target executable and restarts it. It does not work if the executable was not built by delve.</span><br><span class="line">    restart (alias: r) ---------- Restart process.</span><br><span class="line">    step (alias: s) ------------- Single step through program.</span><br><span class="line">    step-instruction (alias: si)  Single step a single cpu instruction.</span><br><span class="line">    stepout (alias: so) --------- Step out of the current function.</span><br><span class="line"></span><br><span class="line">Manipulating breakpoints:</span><br><span class="line">    break (alias: b) ------- Sets a breakpoint.</span><br><span class="line">    breakpoints (alias: bp)  Print out info for active breakpoints.</span><br><span class="line">    clear ------------------ Deletes breakpoint.</span><br><span class="line">    clearall --------------- Deletes multiple breakpoints.</span><br><span class="line">    condition (alias: cond)  Set breakpoint condition.</span><br><span class="line">    on --------------------- Executes a command when a breakpoint is hit.</span><br><span class="line">    toggle ----------------- Toggles on or off a breakpoint.</span><br><span class="line">    trace (alias: t) ------- Set tracepoint.</span><br><span class="line">    watch ------------------ Set watchpoint.</span><br><span class="line"></span><br><span class="line">Viewing program variables and memory:</span><br><span class="line">    args ----------------- Print function arguments.</span><br><span class="line">    display -------------- Print value of an expression every time the program stops.</span><br><span class="line">    examinemem (alias: x)  Examine raw memory at the given address.</span><br><span class="line">    locals --------------- Print local variables.</span><br><span class="line">    print (alias: p) ----- Evaluate an expression.</span><br><span class="line">    regs ----------------- Print contents of CPU registers.</span><br><span class="line">    set ------------------ Changes the value of a variable.</span><br><span class="line">    vars ----------------- Print package variables.</span><br><span class="line">    whatis --------------- Prints type of an expression.</span><br><span class="line"></span><br><span class="line">Listing and switching between threads and goroutines:</span><br><span class="line">    goroutine (alias: gr) -- Shows or changes current goroutine</span><br><span class="line">    goroutines (alias: grs)  List program goroutines.</span><br><span class="line">    thread (alias: tr) ----- Switch to the specified thread.</span><br><span class="line">    threads ---------------- Print out info for every traced thread.</span><br><span class="line"></span><br><span class="line">Viewing the call stack and selecting frames:</span><br><span class="line">    deferred --------- Executes command in the context of a deferred call.</span><br><span class="line">    down ------------- Move the current frame down.</span><br><span class="line">    frame ------------ Set the current frame, or execute command on a different frame.</span><br><span class="line">    stack (alias: bt)  Print stack trace.</span><br><span class="line">    up --------------- Move the current frame up.</span><br><span class="line"></span><br><span class="line">Other commands:</span><br><span class="line">    config --------------------- Changes configuration parameters.</span><br><span class="line">    disassemble (alias: disass)  Disassembler.</span><br><span class="line">    dump ----------------------- Creates a core dump from the current process state</span><br><span class="line">    edit (alias: ed) ----------- Open where you are in $DELVE_EDITOR or $EDITOR</span><br><span class="line">    exit (alias: quit | q) ----- Exit the debugger.</span><br><span class="line">    funcs ---------------------- Print list of functions.</span><br><span class="line">    help (alias: h) ------------ Prints the help message.</span><br><span class="line">    libraries ------------------ List loaded dynamic libraries</span><br><span class="line">    list (alias: ls | l) ------- Show source code.</span><br><span class="line">    source --------------------- Executes a file containing a list of delve commands</span><br><span class="line">    sources -------------------- Print list of source files.</span><br><span class="line">    transcript ----------------- Appends command output to a file.</span><br><span class="line">    types ---------------------- Print list of types</span><br><span class="line"></span><br><span class="line">Type help followed by a command for full documentation.</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://github.com/go-delve/delve">go-delve&#x2F;delve：Delve 是 Go 编程语言的调试器</a></p>
+</div>
+          <nav class="post-nav">
+    
+    
+    <a class="post-nav-item post-nav-next" href="/2023/05/13/Golang-%E4%B8%8A%E4%B8%8B%E6%96%87/">
+      <div class="nav-arrow">OLDER&nbsp;&gt;</div>
+      <span class="post-title">Golang-上下文</span>
+    </a>
+    
+  </nav>
+          <div class="dis">
+    
+        <div class="btn" id="comments-btn">给我留言</div>
+      
+     
+    <script src='//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js'></script>
+    <div id="waline"></div>
+    <script>
+        window.onload = function () {
+            var loadWaline = function () {
+                new Waline({
+                el: '#waline',
+                path: location.pathname,
+                avatarCDN: '',
+                serverURL: 'comment-vercel.ch3nnn.cn',
+                avatar: 'monsterid',
+                placeholder: "Let me know what you think！"
+            });
+            }
+            if (true) {
+                document.getElementById("comments-btn").onclick=function(){
+                    document.getElementById("comments-btn").style.display="none";
+                    loadWaline();
+		    }} else {
+            loadWaline();
+            }
+        };
+    </script>
+
+
+  </div>
+
+   </main>
+</div>
+
+  <footer class="footer">
+    <small class="footer_copyright">
+      <div id="bottom-inner">
+        © 2021 Site by Ch3nnn using
+        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo Blog Framework</a>.
+        <br>
+        <span> Theme is <a target="_blank" rel="noopener" href="https://github.com/dewjohn/hexo-theme-klise">Klise</a></span>
+        |
+        <span id="busuanzi_container_site_pv">
+          Total view <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> times
+        </span>
+      </div>
+      <!-- 备案主体-->
+      <a href="https://beian.miit.gov.cn/" rel="nofollow" target="_blank">
+            <p style=" height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">
+                京ICP备19017311号
+            </p>
+        </a>
+    </small>
+  </footer>
+
+  
+
+    
+      <script src="/js/main.js"></script>
+    
+  
+  <script>
+    window.FPConfig = {
+      delay: 0,
+      ignoreKeywords: [],
+      maxRPS: 3,
+      hoverDelay: 50,
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+  <!-- 不蒜子计数器 http://busuanzi.ibruce.info/  -->
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
