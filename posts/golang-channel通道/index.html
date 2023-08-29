@@ -1,0 +1,261 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。
+channel 有哪些应用 停止信号 channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。
+定时任务 与计时器结合，一般有两种做法：实现超时控制、实现定期执行某个任务。 有时候，需要执行某项操作，但又不想它耗费太长时间，上一个定时器就可以搞定。这就是时控制：
+select { case <- time.After(100*time.Millisecond): case <- s.stopc: return false } 等待 100 ms 后，如果 s.stopc 还没有读出数据或者被关闭，就直接结束。
+定时执行某个任务，也比较简单：
+func worker() { ticker := time.Tick(1 * time.Second) for { select { case <- ticker: // 执行定时任务 fmt.Println(&#34;执行 1s 定时任务&#34;) } } } 每隔 1 秒种，执行一次定时任务。
+解耦生产方和消费方 服务启动时，启动 n 个 worker，作为工作协程池，这些协程工作在一个 for {} 无限循环里，从某个 channel 消费工作任务并执行："><title>Golang-channel通道</title><link rel="shortcut icon" type=image/x-icon href=/><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-03-19 17:41:05 +0000 UTC">2023-03-19</time></p><h1>Golang-channel通道</h1><blockquote><p>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。</p></blockquote><h2 id=channel-有哪些应用>channel 有哪些应用</h2><p><strong>停止信号</strong>
+channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。</p><p><strong>定时任务</strong>
+与计时器结合，一般有两种做法：实现超时控制、实现定期执行某个任务。
+有时候，需要执行某项操作，但又不想它耗费太长时间，上一个定时器就可以搞定。这就是时控制：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>time</span><span class=p>.</span><span class=nf>After</span><span class=p>(</span><span class=mi>100</span><span class=o>*</span><span class=nx>time</span><span class=p>.</span><span class=nx>Millisecond</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>s</span><span class=p>.</span><span class=nx>stopc</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>等待 100 ms 后，如果 s.stopc 还没有读出数据或者被关闭，就直接结束。</p><p>定时执行某个任务，也比较简单：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>worker</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ticker</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Tick</span><span class=p>(</span><span class=mi>1</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>ticker</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>			<span class=c1>// 执行定时任务
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;执行 1s 定时任务&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>每隔 1 秒种，执行一次定时任务。</p><p><strong>解耦生产方和消费方</strong>
+服务启动时，启动 n 个 worker，作为工作协程池，这些协程工作在一个 for {} 无限循环里，从某个 channel 消费工作任务并执行：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>taskCh</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>int</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=nf>worker</span><span class=p>(</span><span class=nx>taskCh</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 塞任务
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=mi>10</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>taskCh</span> <span class=o>&lt;-</span> <span class=nx>i</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 等待 1 小时 
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>time</span><span class=p>.</span><span class=nf>After</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Hour</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>worker</span><span class=p>(</span><span class=nx>taskCh</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kd>const</span> <span class=nx>N</span> <span class=p>=</span> <span class=mi>5</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 启动 5 个工作协程
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>N</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>go</span> <span class=kd>func</span><span class=p>(</span><span class=nx>id</span> <span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>task</span> <span class=o>:=</span> <span class=o>&lt;-</span> <span class=nx>taskCh</span>
+</span></span><span class=line><span class=cl>				<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;finish task: %d by worker %d\n&#34;</span><span class=p>,</span> <span class=nx>task</span><span class=p>,</span> <span class=nx>id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}(</span><span class=nx>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>5 个工作协程在不断地从工作队列里取任务，生产方只管往 channel 发送任务即可，解耦生产方和消费方。
+程序输出：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>finish task: <span class=m>1</span> by worker <span class=m>4</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>2</span> by worker <span class=m>2</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>4</span> by worker <span class=m>3</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>3</span> by worker <span class=m>1</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>0</span> by worker <span class=m>0</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>6</span> by worker <span class=m>0</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>8</span> by worker <span class=m>3</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>9</span> by worker <span class=m>1</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>7</span> by worker <span class=m>4</span>
+</span></span><span class=line><span class=cl>finish task: <span class=m>5</span> by worker <span class=m>2</span>
+</span></span></code></pre></div><p><strong>控制并发数</strong>
+有时需要定时执行几百个任务，例如每天定时按城市来执行一些离线计算的任务。但是并发数又不能太高，因为任务执行过程依赖第三方的一些资源，对请求的速率有限制。这时就可以通过 channel 来控制并发数。
+channel 来控制并发数：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>limit</span> <span class=p>=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>int</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// …………
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>w</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>work</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>limit</span> <span class=o>&lt;-</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>            <span class=nf>w</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=o>&lt;-</span><span class=nx>limit</span>
+</span></span><span class=line><span class=cl>        <span class=p>}()</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// …………
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>构建一个缓冲型的 channel，容量为 3。接着遍历任务列表，每个任务启动一个 goroutine 去完成。真正执行任务，访问第三方的动作在 w() 中完成，在执行 w() 之前，先要从 limit 中拿“许可证”，拿到许可证之后，才能执行 w()，并且在执行完任务，要将“许可证”归还。这样就可以控制同时运行的 goroutine 数。</p><h3 id=channel-数据结构>channel 数据结构</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>hchan</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// chan 里元素数量
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>qcount</span>   <span class=kt>uint</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// chan 底层循环数组的长度
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>dataqsiz</span> <span class=kt>uint</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 指向底层循环数组的指针
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// 只针对有缓冲的 channel
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>buf</span>      <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// chan 中元素大小
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>elemsize</span> <span class=kt>uint16</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// chan 是否被关闭的标志
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>closed</span>   <span class=kt>uint32</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// chan 中元素类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>elemtype</span> <span class=o>*</span><span class=nx>_type</span> <span class=c1>// element type
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// 已发送元素在循环数组中的索引
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>sendx</span>    <span class=kt>uint</span>   <span class=c1>// send index
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// 已接收元素在循环数组中的索引
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>recvx</span>    <span class=kt>uint</span>   <span class=c1>// receive index
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// 等待接收的 goroutine 队列
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>recvq</span>    <span class=nx>waitq</span>  <span class=c1>// list of recv waiters
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>// 等待发送的 goroutine 队列
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>sendq</span>    <span class=nx>waitq</span>  <span class=c1>// list of send waiters
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 保护 hchan 中所有字段
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>lock</span> <span class=nx>mutex</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>关于字段的含义都写在注释里了，再来重点说几个字段：</p><p>buf 指向底层循环数组，只有缓冲型的 channel 才有。</p><p>sendx，recvx 均指向底层循环数组，表示当前可以发送和接收的元素位置索引值（相对于底层数组）。</p><p>sendq，recvq 分别表示被阻塞的 goroutine，这些 goroutine 由于尝试读取 channel 或向 channel 发送数据而被阻塞。</p><p>waitq 是 sudog 的一个双向链表，而 sudog 实际上是对 goroutine 的一个封装：</p><pre><code>type waitq struct {
+    first *sudog
+    last  *sudog
+}
+</code></pre><p>lock 用来保证每个读 channel 或写 channel 的操作都是原子的。</p><h2 id=收发数据的本质>收发数据的本质</h2><blockquote><p>All transfer of value on the go channels happens with the copy of value.</p></blockquote><p>就是说 channel 的发送和接收操作本质上都是 “值的拷贝”，无论是从 sender goroutine 的栈到 chan buf，还是从 chan buf 到 receiver goroutine，或者是直接从 sender goroutine 到 receiver goroutine。
+举一个例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>user</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>name</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>age</span> <span class=kt>int8</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>u</span> <span class=p>=</span> <span class=nx>user</span><span class=p>{</span><span class=nx>name</span><span class=p>:</span> <span class=s>&#34;Ankur&#34;</span><span class=p>,</span> <span class=nx>age</span><span class=p>:</span> <span class=mi>25</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>g</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>u</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>modifyUser</span><span class=p>(</span><span class=nx>pu</span> <span class=o>*</span><span class=nx>user</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;modifyUser Received Vaule&#34;</span><span class=p>,</span> <span class=nx>pu</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>pu</span><span class=p>.</span><span class=nx>name</span> <span class=p>=</span> <span class=s>&#34;Anand&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>printUser</span><span class=p>(</span><span class=nx>u</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=o>*</span><span class=nx>user</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=mi>2</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;printUser goRoutine called&#34;</span><span class=p>,</span> <span class=o>&lt;-</span><span class=nx>u</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=o>*</span><span class=nx>user</span><span class=p>,</span> <span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span> <span class=o>&lt;-</span> <span class=nx>g</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>g</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// modify g
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>g</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>user</span><span class=p>{</span><span class=nx>name</span><span class=p>:</span> <span class=s>&#34;Ankur Anand&#34;</span><span class=p>,</span> <span class=nx>age</span><span class=p>:</span> <span class=mi>100</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=nf>printUser</span><span class=p>(</span><span class=nx>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=nf>modifyUser</span><span class=p>(</span><span class=nx>g</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=mi>5</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>g</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>运行结果：</p><pre><code>&amp;{Ankur 25}
+modifyUser Received Vaule &amp;{Ankur Anand 100}
+printUser goRoutine called &amp;{Ankur 25}
+&amp;{Anand 100}
+</code></pre><h2 id=channel-如何优雅关闭通道>channel 如何优雅关闭通道</h2><p>有两个不那么优雅地关闭 channel 的方法：</p><ul><li>使用 defer-recover 机制，放心大胆地关闭 channel 或者向 channel 发送数据。即使发生了 panic，有 defer-recover 在兜底。</li><li>使用 sync.Once 来保证只关闭一次。</li></ul><p>那到底应该如何优雅地关闭 channel？
+根据 sender 和 receiver 的个数，分下面几种情况：</p><ol><li>一个 sender，一个 receiver</li><li>一个 sender， M 个 receiver</li><li>N 个 sender，一个 reciver</li><li>N 个 sender， M 个 receiver</li></ol><p>对于 1，2，只有一个 sender 的情况就不用说了，直接从 sender 端关闭就好了，没有问题。重点关注第 3，4 种情况。</p><p>第 3 种情形下，优雅关闭 channel 的方法是：the only receiver says &ldquo;please stop sending more&rdquo; by closing an additional signal channel。</p><p>解决方案就是增加一个传递关闭信号的 channel，receiver 通过信号 channel 下达关闭数据 channel 指令。senders 监听到关闭信号后，停止接收数据。代码如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>rand</span><span class=p>.</span><span class=nf>Seed</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>UnixNano</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>const</span> <span class=nx>Max</span> <span class=p>=</span> <span class=mi>100000</span>
+</span></span><span class=line><span class=cl>    <span class=kd>const</span> <span class=nx>NumSenders</span> <span class=p>=</span> <span class=mi>1000</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>dataCh</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>int</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>stopCh</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kd>struct</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// senders
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>NumSenders</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>stopCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=nx>dataCh</span> <span class=o>&lt;-</span> <span class=nx>rand</span><span class=p>.</span><span class=nf>Intn</span><span class=p>(</span><span class=nx>Max</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}()</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// the receiver
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=nx>value</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>dataCh</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=nx>value</span> <span class=o>==</span> <span class=nx>Max</span><span class=o>-</span><span class=mi>1</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;send stop signal to senders.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=nb>close</span><span class=p>(</span><span class=nx>stopCh</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>time</span><span class=p>.</span><span class=nf>After</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Hour</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>这里的 stopCh 就是信号 channel，它本身只有一个 sender，因此可以直接关闭它。senders 收到了关闭信号后，select 分支 “case &lt;- stopCh” 被选中，退出函数，不再发送数据。
+需要说明的是，上面的代码并没有明确关闭 dataCh。在 Go 语言中，对于一个 channel，如果最终没有任何 goroutine 引用它，不管 channel 有没有被关闭，最终都会被 gc 回收。所以，在这种情形下，所谓的优雅地关闭 channel 就是不关闭 channel，让 gc 代劳。</p><p>最后一种情况，优雅关闭 channel 的方法是：any one of them says &ldquo;let&rsquo;s end the game&rdquo; by notifying a moderator to close an additional signal channel。
+和第 3 种情况不同，这里有 M 个 receiver，如果直接还是采取第 3 种解决方案，由 receiver 直接关闭 stopCh 的话，就会重复关闭一个 channel，导致 panic。因此需要增加一个中间人，M 个 receiver 都向它发送关闭 dataCh 的“请求”，中间人收到第一个请求后，就会直接下达关闭 dataCh 的指令（通过关闭 stopCh，这时就不会发生重复关闭的情况，因为 stopCh 的发送方只有中间人一个）。另外，这里的 N 个 sender 也可以向中间人发送关闭 dataCh 的请求。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>rand</span><span class=p>.</span><span class=nf>Seed</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>UnixNano</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>const</span> <span class=nx>Max</span> <span class=p>=</span> <span class=mi>100000</span>
+</span></span><span class=line><span class=cl>    <span class=kd>const</span> <span class=nx>NumReceivers</span> <span class=p>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>    <span class=kd>const</span> <span class=nx>NumSenders</span> <span class=p>=</span> <span class=mi>1000</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>dataCh</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>int</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>stopCh</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kd>struct</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// It must be a buffered channel.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>toStop</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>string</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>stoppedBy</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// moderator
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>go</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>stoppedBy</span> <span class=p>=</span> <span class=o>&lt;-</span><span class=nx>toStop</span>
+</span></span><span class=line><span class=cl>        <span class=nb>close</span><span class=p>(</span><span class=nx>stopCh</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// senders
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>NumSenders</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>go</span> <span class=kd>func</span><span class=p>(</span><span class=nx>id</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nx>value</span> <span class=o>:=</span> <span class=nx>rand</span><span class=p>.</span><span class=nf>Intn</span><span class=p>(</span><span class=nx>Max</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=nx>value</span> <span class=o>==</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=nx>toStop</span> <span class=o>&lt;-</span> <span class=s>&#34;sender#&#34;</span> <span class=o>+</span> <span class=nx>id</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>default</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>stopCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=nx>dataCh</span> <span class=o>&lt;-</span> <span class=nx>value</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}(</span><span class=nx>strconv</span><span class=p>.</span><span class=nf>Itoa</span><span class=p>(</span><span class=nx>i</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// receivers
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>NumReceivers</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>go</span> <span class=kd>func</span><span class=p>(</span><span class=nx>id</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>stopCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=nx>value</span> <span class=o>:=</span> <span class=o>&lt;-</span><span class=nx>dataCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=nx>value</span> <span class=o>==</span> <span class=nx>Max</span><span class=o>-</span><span class=mi>1</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=k>case</span> <span class=nx>toStop</span> <span class=o>&lt;-</span> <span class=s>&#34;receiver#&#34;</span> <span class=o>+</span> <span class=nx>id</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=k>default</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>                        <span class=k>return</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}(</span><span class=nx>strconv</span><span class=p>.</span><span class=nf>Itoa</span><span class=p>(</span><span class=nx>i</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>case</span> <span class=o>&lt;-</span> <span class=nx>time</span><span class=p>.</span><span class=nf>After</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Hour</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>代码里 toStop 就是中间人的角色，使用它来接收 senders 和 receivers 发送过来的关闭 dataCh 请求。
+这里将 toStop 声明成了一个 缓冲型的 channel。假设 toStop 声明的是一个非缓冲型的 channel，那么第一个发送的关闭 dataCh 请求可能会丢失。因为无论是 sender 还是 receiver 都是通过 select 语句来发送请求，如果中间人所在的 goroutine 没有准备好，那 select 语句就不会选中，直接走 default 选项，什么也不做。这样，第一个关闭 dataCh 的请求就会丢失。</p><p>更本质的原则：</p><blockquote><p>don&rsquo;t close (or send values to) closed channels.</p></blockquote><h2 id=channel-在什么情况下会引起资源泄漏>channel 在什么情况下会引起资源泄漏</h2><p>Channel 可能会引发 goroutine 泄漏。
+泄漏的原因是 goroutine 操作 channel 后，处于发送或接收阻塞状态，而 channel 处于满或空的状态，一直得不到改变。同时，垃圾回收器也不会回收此类资源，进而导致 gouroutine 会一直处于等待队列中，不见天日。
+另外，程序运行过程中，对于一个 channel，如果没有任何 goroutine 引用了，gc 会对其进行回收操作，不会引起内存泄漏。</p><h2 id=操作-channel-的情况总结>操作 channel 的情况总结</h2><p>总结一下操作 channel 的结果：</p><ol><li>给一个 nil channel 发送数据，造成永远阻塞</li><li>从一个 nil channel 接收数据，造成永远阻塞</li><li>给一个已经关闭的 channel 发送数据，引起 panic</li><li>从一个已经关闭的 channel 接收数据，如果缓冲区中为空，则返回一个零值</li><li>无缓冲的channel是同步的，而有缓冲的channel是非同步的</li></ol><p>以上5个特性是死东西，也可以通过口诀来记忆：<strong>“空读写阻塞，写关闭异常，读关闭空零”</strong>。</p><p>总结一下，发生 panic 的情况有三种：</p><ol><li>向一个关闭的 channel 进行写操作；</li><li>关闭一个 nil 的 channel；</li><li>重复关闭一个 channel。</li></ol><h2 id=参考>参考</h2><p><a href=https://qcrao91.gitbook.io/go/channel>码农桃花源-channel</a>
+<a href=https://www.yuque.com/aceld/golang/ahkkr1>Golang修养之路-channel</a></p></article></div></main></body></html>
