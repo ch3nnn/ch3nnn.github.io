@@ -101,12 +101,7 @@ package main import ( &amp;#34;fmt&amp;#34; &amp;#34;testing&amp;#34; ) func mod
 整体工作原理 Filebeat 由两个主要组件组成：harvester 和 prospector。
 harvester (采集器) 的主要职责是读取单个文件的内容。读取每个文件，并将内容发送到 the output。 每个文件启动一个 harvester，harvester 负责打开和关闭文件，这意味着在运行时文件描述符保持打开状态。如果文件在读取时被删除或重命名，Filebeat 将继续读取文件。 prospector (查找器) 的主要职责是管理 harvester 并找到所有要读取的文件来源。如果输入类型为日志，则查找器将查找路径匹配的所有文件，并为每个文件启动一个 harvester。每个 prospector 都在自己的 Go 协程中运行。 注：Filebeat prospector只能读取本地文件， 没有功能可以连接到远程主机来读取存储的文件或日志。
 由以上两个组件一起工作来读取文件（tail file）并将事件数据发送到指定的输出。 下图是 Filebeat 官方提供的架构图： Filebeat背后的“老大” 说到Filebeat，它其实只是beats家族众多成员中的一个。除了Filebeat, 还有很多其他的beat小伙伴：
-beat 功能 Filebeat 收集日志文件 Metricbeat 收集各种指标数据 Packetbeat 收集网络数据包 Auditbeat 收集审计数据 Heartbeat 收集服务运行状态监测数据 &amp;hellip; &amp;hellip; 如果你愿意的话，你也可以按照beat的规范来写自己的beat。 能实现以上这些beat，都离不开beats家族真正的“老大”—— libbeat， 它是beat体系的核心库。我们接下来看一下libbeat到底都作了些什么</description></item><item><title>「回顾2022，展望2023」 —— 年终总结</title><link>https://blog.ch3nnn.cn/posts/%E6%88%91%E7%9A%842022%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%88%91%E7%9A%842022%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid><description> 致自己：折腾不息 · 乐此不疲!
-22 年收获 技术上
-编程语言方面 Golang: 从开始学习到现在的一年时间里, 前前后后也写了些代码, 其中包括业余时间的, 也有产品项目中的. 在摸滚打爬中对于Golang的使用算是勉强达到了较为熟练的状态. 开源贡献方向 jaywcjlove/reference 为开发人员分享快速参考备忘清单(速查表) liangliangyy/DjangoBlog 基于Django的博客系统 Lcry/a-sheep-assistant 羊了个羊助手，羊了个羊一键闯关 生活上
-疫情防控 保持绿码, 小🐑人中&amp;hellip; 还以为自己就是那位&amp;quot;天选之子&amp;quot;(又开始吹牛皮). 生活情感 端午节前带女朋友回家, 父母都感觉很满意, 生活很幸福, 偶尔会吵吵嘴毕竟生活需要增加些乐趣嘛(哈哈哈). 工作上
-从互联网医疗到工控安全行业, 工作内容没有任何变化(就是撸码搬砖🧱) 23年展望 2023年是新的一年，新的一年就会有新的flag。新的一年我要以下几件事:
-保持持续学习的激情、态度 持续开源贡献 真的需要运动(感觉自己要废了) 感情上还是需要更加谦让 &amp;hellip; 写在最后 最后, 最后, Happy New Year &amp;hellip; 或者至少, 平平安安度过新的一年 各位, 继续加油吧! 冲冲冲!</description></item><item><title>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握</title><link>https://blog.ch3nnn.cn/posts/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</guid><description>本文将介绍一些最基本的 Go 命令行命令。如果你刚接触 Go 语言，那你有必要记住它们，因为这些命令是 Go 开发者日常工作中所必备的。
+beat 功能 Filebeat 收集日志文件 Metricbeat 收集各种指标数据 Packetbeat 收集网络数据包 Auditbeat 收集审计数据 Heartbeat 收集服务运行状态监测数据 &amp;hellip; &amp;hellip; 如果你愿意的话，你也可以按照beat的规范来写自己的beat。 能实现以上这些beat，都离不开beats家族真正的“老大”—— libbeat， 它是beat体系的核心库。我们接下来看一下libbeat到底都作了些什么</description></item><item><title>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握</title><link>https://blog.ch3nnn.cn/posts/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</link><pubDate>Mon, 02 Jan 2023 10:28:19 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</guid><description>本文将介绍一些最基本的 Go 命令行命令。如果你刚接触 Go 语言，那你有必要记住它们，因为这些命令是 Go 开发者日常工作中所必备的。
 Go version
 开始 Go 项目前，我们应该确保开发机上已经安装好了 Go 编译器。这可以通过 https://go.dev/doc/install 进行下载安装。
 通过执行以下命令可以查看安装的 Go 版本信息。
@@ -117,4 +112,9 @@ $ go env -w GOPROXY=https://goproxy.io,direct go mod
 在你开始建立第一个 Go 程序时，在项目根目录下，你应该运行这样的命令。
 $ go mod init &amp;lt;your project name&amp;gt; 例如
 $ go mod init demo/firstProject 此时，项目根目录将增加 go.mod 文件，它的内容如下
-$ cat go.mod module demo/firstProject go 1.</description></item></channel></rss>
+$ cat go.mod module demo/firstProject go 1.</description></item><item><title>「回顾2022，展望2023」 —— 年终总结</title><link>https://blog.ch3nnn.cn/posts/%E6%88%91%E7%9A%842022%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link><pubDate>Sun, 01 Jan 2023 23:41:48 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%88%91%E7%9A%842022%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid><description> 致自己：折腾不息 · 乐此不疲!
+22 年收获 技术上
+编程语言方面 Golang: 从开始学习到现在的一年时间里, 前前后后也写了些代码, 其中包括业余时间的, 也有产品项目中的. 在摸滚打爬中对于Golang的使用算是勉强达到了较为熟练的状态. 开源贡献方向 jaywcjlove/reference 为开发人员分享快速参考备忘清单(速查表) liangliangyy/DjangoBlog 基于Django的博客系统 Lcry/a-sheep-assistant 羊了个羊助手，羊了个羊一键闯关 生活上
+疫情防控 保持绿码, 小🐑人中&amp;hellip; 还以为自己就是那位&amp;quot;天选之子&amp;quot;(又开始吹牛皮). 生活情感 端午节前带女朋友回家, 父母都感觉很满意, 生活很幸福, 偶尔会吵吵嘴毕竟生活需要增加些乐趣嘛(哈哈哈). 工作上
+从互联网医疗到工控安全行业, 工作内容没有任何变化(就是撸码搬砖🧱) 23年展望 2023年是新的一年，新的一年就会有新的flag。新的一年我要以下几件事:
+保持持续学习的激情、态度 持续开源贡献 真的需要运动(感觉自己要废了) 感情上还是需要更加谦让 &amp;hellip; 写在最后 最后, 最后, Happy New Year &amp;hellip; 或者至少, 平平安安度过新的一年 各位, 继续加油吧! 冲冲冲!</description></item></channel></rss>
