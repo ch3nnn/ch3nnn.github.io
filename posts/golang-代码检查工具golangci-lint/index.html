@@ -1,0 +1,860 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="一、介绍 golangci-lint 是一个代码检查工具的集合，聚集了多种 Go 代码检查工具，如 golint、go vet 等。
+优点：
+运行速度快 可以集成到 vscode、goland 等开发工具中 包含了非常多种代码检查器 可以集成到 CI 中 这是包含的代码检查器列表：Linters 二、安装 golangci-lint 官方不建议使用 go get 方式安装，推荐使用二进制安装。
+MacOS 直接使用 homebrew 安装：
+brew install golangci-lint brew upgrade golangci-lint Linux 和 Windows # binary will be $(go env GOPATH)/bin/golangci-lint curl -sSfL https://raw.githubusercontent.com/Goci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.42.1 golangci-lint --version golangci-lint 将会被安装到 GOPATH/bin 目录中，如果此目录不在环境变量路径中需要加上。
+三、使用方式 命令行 在项目根目录下执行以下命令检查整个项目的代码：
+golangci-lint run 其等价于:
+golangci-lint run ."><title>Golang 代码检查工具(golangci-lint)
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-12-22 11:05:22 +0800 +0800">2023-12-22</time></p><h1>Golang 代码检查工具(golangci-lint)</h1><h2 id=一介绍>一、介绍</h2><p><code>golangci-lint</code> 是一个代码检查工具的集合，聚集了多种 Go 代码检查工具，如 <code>golint</code>、<code>go vet</code> 等。</p><p>优点：</p><ul><li>运行速度快</li><li>可以集成到 vscode、goland 等开发工具中</li><li>包含了非常多种代码检查器</li><li>可以集成到 CI 中</li><li>这是包含的代码检查器列表：Linters</li></ul><h2 id=二安装>二、安装</h2><p><code>golangci-lint</code> 官方不建议使用 <code>go get</code> 方式安装，推荐使用二进制安装。</p><h3 id=macos>MacOS</h3><p>直接使用 homebrew 安装：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>brew install golangci-lint
+</span></span><span class=line><span class=cl>brew upgrade golangci-lint
+</span></span></code></pre></div><h3 id=linux-和-windows>Linux 和 Windows</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=c1># binary will be $(go env GOPATH)/bin/golangci-lint</span>
+</span></span><span class=line><span class=cl>curl -sSfL https://raw.githubusercontent.com/Goci/golangci-lint/master/install.sh <span class=p>|</span> sh -s -- -b <span class=k>$(</span>go env GOPATH<span class=k>)</span>/bin v1.42.1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>golangci-lint --version
+</span></span></code></pre></div><p><code>golangci-lint</code> 将会被安装到 <strong>GOPATH/bin</strong> 目录中，如果此目录不在环境变量路径中需要加上。</p><h2 id=三使用方式>三、使用方式</h2><h3 id=命令行>命令行</h3><p>在项目根目录下执行以下命令检查整个项目的代码：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>golangci-lint run
+</span></span></code></pre></div><p>其等价于:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>golangci-lint run ./...
+</span></span></code></pre></div><p>或者可以指定检查某个目录下的代码文件，指定目录时不会递归分析其子目录，要递归分析其子目录需要加上 /&mldr;：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>golangci-lint run dir1 dir2/... dir3/file1.go
+</span></span></code></pre></div><p>在没有配置文件时，golangci-lint 会使用默认的代码检查器进行检查。</p><p>使用以下命令，可以查看默认启用和关闭了哪些检查器：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>golangci-lint <span class=nb>help</span> linters
+</span></span></code></pre></div><h2 id=四集成-ide>四、集成 IDE</h2><h3 id=1-visual-studio-code>1. Visual Studio Code</h3><p>在 vscode 配置文件中新增以下内容：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=s2>&#34;go.lintTool&#34;</span>:<span class=s2>&#34;golangci-lint&#34;</span>,
+</span></span><span class=line><span class=cl><span class=s2>&#34;go.lintFlags&#34;</span>: <span class=o>[</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;--fast&#34;</span>
+</span></span></code></pre></div><p>golangci-lint 会自动查找项目中的 .golangci.yml 配置文件，不用额外配置。</p><h3 id=2-goland>2. Goland</h3><ol><li>安装插件 Go Linter</li></ol><p>可以在 Goland 内插件市场搜索 Go Linter 直接安装。</p><ol start=2><li>配置 File Watchers</li></ol><p>在 Goland 配置页面的 工具 -> File Watchers 进行配置。
+点 + 按钮，选择 golangci-lint 创建。</p><h2 id=五排除代码检查>五、排除代码检查</h2><ol><li><p>有时候有部分代码因为各种原因不能通过代码检查，也不能修改，可以使用注释跳过代码检查。如下所示：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>bad_name</span> <span class=kt>int</span> <span class=c1>//nolint
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>bad_name</span> <span class=kt>int</span> <span class=c1>//nolint:golint,unused
+</span></span></span></code></pre></div></li><li><p>可以排除一整块代码：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>//nolint
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>allIssuesInThisFunctionAreExcluded</span><span class=p>()</span> <span class=o>*</span><span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//nolint:govet
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>a</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>  <span class=nx>b</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></div></li><li><p>一整个文件：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>//nolint:unparam
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kn>package</span> <span class=nx>pkg</span>
+</span></span></code></pre></div></li></ol><h2 id=六配置文件>六、配置文件</h2><p>golangci-lint 会自动在当前目录下查找以下名称的配置文件：</p><pre tabindex=0><code class=language-shll data-lang=shll>.golangci.yml
+.golangci.yaml
+.golangci.toml
+.golangci.json
+</code></pre><h3 id=配置启用的代码选择器>配置启用的代码选择器</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>linters:
+</span></span><span class=line><span class=cl>  disable-all: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>  enable:
+</span></span><span class=line><span class=cl>    - megacheck
+</span></span><span class=line><span class=cl>    - govet
+</span></span><span class=line><span class=cl>  enable-all: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>  disable:
+</span></span><span class=line><span class=cl>    - maligned
+</span></span><span class=line><span class=cl>    - prealloc
+</span></span><span class=line><span class=cl>  presets:
+</span></span><span class=line><span class=cl>    - bugs
+</span></span><span class=line><span class=cl>    - unused
+</span></span><span class=line><span class=cl>  fast: <span class=nb>false</span>
+</span></span></code></pre></div><p><strong>示例配置</strong>
+以下是官方给出的配置文件示例，包含了可以设置的选项和选项的默认值：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=c1># This file contains all available configuration options</span>
+</span></span><span class=line><span class=cl><span class=c1># with their default values.</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=c1># options for analysis running</span>
+</span></span><span class=line><span class=cl>run:
+</span></span><span class=line><span class=cl>  <span class=c1># default concurrency is a available CPU number</span>
+</span></span><span class=line><span class=cl>  concurrency: <span class=m>4</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># timeout for analysis, e.g. 30s, 5m, default is 1m</span>
+</span></span><span class=line><span class=cl>  timeout: 1m
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># exit code when at least one issue was found, default is 1</span>
+</span></span><span class=line><span class=cl>  issues-exit-code: <span class=m>1</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># include test files or not, default is true</span>
+</span></span><span class=line><span class=cl>  tests: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># list of build tags, all linters use it. Default is empty list.</span>
+</span></span><span class=line><span class=cl>  build-tags:
+</span></span><span class=line><span class=cl>    - mytag
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># which dirs to skip: issues from them won&#39;t be reported;</span>
+</span></span><span class=line><span class=cl>  <span class=c1># can use regexp here: generated.*, regexp is applied on full path;</span>
+</span></span><span class=line><span class=cl>  <span class=c1># default value is empty list, but default dirs are skipped independently</span>
+</span></span><span class=line><span class=cl>  <span class=c1># from this option&#39;s value (see skip-dirs-use-default).</span>
+</span></span><span class=line><span class=cl>  <span class=c1># &#34;/&#34; will be replaced by current OS file path separator to properly work</span>
+</span></span><span class=line><span class=cl>  <span class=c1># on Windows.</span>
+</span></span><span class=line><span class=cl>  skip-dirs:
+</span></span><span class=line><span class=cl>    - src/external_libs
+</span></span><span class=line><span class=cl>    - autogenerated_by_my_lib
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># default is true. Enables skipping of directories:</span>
+</span></span><span class=line><span class=cl>  <span class=c1>#   vendor$, third_party$, testdata$, examples$, Godeps$, builtin$</span>
+</span></span><span class=line><span class=cl>  skip-dirs-use-default: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># which files to skip: they will be analyzed, but issues from them</span>
+</span></span><span class=line><span class=cl>  <span class=c1># won&#39;t be reported. Default value is empty list, but there is</span>
+</span></span><span class=line><span class=cl>  <span class=c1># no need to include all autogenerated files, we confidently recognize</span>
+</span></span><span class=line><span class=cl>  <span class=c1># autogenerated files. If it&#39;s not please let us know.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># &#34;/&#34; will be replaced by current OS file path separator to properly work</span>
+</span></span><span class=line><span class=cl>  <span class=c1># on Windows.</span>
+</span></span><span class=line><span class=cl>  skip-files:
+</span></span><span class=line><span class=cl>    - <span class=s2>&#34;.*\\.my\\.go</span>$<span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    - lib/bad.go
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># by default isn&#39;t set. If set we pass it to &#34;go list -mod={option}&#34;. From &#34;go help modules&#34;:</span>
+</span></span><span class=line><span class=cl>  <span class=c1># If invoked with -mod=readonly, the go command is disallowed from the implicit</span>
+</span></span><span class=line><span class=cl>  <span class=c1># automatic updating of go.mod described above. Instead, it fails when any changes</span>
+</span></span><span class=line><span class=cl>  <span class=c1># to go.mod are needed. This setting is most useful to check that go.mod does</span>
+</span></span><span class=line><span class=cl>  <span class=c1># not need updates, such as in a continuous integration and testing system.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># If invoked with -mod=vendor, the go command assumes that the vendor</span>
+</span></span><span class=line><span class=cl>  <span class=c1># directory holds the correct copies of dependencies and ignores</span>
+</span></span><span class=line><span class=cl>  <span class=c1># the dependency descriptions in go.mod.</span>
+</span></span><span class=line><span class=cl>  modules-download-mode: readonly<span class=p>|</span>vendor<span class=p>|</span>mod
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Allow multiple parallel golangci-lint instances running.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># If false (default) - golangci-lint acquires file lock on start.</span>
+</span></span><span class=line><span class=cl>  allow-parallel-runners: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=c1># output configuration options</span>
+</span></span><span class=line><span class=cl>output:
+</span></span><span class=line><span class=cl>  <span class=c1># colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions</span>
+</span></span><span class=line><span class=cl>  <span class=c1># default is &#34;colored-line-number&#34;</span>
+</span></span><span class=line><span class=cl>  format: colored-line-number
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># print lines of code with issue, default is true</span>
+</span></span><span class=line><span class=cl>  print-issued-lines: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># print linter name in the end of issue text, default is true</span>
+</span></span><span class=line><span class=cl>  print-linter-name: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># make issues output unique by line, default is true</span>
+</span></span><span class=line><span class=cl>  uniq-by-line: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># add a prefix to the output file references; default is no prefix</span>
+</span></span><span class=line><span class=cl>  path-prefix: <span class=s2>&#34;&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># sorts results by: filepath, line and column</span>
+</span></span><span class=line><span class=cl>  sort-results: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=c1># all available settings of specific linters</span>
+</span></span><span class=line><span class=cl>linters-settings:
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  cyclop:
+</span></span><span class=line><span class=cl>    <span class=c1># the maximal code complexity to report</span>
+</span></span><span class=line><span class=cl>    max-complexity: <span class=m>10</span>
+</span></span><span class=line><span class=cl>    <span class=c1># the maximal average package complexity. If it&#39;s higher than 0.0 (float) the check is enabled (default 0.0)</span>
+</span></span><span class=line><span class=cl>    package-average: 0.0
+</span></span><span class=line><span class=cl>    <span class=c1># should ignore tests (default false)</span>
+</span></span><span class=line><span class=cl>    skip-tests: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  dogsled:
+</span></span><span class=line><span class=cl>    <span class=c1># checks assignments with too many blank identifiers; default is 2</span>
+</span></span><span class=line><span class=cl>    max-blank-identifiers: <span class=m>2</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  dupl:
+</span></span><span class=line><span class=cl>    <span class=c1># tokens count to trigger issue, 150 by default</span>
+</span></span><span class=line><span class=cl>    threshold: <span class=m>100</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  errcheck:
+</span></span><span class=line><span class=cl>    <span class=c1># report about not checking of errors in type assertions: `a := b.(MyStruct)`;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># default is false: such cases aren&#39;t reported by default.</span>
+</span></span><span class=line><span class=cl>    check-type-assertions: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># default is false: such cases aren&#39;t reported by default.</span>
+</span></span><span class=line><span class=cl>    check-blank: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># [deprecated] comma-separated list of pairs of the form pkg:regex</span>
+</span></span><span class=line><span class=cl>    <span class=c1># the regex is used to ignore names within pkg. (default &#34;fmt:.*&#34;).</span>
+</span></span><span class=line><span class=cl>    <span class=c1># see https://github.com/kisielk/errcheck#the-deprecated-method for details</span>
+</span></span><span class=line><span class=cl>    ignore: fmt:.*,io/ioutil:^Read.*
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># [deprecated] use exclude-functions instead.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># path to a file containing a list of functions to exclude from checking</span>
+</span></span><span class=line><span class=cl>    <span class=c1># see https://github.com/kisielk/errcheck#excluding-functions for details</span>
+</span></span><span class=line><span class=cl>    exclude: /path/to/file.txt
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># list of functions to exclude from checking, where each entry is a single function to exclude.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># see https://github.com/kisielk/errcheck#excluding-functions for details</span>
+</span></span><span class=line><span class=cl>    exclude-functions:
+</span></span><span class=line><span class=cl>      - io/ioutil.ReadFile
+</span></span><span class=line><span class=cl>      - io.Copy<span class=o>(</span>*bytes.Buffer<span class=o>)</span>
+</span></span><span class=line><span class=cl>      - io.Copy<span class=o>(</span>os.Stdout<span class=o>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  errorlint:
+</span></span><span class=line><span class=cl>    <span class=c1># Check whether fmt.Errorf uses the %w verb for formatting errors. See the readme for caveats</span>
+</span></span><span class=line><span class=cl>    errorf: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Check for plain type assertions and type switches</span>
+</span></span><span class=line><span class=cl>    asserts: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Check for plain error comparisons</span>
+</span></span><span class=line><span class=cl>    comparison: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  exhaustive:
+</span></span><span class=line><span class=cl>    <span class=c1># check switch statements in generated files also</span>
+</span></span><span class=line><span class=cl>    check-generated: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># indicates that switch statements are to be considered exhaustive if a</span>
+</span></span><span class=line><span class=cl>    <span class=c1># &#39;default&#39; case is present, even if all enum members aren&#39;t listed in the</span>
+</span></span><span class=line><span class=cl>    <span class=c1># switch</span>
+</span></span><span class=line><span class=cl>    default-signifies-exhaustive: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  exhaustivestruct:
+</span></span><span class=line><span class=cl>    <span class=c1># Struct Patterns is list of expressions to match struct packages and names</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The struct packages have the form example.com/package.ExampleStruct</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The matching patterns can use matching syntax from https://pkg.go.dev/path#Match</span>
+</span></span><span class=line><span class=cl>    <span class=c1># If this list is empty, all structs are tested.</span>
+</span></span><span class=line><span class=cl>    struct-patterns:
+</span></span><span class=line><span class=cl>      - <span class=s1>&#39;*.Test&#39;</span>
+</span></span><span class=line><span class=cl>      - <span class=s1>&#39;example.com/package.ExampleStruct&#39;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  forbidigo:
+</span></span><span class=line><span class=cl>    <span class=c1># Forbid the following identifiers (identifiers are written using regexp):</span>
+</span></span><span class=line><span class=cl>    forbid:
+</span></span><span class=line><span class=cl>      - ^print.*$
+</span></span><span class=line><span class=cl>      - <span class=s1>&#39;fmt\.Print.*&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude godoc examples from forbidigo checks.  Default is true.</span>
+</span></span><span class=line><span class=cl>    exclude_godoc_examples: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  funlen:
+</span></span><span class=line><span class=cl>    lines: <span class=m>60</span>
+</span></span><span class=line><span class=cl>    statements: <span class=m>40</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gci:
+</span></span><span class=line><span class=cl>    <span class=c1># put imports beginning with prefix after 3rd-party packages;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># only support one prefix</span>
+</span></span><span class=line><span class=cl>    <span class=c1># if not set, use goimports.local-prefixes</span>
+</span></span><span class=line><span class=cl>    local-prefixes: github.com/org/project
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gocognit:
+</span></span><span class=line><span class=cl>    <span class=c1># minimal code complexity to report, 30 by default (but we recommend 10-20)</span>
+</span></span><span class=line><span class=cl>    min-complexity: <span class=m>10</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  goconst:
+</span></span><span class=line><span class=cl>    <span class=c1># minimal length of string constant, 3 by default</span>
+</span></span><span class=line><span class=cl>    min-len: <span class=m>3</span>
+</span></span><span class=line><span class=cl>    <span class=c1># minimum occurrences of constant string count to trigger issue, 3 by default</span>
+</span></span><span class=line><span class=cl>    min-occurrences: <span class=m>3</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ignore test files, false by default</span>
+</span></span><span class=line><span class=cl>    ignore-tests: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># look for existing constants matching the values, true by default</span>
+</span></span><span class=line><span class=cl>    match-constant: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># search also for duplicated numbers, false by default</span>
+</span></span><span class=line><span class=cl>    numbers: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># minimum value, only works with goconst.numbers, 3 by default</span>
+</span></span><span class=line><span class=cl>    min: <span class=m>3</span>
+</span></span><span class=line><span class=cl>    <span class=c1># maximum value, only works with goconst.numbers, 3 by default</span>
+</span></span><span class=line><span class=cl>    max: <span class=m>3</span>
+</span></span><span class=line><span class=cl>    <span class=c1># ignore when constant is not used as function argument, true by default</span>
+</span></span><span class=line><span class=cl>    ignore-calls: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gocritic:
+</span></span><span class=line><span class=cl>    <span class=c1># Which checks should be enabled; can&#39;t be combined with &#39;disabled-checks&#39;;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># See https://go-critic.github.io/overview#checks-overview</span>
+</span></span><span class=line><span class=cl>    <span class=c1># To check which checks are enabled run `GL_DEBUG=gocritic golangci-lint run`</span>
+</span></span><span class=line><span class=cl>    <span class=c1># By default list of stable checks is used.</span>
+</span></span><span class=line><span class=cl>    enabled-checks:
+</span></span><span class=line><span class=cl>      - rangeValCopy
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Which checks should be disabled; can&#39;t be combined with &#39;enabled-checks&#39;; default is empty</span>
+</span></span><span class=line><span class=cl>    disabled-checks:
+</span></span><span class=line><span class=cl>      - regexpMust
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Enable multiple checks by tags, run `GL_DEBUG=gocritic golangci-lint run` to see all tags and checks.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Empty list by default. See https://github.com/go-critic/go-critic#usage -&gt; section &#34;Tags&#34;.</span>
+</span></span><span class=line><span class=cl>    enabled-tags:
+</span></span><span class=line><span class=cl>      - performance
+</span></span><span class=line><span class=cl>    disabled-tags:
+</span></span><span class=line><span class=cl>      - experimental
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Settings passed to gocritic.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The settings key is the name of a supported gocritic checker.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The list of supported checkers can be find in https://go-critic.github.io/overview.</span>
+</span></span><span class=line><span class=cl>    settings:
+</span></span><span class=line><span class=cl>      captLocal: <span class=c1># must be valid enabled check name</span>
+</span></span><span class=line><span class=cl>        <span class=c1># whether to restrict checker to params only (default true)</span>
+</span></span><span class=line><span class=cl>        paramsOnly: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      elseif:
+</span></span><span class=line><span class=cl>        <span class=c1># whether to skip balanced if-else pairs (default true)</span>
+</span></span><span class=line><span class=cl>        skipBalanced: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      hugeParam:
+</span></span><span class=line><span class=cl>        <span class=c1># size in bytes that makes the warning trigger (default 80)</span>
+</span></span><span class=line><span class=cl>        sizeThreshold: <span class=m>80</span>
+</span></span><span class=line><span class=cl>      nestingReduce:
+</span></span><span class=line><span class=cl>        <span class=c1># min number of statements inside a branch to trigger a warning (default 5)</span>
+</span></span><span class=line><span class=cl>        bodyWidth: <span class=m>5</span>
+</span></span><span class=line><span class=cl>      rangeExprCopy:
+</span></span><span class=line><span class=cl>        <span class=c1># size in bytes that makes the warning trigger (default 512)</span>
+</span></span><span class=line><span class=cl>        sizeThreshold: <span class=m>512</span>
+</span></span><span class=line><span class=cl>        <span class=c1># whether to check test functions (default true)</span>
+</span></span><span class=line><span class=cl>        skipTestFuncs: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      rangeValCopy:
+</span></span><span class=line><span class=cl>        <span class=c1># size in bytes that makes the warning trigger (default 128)</span>
+</span></span><span class=line><span class=cl>        sizeThreshold: <span class=m>32</span>
+</span></span><span class=line><span class=cl>        <span class=c1># whether to check test functions (default true)</span>
+</span></span><span class=line><span class=cl>        skipTestFuncs: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      ruleguard:
+</span></span><span class=line><span class=cl>        <span class=c1># path to a gorules file for the ruleguard checker</span>
+</span></span><span class=line><span class=cl>        rules: <span class=s1>&#39;&#39;</span>
+</span></span><span class=line><span class=cl>      truncateCmp:
+</span></span><span class=line><span class=cl>        <span class=c1># whether to skip int/uint/uintptr types (default true)</span>
+</span></span><span class=line><span class=cl>        skipArchDependent: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      underef:
+</span></span><span class=line><span class=cl>        <span class=c1># whether to skip (*x).method() calls where x is a pointer receiver (default true)</span>
+</span></span><span class=line><span class=cl>        skipRecvDeref: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      unnamedResult:
+</span></span><span class=line><span class=cl>        <span class=c1># whether to check exported functions</span>
+</span></span><span class=line><span class=cl>        checkExported: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gocyclo:
+</span></span><span class=line><span class=cl>    <span class=c1># minimal code complexity to report, 30 by default (but we recommend 10-20)</span>
+</span></span><span class=line><span class=cl>    min-complexity: <span class=m>10</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  godot:
+</span></span><span class=line><span class=cl>    <span class=c1># comments to be checked: `declarations`, `toplevel`, or `all`</span>
+</span></span><span class=line><span class=cl>    scope: declarations
+</span></span><span class=line><span class=cl>    <span class=c1># list of regexps for excluding particular comment lines from check</span>
+</span></span><span class=line><span class=cl>    exclude:
+</span></span><span class=line><span class=cl>      <span class=c1># example: exclude comments which contain numbers</span>
+</span></span><span class=line><span class=cl>      <span class=c1># - &#39;[0-9]+&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># check that each sentence starts with a capital letter</span>
+</span></span><span class=line><span class=cl>    capital: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  godox:
+</span></span><span class=line><span class=cl>    <span class=c1># report any comments starting with keywords, this is useful for TODO or FIXME comments that</span>
+</span></span><span class=line><span class=cl>    <span class=c1># might be left in the code accidentally and should be resolved before merging</span>
+</span></span><span class=line><span class=cl>    keywords: <span class=c1># default keywords are TODO, BUG, and FIXME, these can be overwritten by this setting</span>
+</span></span><span class=line><span class=cl>      - NOTE
+</span></span><span class=line><span class=cl>      - OPTIMIZE <span class=c1># marks code that should be optimized before merging</span>
+</span></span><span class=line><span class=cl>      - HACK <span class=c1># marks hack-arounds that should be removed before merging</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gofmt:
+</span></span><span class=line><span class=cl>    <span class=c1># simplify code: gofmt with `-s` option, true by default</span>
+</span></span><span class=line><span class=cl>    simplify: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gofumpt:
+</span></span><span class=line><span class=cl>    <span class=c1># Select the Go version to target. The default is `1.15`.</span>
+</span></span><span class=line><span class=cl>    lang-version: <span class=s2>&#34;1.15&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Choose whether or not to use the extra rules that are disabled</span>
+</span></span><span class=line><span class=cl>    <span class=c1># by default</span>
+</span></span><span class=line><span class=cl>    extra-rules: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  goheader:
+</span></span><span class=line><span class=cl>    values:
+</span></span><span class=line><span class=cl>      const:
+</span></span><span class=line><span class=cl>        <span class=c1># define here const type values in format k:v, for example:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># COMPANY: MY COMPANY</span>
+</span></span><span class=line><span class=cl>      regexp:
+</span></span><span class=line><span class=cl>        <span class=c1># define here regexp type values, for example</span>
+</span></span><span class=line><span class=cl>        <span class=c1># AUTHOR: .*@mycompany\.com</span>
+</span></span><span class=line><span class=cl>    template: <span class=c1># |-</span>
+</span></span><span class=line><span class=cl>      <span class=c1># put here copyright header template for source code files, for example:</span>
+</span></span><span class=line><span class=cl>      <span class=c1># Note: {{ YEAR }} is a builtin value that returns the year relative to the current machine time.</span>
+</span></span><span class=line><span class=cl>      <span class=c1>#</span>
+</span></span><span class=line><span class=cl>      <span class=c1># {{ AUTHOR }} {{ COMPANY }} {{ YEAR }}</span>
+</span></span><span class=line><span class=cl>      <span class=c1># SPDX-License-Identifier: Apache-2.0</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>      <span class=c1># Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);</span>
+</span></span><span class=line><span class=cl>      <span class=c1># you may not use this file except in compliance with the License.</span>
+</span></span><span class=line><span class=cl>      <span class=c1># You may obtain a copy of the License at:</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>      <span class=c1>#   http://www.apache.org/licenses/LICENSE-2.0</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>      <span class=c1># Unless required by applicable law or agreed to in writing, software</span>
+</span></span><span class=line><span class=cl>      <span class=c1># distributed under the License is distributed on an &#34;AS IS&#34; BASIS,</span>
+</span></span><span class=line><span class=cl>      <span class=c1># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+</span></span><span class=line><span class=cl>      <span class=c1># See the License for the specific language governing permissions and</span>
+</span></span><span class=line><span class=cl>      <span class=c1># limitations under the License.</span>
+</span></span><span class=line><span class=cl>    template-path:
+</span></span><span class=line><span class=cl>      <span class=c1># also as alternative of directive &#39;template&#39; you may put the path to file with the template source</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  goimports:
+</span></span><span class=line><span class=cl>    <span class=c1># put imports beginning with prefix after 3rd-party packages;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># it&#39;s a comma-separated list of prefixes</span>
+</span></span><span class=line><span class=cl>    local-prefixes: github.com/org/project
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  golint:
+</span></span><span class=line><span class=cl>    <span class=c1># minimal confidence for issues, default is 0.8</span>
+</span></span><span class=line><span class=cl>    min-confidence: 0.8
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gomnd:
+</span></span><span class=line><span class=cl>    settings:
+</span></span><span class=line><span class=cl>      mnd:
+</span></span><span class=line><span class=cl>        <span class=c1># the list of enabled checks, see https://github.com/tommy-muehle/go-mnd/#checks for description.</span>
+</span></span><span class=line><span class=cl>        checks: argument,case,condition,operation,return,assign
+</span></span><span class=line><span class=cl>        <span class=c1># ignored-numbers: 1000</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ignored-files: magic_.*.go</span>
+</span></span><span class=line><span class=cl>        <span class=c1># ignored-functions: math.*</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gomoddirectives:
+</span></span><span class=line><span class=cl>    <span class=c1># Allow local `replace` directives. Default is false.</span>
+</span></span><span class=line><span class=cl>    replace-local: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># List of allowed `replace` directives. Default is empty.</span>
+</span></span><span class=line><span class=cl>    replace-allow-list:
+</span></span><span class=line><span class=cl>      - launchpad.net/gocheck
+</span></span><span class=line><span class=cl>    <span class=c1># Allow to not explain why the version has been retracted in the `retract` directives. Default is false.</span>
+</span></span><span class=line><span class=cl>    retract-allow-no-explanation: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Forbid the use of the `exclude` directives. Default is false.</span>
+</span></span><span class=line><span class=cl>    exclude-forbidden: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gomodguard:
+</span></span><span class=line><span class=cl>    allowed:
+</span></span><span class=line><span class=cl>      modules:                                                        <span class=c1># List of allowed modules</span>
+</span></span><span class=line><span class=cl>        <span class=c1># - gopkg.in/yaml.v2</span>
+</span></span><span class=line><span class=cl>      domains:                                                        <span class=c1># List of allowed module domains</span>
+</span></span><span class=line><span class=cl>        <span class=c1># - golang.org</span>
+</span></span><span class=line><span class=cl>    blocked:
+</span></span><span class=line><span class=cl>      modules:                                                        <span class=c1># List of blocked modules</span>
+</span></span><span class=line><span class=cl>        <span class=c1># - github.com/uudashr/go-module:                             # Blocked module</span>
+</span></span><span class=line><span class=cl>        <span class=c1>#     recommendations:                                        # Recommended modules that should be used instead (Optional)</span>
+</span></span><span class=line><span class=cl>        <span class=c1>#       - golang.org/x/mod</span>
+</span></span><span class=line><span class=cl>        <span class=c1>#     reason: &#34;`mod` is the official go.mod parser library.&#34;  # Reason why the recommended module should be used (Optional)</span>
+</span></span><span class=line><span class=cl>      versions:                                                       <span class=c1># List of blocked module version constraints</span>
+</span></span><span class=line><span class=cl>        <span class=c1># - github.com/mitchellh/go-homedir:                          # Blocked module with version constraint</span>
+</span></span><span class=line><span class=cl>        <span class=c1>#     version: &#34;&lt; 1.1.0&#34;                                      # Version constraint, see https://github.com/Masterminds/semver#basic-comparisons</span>
+</span></span><span class=line><span class=cl>        <span class=c1>#     reason: &#34;testing if blocked version constraint works.&#34;  # Reason why the version constraint exists. (Optional)</span>
+</span></span><span class=line><span class=cl>      local_replace_directives: <span class=nb>false</span>                                 <span class=c1># Set to true to raise lint issues for packages that are loaded from a local path via replace directive</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gosec:
+</span></span><span class=line><span class=cl>    <span class=c1># To select a subset of rules to run.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Available rules: https://github.com/securego/gosec#available-rules</span>
+</span></span><span class=line><span class=cl>    includes:
+</span></span><span class=line><span class=cl>      - G401
+</span></span><span class=line><span class=cl>      - G306
+</span></span><span class=line><span class=cl>      - G101
+</span></span><span class=line><span class=cl>    <span class=c1># To specify a set of rules to explicitly exclude.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Available rules: https://github.com/securego/gosec#available-rules</span>
+</span></span><span class=line><span class=cl>    excludes:
+</span></span><span class=line><span class=cl>      - G204
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude generated files</span>
+</span></span><span class=line><span class=cl>    exclude-generated: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># To specify the configuration of rules.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The configuration of rules is not fully documented by gosec:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://github.com/securego/gosec#configuration</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://github.com/securego/gosec/blob/569328eade2ccbad4ce2d0f21ee158ab5356a5cf/rules/rulelist.go#L60-L102</span>
+</span></span><span class=line><span class=cl>    config:
+</span></span><span class=line><span class=cl>      G306: <span class=s2>&#34;0600&#34;</span>
+</span></span><span class=line><span class=cl>      G101:
+</span></span><span class=line><span class=cl>        pattern: <span class=s2>&#34;(?i)example&#34;</span>
+</span></span><span class=line><span class=cl>        ignore_entropy: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>        entropy_threshold: <span class=s2>&#34;80.0&#34;</span>
+</span></span><span class=line><span class=cl>        per_char_threshold: <span class=s2>&#34;3.0&#34;</span>
+</span></span><span class=line><span class=cl>        truncate: <span class=s2>&#34;32&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  gosimple:
+</span></span><span class=line><span class=cl>    <span class=c1># Select the Go version to target. The default is &#39;1.13&#39;.</span>
+</span></span><span class=line><span class=cl>    go: <span class=s2>&#34;1.15&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://staticcheck.io/docs/options#checks</span>
+</span></span><span class=line><span class=cl>    checks: <span class=o>[</span> <span class=s2>&#34;all&#34;</span> <span class=o>]</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  govet:
+</span></span><span class=line><span class=cl>    <span class=c1># report about shadowed variables</span>
+</span></span><span class=line><span class=cl>    check-shadowing: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># settings per analyzer</span>
+</span></span><span class=line><span class=cl>    settings:
+</span></span><span class=line><span class=cl>      printf: <span class=c1># analyzer name, run `go tool vet help` to see all analyzers</span>
+</span></span><span class=line><span class=cl>        funcs: <span class=c1># run `go tool vet help printf` to see available settings for `printf` analyzer</span>
+</span></span><span class=line><span class=cl>          - <span class=o>(</span>github.com/golangci/golangci-lint/pkg/logutils.Log<span class=o>)</span>.Infof
+</span></span><span class=line><span class=cl>          - <span class=o>(</span>github.com/golangci/golangci-lint/pkg/logutils.Log<span class=o>)</span>.Warnf
+</span></span><span class=line><span class=cl>          - <span class=o>(</span>github.com/golangci/golangci-lint/pkg/logutils.Log<span class=o>)</span>.Errorf
+</span></span><span class=line><span class=cl>          - <span class=o>(</span>github.com/golangci/golangci-lint/pkg/logutils.Log<span class=o>)</span>.Fatalf
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># enable or disable analyzers by name</span>
+</span></span><span class=line><span class=cl>    <span class=c1># run `go tool vet help` to see all analyzers</span>
+</span></span><span class=line><span class=cl>    enable:
+</span></span><span class=line><span class=cl>      - atomicalign
+</span></span><span class=line><span class=cl>    enable-all: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    disable:
+</span></span><span class=line><span class=cl>      - shadow
+</span></span><span class=line><span class=cl>    disable-all: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  depguard:
+</span></span><span class=line><span class=cl>    list-type: blacklist
+</span></span><span class=line><span class=cl>    include-go-root: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    packages:
+</span></span><span class=line><span class=cl>      - github.com/sirupsen/logrus
+</span></span><span class=line><span class=cl>    packages-with-error-message:
+</span></span><span class=line><span class=cl>      <span class=c1># specify an error message to output when a blacklisted package is used</span>
+</span></span><span class=line><span class=cl>      - github.com/sirupsen/logrus: <span class=s2>&#34;logging is allowed only by logutils.Log&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  ifshort:
+</span></span><span class=line><span class=cl>    <span class=c1># Maximum length of variable declaration measured in number of lines, after which linter won&#39;t suggest using short syntax.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Has higher priority than max-decl-chars.</span>
+</span></span><span class=line><span class=cl>    max-decl-lines: <span class=m>1</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Maximum length of variable declaration measured in number of characters, after which linter won&#39;t suggest using short syntax.</span>
+</span></span><span class=line><span class=cl>    max-decl-chars: <span class=m>30</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  importas:
+</span></span><span class=line><span class=cl>    <span class=c1># if set to `true`, force to use alias.</span>
+</span></span><span class=line><span class=cl>    no-unaliased: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># List of aliases</span>
+</span></span><span class=line><span class=cl>    alias:
+</span></span><span class=line><span class=cl>      <span class=c1># using `servingv1` alias for `knative.dev/serving/pkg/apis/serving/v1` package</span>
+</span></span><span class=line><span class=cl>      - pkg: knative.dev/serving/pkg/apis/serving/v1
+</span></span><span class=line><span class=cl>        alias: servingv1
+</span></span><span class=line><span class=cl>      <span class=c1># using `autoscalingv1alpha1` alias for `knative.dev/serving/pkg/apis/autoscaling/v1alpha1` package</span>
+</span></span><span class=line><span class=cl>      - pkg: knative.dev/serving/pkg/apis/autoscaling/v1alpha1
+</span></span><span class=line><span class=cl>        alias: autoscalingv1alpha1
+</span></span><span class=line><span class=cl>      <span class=c1># You can specify the package path by regular expression,</span>
+</span></span><span class=line><span class=cl>      <span class=c1># and alias by regular expression expansion syntax like below.</span>
+</span></span><span class=line><span class=cl>      <span class=c1># see https://github.com/julz/importas#use-regular-expression for details</span>
+</span></span><span class=line><span class=cl>      - pkg: knative.dev/serving/pkg/apis/<span class=o>(</span><span class=se>\w</span>+<span class=o>)</span>/<span class=o>(</span>v<span class=o>[</span><span class=se>\w\d</span><span class=o>]</span>+<span class=o>)</span>
+</span></span><span class=line><span class=cl>        alias: <span class=nv>$1$2</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  ireturn:
+</span></span><span class=line><span class=cl>    <span class=c1># ireturn allows using `allow` and `reject` settings at the same time.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Both settings are lists of the keywords and regular expressions matched to interface or package names.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># keywords:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># - `empty` for `interface{}`</span>
+</span></span><span class=line><span class=cl>    <span class=c1># - `error` for errors</span>
+</span></span><span class=line><span class=cl>    <span class=c1># - `stdlib` for standard library</span>
+</span></span><span class=line><span class=cl>    <span class=c1># - `anon` for anonymous interfaces</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># By default, it allows using errors, empty interfaces, anonymous interfaces,</span>
+</span></span><span class=line><span class=cl>    <span class=c1># and interfaces provided by the standard library.</span>
+</span></span><span class=line><span class=cl>    allow:
+</span></span><span class=line><span class=cl>    - anon
+</span></span><span class=line><span class=cl>    - error
+</span></span><span class=line><span class=cl>    - empty
+</span></span><span class=line><span class=cl>    - stdlib
+</span></span><span class=line><span class=cl>    <span class=c1># You can specify idiomatic endings for interface</span>
+</span></span><span class=line><span class=cl>    - <span class=o>(</span>or<span class=p>|</span>er<span class=o>)</span>$
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Reject patterns</span>
+</span></span><span class=line><span class=cl>    reject:
+</span></span><span class=line><span class=cl>    - github.com<span class=se>\/</span>user<span class=se>\/</span>package<span class=se>\/</span>v4<span class=se>\.</span>Type
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  lll:
+</span></span><span class=line><span class=cl>    <span class=c1># max line length, lines longer will be reported. Default is 120.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># &#39;\t&#39; is counted as 1 character by default, and can be changed with the tab-width option</span>
+</span></span><span class=line><span class=cl>    line-length: <span class=m>120</span>
+</span></span><span class=line><span class=cl>    <span class=c1># tab width in spaces. Default to 1.</span>
+</span></span><span class=line><span class=cl>    tab-width: <span class=m>1</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  makezero:
+</span></span><span class=line><span class=cl>    <span class=c1># Allow only slices initialized with a length of zero. Default is false.</span>
+</span></span><span class=line><span class=cl>    always: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  maligned:
+</span></span><span class=line><span class=cl>    <span class=c1># print struct with more effective memory layout or not, false by default</span>
+</span></span><span class=line><span class=cl>    suggest-new: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  misspell:
+</span></span><span class=line><span class=cl>    <span class=c1># Correct spellings using locale preferences for US or UK.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Default is to use a neutral variety of English.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Setting locale to US will correct the British spelling of &#39;colour&#39; to &#39;color&#39;.</span>
+</span></span><span class=line><span class=cl>    locale: US
+</span></span><span class=line><span class=cl>    ignore-words:
+</span></span><span class=line><span class=cl>      - someword
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  nakedret:
+</span></span><span class=line><span class=cl>    <span class=c1># make an issue if func has more lines of code than this setting and it has naked returns; default is 30</span>
+</span></span><span class=line><span class=cl>    max-func-lines: <span class=m>30</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  nestif:
+</span></span><span class=line><span class=cl>    <span class=c1># minimal complexity of if statements to report, 5 by default</span>
+</span></span><span class=line><span class=cl>    min-complexity: <span class=m>4</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  nilnil:
+</span></span><span class=line><span class=cl>    <span class=c1># By default, nilnil checks all returned types below.</span>
+</span></span><span class=line><span class=cl>    checked-types:
+</span></span><span class=line><span class=cl>      - ptr
+</span></span><span class=line><span class=cl>      - func
+</span></span><span class=line><span class=cl>      - iface
+</span></span><span class=line><span class=cl>      - map
+</span></span><span class=line><span class=cl>      - chan
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  nlreturn:
+</span></span><span class=line><span class=cl>    <span class=c1># size of the block (including return statement that is still &#34;OK&#34;)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># so no return split required.</span>
+</span></span><span class=line><span class=cl>    block-size: <span class=m>1</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  nolintlint:
+</span></span><span class=line><span class=cl>    <span class=c1># Enable to ensure that nolint directives are all used. Default is true.</span>
+</span></span><span class=line><span class=cl>    allow-unused: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Disable to ensure that nolint directives don&#39;t have a leading space. Default is true.</span>
+</span></span><span class=line><span class=cl>    allow-leading-space: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude following linters from requiring an explanation.  Default is [].</span>
+</span></span><span class=line><span class=cl>    allow-no-explanation: <span class=o>[</span> <span class=o>]</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Enable to require an explanation of nonzero length after each nolint directive. Default is false.</span>
+</span></span><span class=line><span class=cl>    require-explanation: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Enable to require nolint directives to mention the specific linter being suppressed. Default is false.</span>
+</span></span><span class=line><span class=cl>    require-specific: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  prealloc:
+</span></span><span class=line><span class=cl>    <span class=c1># XXX: we don&#39;t recommend using this linter before doing performance profiling.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># For most programs usage of prealloc will be a premature optimization.</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Report preallocation suggestions only on simple loops that have no returns/breaks/continues/gotos in them.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># True by default.</span>
+</span></span><span class=line><span class=cl>    simple: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    range-loops: <span class=nb>true</span> <span class=c1># Report preallocation suggestions on range loops, true by default</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span>-loops: <span class=nb>false</span> <span class=c1># Report preallocation suggestions on for loops, false by default</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  promlinter:
+</span></span><span class=line><span class=cl>    <span class=c1># Promlinter cannot infer all metrics name in static analysis.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Enable strict mode will also include the errors caused by failing to parse the args.</span>
+</span></span><span class=line><span class=cl>    strict: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Please refer to https://github.com/yeya24/promlinter#usage for detailed usage.</span>
+</span></span><span class=line><span class=cl>    disabled-linters:
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;Help&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;MetricUnits&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;Counter&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;HistogramSummaryReserved&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;MetricTypeInName&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;ReservedChars&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;CamelCase&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>#  - &#34;lintUnitAbbreviations&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  predeclared:
+</span></span><span class=line><span class=cl>    <span class=c1># comma-separated list of predeclared identifiers to not report on</span>
+</span></span><span class=line><span class=cl>    ignore: <span class=s2>&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># include method names and field names (i.e., qualified names) in checks</span>
+</span></span><span class=line><span class=cl>    q: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  rowserrcheck:
+</span></span><span class=line><span class=cl>    packages:
+</span></span><span class=line><span class=cl>      - github.com/jmoiron/sqlx
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  revive:
+</span></span><span class=line><span class=cl>    <span class=c1># see https://github.com/mgechev/revive#available-rules for details.</span>
+</span></span><span class=line><span class=cl>    ignore-generated-header: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    severity: warning
+</span></span><span class=line><span class=cl>    rules:
+</span></span><span class=line><span class=cl>      - name: indent-error-flow
+</span></span><span class=line><span class=cl>        severity: warning
+</span></span><span class=line><span class=cl>      - name: add-constant
+</span></span><span class=line><span class=cl>        severity: warning
+</span></span><span class=line><span class=cl>        arguments:
+</span></span><span class=line><span class=cl>          - maxLitCount: <span class=s2>&#34;3&#34;</span>
+</span></span><span class=line><span class=cl>            allowStrs: <span class=s1>&#39;&#34;&#34;&#39;</span>
+</span></span><span class=line><span class=cl>            allowInts: <span class=s2>&#34;0,1,2&#34;</span>
+</span></span><span class=line><span class=cl>            allowFloats: <span class=s2>&#34;0.0,0.,1.0,1.,2.0,2.&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  staticcheck:
+</span></span><span class=line><span class=cl>    <span class=c1># Select the Go version to target. The default is &#39;1.13&#39;.</span>
+</span></span><span class=line><span class=cl>    go: <span class=s2>&#34;1.15&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://staticcheck.io/docs/options#checks</span>
+</span></span><span class=line><span class=cl>    checks: <span class=o>[</span> <span class=s2>&#34;all&#34;</span> <span class=o>]</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  stylecheck:
+</span></span><span class=line><span class=cl>    <span class=c1># Select the Go version to target. The default is &#39;1.13&#39;.</span>
+</span></span><span class=line><span class=cl>    go: <span class=s2>&#34;1.15&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://staticcheck.io/docs/options#checks</span>
+</span></span><span class=line><span class=cl>    checks: <span class=o>[</span> <span class=s2>&#34;all&#34;</span>, <span class=s2>&#34;-ST1000&#34;</span>, <span class=s2>&#34;-ST1003&#34;</span>, <span class=s2>&#34;-ST1016&#34;</span>, <span class=s2>&#34;-ST1020&#34;</span>, <span class=s2>&#34;-ST1021&#34;</span>, <span class=s2>&#34;-ST1022&#34;</span> <span class=o>]</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://staticcheck.io/docs/options#dot_import_whitelist</span>
+</span></span><span class=line><span class=cl>    dot-import-whitelist:
+</span></span><span class=line><span class=cl>      - fmt
+</span></span><span class=line><span class=cl>    <span class=c1># https://staticcheck.io/docs/options#initialisms</span>
+</span></span><span class=line><span class=cl>    initialisms: <span class=o>[</span> <span class=s2>&#34;ACL&#34;</span>, <span class=s2>&#34;API&#34;</span>, <span class=s2>&#34;ASCII&#34;</span>, <span class=s2>&#34;CPU&#34;</span>, <span class=s2>&#34;CSS&#34;</span>, <span class=s2>&#34;DNS&#34;</span>, <span class=s2>&#34;EOF&#34;</span>, <span class=s2>&#34;GUID&#34;</span>, <span class=s2>&#34;HTML&#34;</span>, <span class=s2>&#34;HTTP&#34;</span>, <span class=s2>&#34;HTTPS&#34;</span>, <span class=s2>&#34;ID&#34;</span>, <span class=s2>&#34;IP&#34;</span>, <span class=s2>&#34;JSON&#34;</span>, <span class=s2>&#34;QPS&#34;</span>, <span class=s2>&#34;RAM&#34;</span>, <span class=s2>&#34;RPC&#34;</span>, <span class=s2>&#34;SLA&#34;</span>, <span class=s2>&#34;SMTP&#34;</span>, <span class=s2>&#34;SQL&#34;</span>, <span class=s2>&#34;SSH&#34;</span>, <span class=s2>&#34;TCP&#34;</span>, <span class=s2>&#34;TLS&#34;</span>, <span class=s2>&#34;TTL&#34;</span>, <span class=s2>&#34;UDP&#34;</span>, <span class=s2>&#34;UI&#34;</span>, <span class=s2>&#34;GID&#34;</span>, <span class=s2>&#34;UID&#34;</span>, <span class=s2>&#34;UUID&#34;</span>, <span class=s2>&#34;URI&#34;</span>, <span class=s2>&#34;URL&#34;</span>, <span class=s2>&#34;UTF8&#34;</span>, <span class=s2>&#34;VM&#34;</span>, <span class=s2>&#34;XML&#34;</span>, <span class=s2>&#34;XMPP&#34;</span>, <span class=s2>&#34;XSRF&#34;</span>, <span class=s2>&#34;XSS&#34;</span> <span class=o>]</span>
+</span></span><span class=line><span class=cl>    <span class=c1># https://staticcheck.io/docs/options#http_status_code_whitelist</span>
+</span></span><span class=line><span class=cl>    http-status-code-whitelist: <span class=o>[</span> <span class=s2>&#34;200&#34;</span>, <span class=s2>&#34;400&#34;</span>, <span class=s2>&#34;404&#34;</span>, <span class=s2>&#34;500&#34;</span> <span class=o>]</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  tagliatelle:
+</span></span><span class=line><span class=cl>    <span class=c1># check the struck tag name case</span>
+</span></span><span class=line><span class=cl>    <span class=k>case</span>:
+</span></span><span class=line><span class=cl>      <span class=c1># use the struct field name to check the name of the struct tag</span>
+</span></span><span class=line><span class=cl>      use-field-name: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      rules:
+</span></span><span class=line><span class=cl>        <span class=c1># any struct tag type can be used.</span>
+</span></span><span class=line><span class=cl>        <span class=c1># support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`</span>
+</span></span><span class=line><span class=cl>        json: camel
+</span></span><span class=line><span class=cl>        yaml: camel
+</span></span><span class=line><span class=cl>        xml: camel
+</span></span><span class=line><span class=cl>        bson: camel
+</span></span><span class=line><span class=cl>        avro: snake
+</span></span><span class=line><span class=cl>        mapstructure: kebab
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  testpackage:
+</span></span><span class=line><span class=cl>    <span class=c1># regexp pattern to skip files</span>
+</span></span><span class=line><span class=cl>    skip-regexp: <span class=o>(</span>export<span class=p>|</span>internal<span class=o>)</span>_test<span class=se>\.</span>go
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  thelper:
+</span></span><span class=line><span class=cl>    <span class=c1># The following configurations enable all checks. It can be omitted because all checks are enabled by default.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># You can enable only required checks deleting unnecessary checks.</span>
+</span></span><span class=line><span class=cl>    test:
+</span></span><span class=line><span class=cl>      first: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      name: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      begin: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    benchmark:
+</span></span><span class=line><span class=cl>      first: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      name: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      begin: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    tb:
+</span></span><span class=line><span class=cl>      first: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      name: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>      begin: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  tenv:
+</span></span><span class=line><span class=cl>    <span class=c1># The option `all` will run against whole test files (`_test.go`) regardless of method/function signatures.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># By default, only methods that take `*testing.T`, `*testing.B`, and `testing.TB` as arguments are checked.</span>
+</span></span><span class=line><span class=cl>    all: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  unparam:
+</span></span><span class=line><span class=cl>    <span class=c1># Inspect exported functions, default is false. Set to true if no external program/library imports your code.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># XXX: if you enable this setting, unparam will report a lot of false-positives in text editors:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># if it&#39;s called for subdir of a project it can&#39;t find external interfaces. All text editor integrations</span>
+</span></span><span class=line><span class=cl>    <span class=c1># with golangci-lint call it on a directory with the changed file.</span>
+</span></span><span class=line><span class=cl>    check-exported: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  unused:
+</span></span><span class=line><span class=cl>    <span class=c1># Select the Go version to target. The default is &#39;1.13&#39;.</span>
+</span></span><span class=line><span class=cl>    go: <span class=s2>&#34;1.15&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  whitespace:
+</span></span><span class=line><span class=cl>    multi-if: <span class=nb>false</span>   <span class=c1># Enforces newlines (or comments) after every multi-line if statement</span>
+</span></span><span class=line><span class=cl>    multi-func: <span class=nb>false</span> <span class=c1># Enforces newlines (or comments) after every multi-line function signature</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  wrapcheck:
+</span></span><span class=line><span class=cl>    <span class=c1># An array of strings that specify substrings of signatures to ignore.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># If this set, it will override the default set of ignored signatures.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># See https://github.com/tomarrell/wrapcheck#configuration for more information.</span>
+</span></span><span class=line><span class=cl>    ignoreSigs:
+</span></span><span class=line><span class=cl>      - .Errorf<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - errors.New<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - errors.Unwrap<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - .Wrap<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - .Wrapf<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - .WithMessage<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - .WithMessagef<span class=o>(</span>
+</span></span><span class=line><span class=cl>      - .WithStack<span class=o>(</span>
+</span></span><span class=line><span class=cl>    ignorePackageGlobs:
+</span></span><span class=line><span class=cl>        - encoding/*
+</span></span><span class=line><span class=cl>        - github.com/pkg/*
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  wsl:
+</span></span><span class=line><span class=cl>    <span class=c1># See https://github.com/bombsimon/wsl/blob/master/doc/configuration.md for</span>
+</span></span><span class=line><span class=cl>    <span class=c1># documentation of available settings. These are the defaults for</span>
+</span></span><span class=line><span class=cl>    <span class=c1># `golangci-lint`.</span>
+</span></span><span class=line><span class=cl>    allow-assign-and-anything: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    allow-assign-and-call: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    allow-cuddle-declarations: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    allow-multiline-assign: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>    allow-separated-leading-comment: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    allow-trailing-comment: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    force-case-trailing-whitespace: <span class=m>0</span>
+</span></span><span class=line><span class=cl>    force-err-cuddling: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    force-short-decl-cuddling: <span class=nb>false</span>
+</span></span><span class=line><span class=cl>    strict-append: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># The custom section can be used to define linter plugins to be loaded at runtime.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># See README doc for more info.</span>
+</span></span><span class=line><span class=cl>  custom:
+</span></span><span class=line><span class=cl>    <span class=c1># Each custom linter should have a unique name.</span>
+</span></span><span class=line><span class=cl>     example:
+</span></span><span class=line><span class=cl>      <span class=c1># The path to the plugin *.so. Can be absolute or local. Required for each custom linter</span>
+</span></span><span class=line><span class=cl>      path: /path/to/example.so
+</span></span><span class=line><span class=cl>      <span class=c1># The description of the linter. Optional, just for documentation purposes.</span>
+</span></span><span class=line><span class=cl>      description: This is an example usage of a plugin linter.
+</span></span><span class=line><span class=cl>      <span class=c1># Intended to point to the repo location of the linter. Optional, just for documentation purposes.</span>
+</span></span><span class=line><span class=cl>      original-url: github.com/golangci/example-linter
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>linters:
+</span></span><span class=line><span class=cl>  disable-all: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>  enable:
+</span></span><span class=line><span class=cl>    - megacheck
+</span></span><span class=line><span class=cl>    - govet
+</span></span><span class=line><span class=cl>  enable-all: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>  disable:
+</span></span><span class=line><span class=cl>    - maligned
+</span></span><span class=line><span class=cl>    - prealloc
+</span></span><span class=line><span class=cl>  presets:
+</span></span><span class=line><span class=cl>    - bugs
+</span></span><span class=line><span class=cl>    - unused
+</span></span><span class=line><span class=cl>  fast: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>issues:
+</span></span><span class=line><span class=cl>  <span class=c1># List of regexps of issue texts to exclude, empty list by default.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># But independently from this option we use default exclude patterns,</span>
+</span></span><span class=line><span class=cl>  <span class=c1># it can be disabled by `exclude-use-default: false`. To list all</span>
+</span></span><span class=line><span class=cl>  <span class=c1># excluded by default patterns execute `golangci-lint run --help`</span>
+</span></span><span class=line><span class=cl>  exclude:
+</span></span><span class=line><span class=cl>    - abcdef
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Excluding configuration per-path, per-linter, per-text and per-source</span>
+</span></span><span class=line><span class=cl>  exclude-rules:
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude some linters from running on tests files.</span>
+</span></span><span class=line><span class=cl>    - path: _test<span class=se>\.</span>go
+</span></span><span class=line><span class=cl>      linters:
+</span></span><span class=line><span class=cl>        - gocyclo
+</span></span><span class=line><span class=cl>        - errcheck
+</span></span><span class=line><span class=cl>        - dupl
+</span></span><span class=line><span class=cl>        - gosec
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude known linters from partially hard-vendored code,</span>
+</span></span><span class=line><span class=cl>    <span class=c1># which is impossible to exclude via &#34;nolint&#34; comments.</span>
+</span></span><span class=line><span class=cl>    - path: internal/hmac/
+</span></span><span class=line><span class=cl>      text: <span class=s2>&#34;weak cryptographic primitive&#34;</span>
+</span></span><span class=line><span class=cl>      linters:
+</span></span><span class=line><span class=cl>        - gosec
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude some staticcheck messages</span>
+</span></span><span class=line><span class=cl>    - linters:
+</span></span><span class=line><span class=cl>        - staticcheck
+</span></span><span class=line><span class=cl>      text: <span class=s2>&#34;SA9003:&#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=c1># Exclude lll issues for long lines with go:generate</span>
+</span></span><span class=line><span class=cl>    - linters:
+</span></span><span class=line><span class=cl>        - lll
+</span></span><span class=line><span class=cl>      source: <span class=s2>&#34;^//go:generate &#34;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Independently from option `exclude` we use default exclude patterns,</span>
+</span></span><span class=line><span class=cl>  <span class=c1># it can be disabled by this option. To list all</span>
+</span></span><span class=line><span class=cl>  <span class=c1># excluded by default patterns execute `golangci-lint run --help`.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Default value for this option is true.</span>
+</span></span><span class=line><span class=cl>  exclude-use-default: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># The default value is false. If set to true exclude and exclude-rules</span>
+</span></span><span class=line><span class=cl>  <span class=c1># regular expressions become case sensitive.</span>
+</span></span><span class=line><span class=cl>  exclude-case-sensitive: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># The list of ids of default excludes to include or disable. By default it&#39;s empty.</span>
+</span></span><span class=line><span class=cl>  include:
+</span></span><span class=line><span class=cl>    - EXC0002 <span class=c1># disable excluding of issues about comments from golint</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Maximum issues count per one linter. Set to 0 to disable. Default is 50.</span>
+</span></span><span class=line><span class=cl>  max-issues-per-linter: <span class=m>0</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Maximum count of issues with the same text. Set to 0 to disable. Default is 3.</span>
+</span></span><span class=line><span class=cl>  max-same-issues: <span class=m>0</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Show only new issues: if there are unstaged changes or untracked files,</span>
+</span></span><span class=line><span class=cl>  <span class=c1># only those changes are analyzed, else only changes in HEAD~ are analyzed.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># It&#39;s a super-useful option for integration of golangci-lint into existing</span>
+</span></span><span class=line><span class=cl>  <span class=c1># large codebase. It&#39;s not practical to fix all existing issues at the moment</span>
+</span></span><span class=line><span class=cl>  <span class=c1># of integration: much better don&#39;t allow issues in new code.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Default is false.</span>
+</span></span><span class=line><span class=cl>  new: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Show only new issues created after git revision `REV`</span>
+</span></span><span class=line><span class=cl>  new-from-rev: REV
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Show only new issues created in git patch with set file path.</span>
+</span></span><span class=line><span class=cl>  new-from-patch: path/to/patch/file
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Fix found issues (if it&#39;s supported by the linter)</span>
+</span></span><span class=line><span class=cl>  fix: <span class=nb>true</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>severity:
+</span></span><span class=line><span class=cl>  <span class=c1># Default value is empty string.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Set the default severity for issues. If severity rules are defined and the issues</span>
+</span></span><span class=line><span class=cl>  <span class=c1># do not match or no severity is provided to the rule this will be the default</span>
+</span></span><span class=line><span class=cl>  <span class=c1># severity applied. Severities should match the supported severity names of the</span>
+</span></span><span class=line><span class=cl>  <span class=c1># selected out format.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># - Code climate: https://docs.codeclimate.com/docs/issues#issue-severity</span>
+</span></span><span class=line><span class=cl>  <span class=c1># -   Checkstyle: https://checkstyle.sourceforge.io/property_types.html#severity</span>
+</span></span><span class=line><span class=cl>  <span class=c1># -       Github: https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message</span>
+</span></span><span class=line><span class=cl>  default-severity: error
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># The default value is false.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># If set to true severity-rules regular expressions become case sensitive.</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span>-sensitive: <span class=nb>false</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>  <span class=c1># Default value is empty list.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># When a list of severity rules are provided, severity information will be added to lint</span>
+</span></span><span class=line><span class=cl>  <span class=c1># issues. Severity rules have the same filtering capability as exclude rules except you</span>
+</span></span><span class=line><span class=cl>  <span class=c1># are allowed to specify one matcher per severity rule.</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Only affects out formats that support setting severity information.</span>
+</span></span><span class=line><span class=cl>  rules:
+</span></span><span class=line><span class=cl>    - linters:
+</span></span><span class=line><span class=cl>      - dupl
+</span></span><span class=line><span class=cl>      severity: info
+</span></span></code></pre></div></article></div></main></body></html>
