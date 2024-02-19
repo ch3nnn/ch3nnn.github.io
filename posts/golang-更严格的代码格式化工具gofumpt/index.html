@@ -1,0 +1,202 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="一、前言 二、gofumpt 简介 三、安装、使用命令 四、使用举例 五、总结 一、前言 gofmt 是 golang 自带的代码自动格式化工具，是保证 Go 代码风格一致的大杀器。我们这次要推荐的 gofumpt 在 gofmt 的基础上添加了一系列更加严格的格式化规则，并保证了对 gofmt 的兼容。
+二、gofumpt 简介 gofumpt(https://github.com/mvdan/gofumpt) fork 自 gofmt，支持与 gofmt 几乎相同的命令行参数，因此可以作为 gofmt 的直接替代品使用。gofumpt 是 gofmt 的&#34;超集&#34;，经过 gofumpt 格式化的代码也符合 gofmt 的要求，其本身所扩展的格式化规则也可能在后续被集成进 gofmt。
+gofumpt 有以下特点:
+更多的格式化规则(参见 https://github.com/mvdan/gofumpt#Added-rules) 默认跳过对 vendor 的格式化 不对自动生成的代码应用扩展规则 不支持 -r 参数 三、安装、使用命令 安装命令:
+go install mvdan.cc/gofumpt@latest 执行命令:
+gofumpt -l -w . 四、使用举例 赋值运算符后面没有空行
+func foo() { foo := &#34;bar&#34; } 改为 gofumpt 格式化后："><title>Golang 更严格的代码格式化工具 gofumpt
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-02-19 19:56:22 +0800 +0800">2024-02-19</time></p><h1>Golang 更严格的代码格式化工具 gofumpt</h1><ul><li><a href=#%E4%B8%80%E5%89%8D%E8%A8%80>一、前言</a></li><li><a href=#%E4%BA%8Cgofumpt-%E7%AE%80%E4%BB%8B>二、gofumpt 简介</a></li><li><a href=#%E4%B8%89%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4>三、安装、使用命令</a></li><li><a href=#%E5%9B%9B%E4%BD%BF%E7%94%A8%E4%B8%BE%E4%BE%8B>四、使用举例</a></li><li><a href=#%E4%BA%94%E6%80%BB%E7%BB%93>五、总结</a></li></ul><h2 id=一前言>一、前言</h2><p>gofmt 是 golang 自带的代码自动格式化工具，是保证 Go 代码风格一致的大杀器。我们这次要推荐的 gofumpt 在 gofmt 的基础上添加了一系列更加严格的格式化规则，并保证了对
+gofmt 的兼容。</p><h2 id=二gofumpt-简介>二、gofumpt 简介</h2><p>gofumpt(<a href=https://github.com/mvdan/gofumpt>https://github.com/mvdan/gofumpt</a>) fork 自 gofmt，支持与 gofmt 几乎相同的命令行参数，因此可以作为 gofmt 的直接替代品使用。gofumpt 是
+gofmt 的"超集"，经过 gofumpt 格式化的代码也符合 gofmt 的要求，其本身所扩展的格式化规则也可能在后续被集成进 gofmt。</p><p>gofumpt 有以下特点:</p><ul><li>更多的格式化规则(参见 <a href=https://github.com/mvdan/gofumpt#Added-rules>https://github.com/mvdan/gofumpt#Added-rules</a>)</li><li>默认跳过对 vendor 的格式化</li><li>不对自动生成的代码应用扩展规则</li><li>不支持 -r 参数</li></ul><h2 id=三安装使用命令>三、安装、使用命令</h2><p>安装命令:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>go install mvdan.cc/gofumpt@latest
+</span></span></code></pre></div><p>执行命令:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>gofumpt -l -w .
+</span></span></code></pre></div><h2 id=四使用举例>四、使用举例</h2><p><strong>赋值运算符后面没有空行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nx>foo</span> <span class=o>:=</span>
+</span></span><span class=line><span class=cl><span class=s>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nx>foo</span> <span class=o>:=</span> <span class=s>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>函数体周围没有空行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>函数应分隔 &lsquo;) {&rsquo;，其中缩进有助于可读性</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=nx>i</span> <span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// With an empty line it&#39;s slightly better, but still not great.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>bar</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=nx>i</span> <span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=nx>i</span> <span class=kt>int</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// With an empty line it&#39;s slightly better, but still not great.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>bar</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=nx>i</span> <span class=kt>int</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>块中单个语句 (或注释) 周围没有空行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>在简单的错误检查之前没有空行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>foo</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>processFoo</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>foo</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>processFoo</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>复合文字应一致地使用换行符</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// A newline before or after an element requires newlines for the opening and
+</span></span></span><span class=line><span class=cl><span class=c1>// closing braces.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>ints</span> <span class=p>=</span> <span class=p>[]</span><span class=kt>int</span><span class=p>{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// A newline between consecutive elements requires a newline between all
+</span></span></span><span class=line><span class=cl><span class=c1>// elements.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>matrix</span> <span class=p>=</span> <span class=p>[][]</span><span class=kt>int</span><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=mi>1</span><span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=mi>2</span><span class=p>},</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=mi>3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>ints</span> <span class=p>=</span> <span class=p>[]</span><span class=kt>int</span><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>matrix</span> <span class=p>=</span> <span class=p>[][]</span><span class=kt>int</span><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=mi>1</span><span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>{</span><span class=mi>2</span><span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=mi>3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>空字段列表应使用单行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>V</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=p>=</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>T</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>F</span><span class=p>()</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>V</span> <span class=kd>interface</span><span class=p>{}</span> <span class=p>=</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>T</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>F</span><span class=p>()</span>
+</span></span></code></pre></div><p><strong><code>std</code> 导入必须位于顶部的单独组中</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl><span class=s>&#34;foo.com/bar&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=s>&#34;io&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=s>&#34;io/ioutil&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl><span class=s>&#34;io&#34;</span>
+</span></span><span class=line><span class=cl><span class=s>&#34;io/ioutil&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=s>&#34;foo.com/bar&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></div><p><strong>简短的case子句应采用单行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>switch</span> <span class=nx>c</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>case</span> <span class=sc>&#39;a&#39;</span><span class=p>,</span> <span class=sc>&#39;b&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=sc>&#39;c&#39;</span><span class=p>,</span> <span class=sc>&#39;d&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>switch</span> <span class=nx>c</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>case</span> <span class=sc>&#39;a&#39;</span><span class=p>,</span> <span class=sc>&#39;b&#39;</span><span class=p>,</span> <span class=sc>&#39;c&#39;</span><span class=p>,</span> <span class=sc>&#39;d&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>多行顶级声明必须用空行分隔</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;multiline foo&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>bar</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;multiline bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;multiline foo&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>bar</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nb>println</span><span class=p>(</span><span class=s>&#34;multiline bar&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>单个var声明不应使用括号分组</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl><span class=nx>foo</span> <span class=p>=</span> <span class=s>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>foo</span> <span class=p>=</span> <span class=s>&#34;bar&#34;</span>
+</span></span></code></pre></div><p><strong>连续的顶级声明应该组合在一起</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>nicer</span> <span class=p>=</span> <span class=s>&#34;x&#34;</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>with</span> <span class=p>=</span> <span class=s>&#34;y&#34;</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>alignment</span> <span class=p>=</span> <span class=s>&#34;z&#34;</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>nicer</span> <span class=p>=</span> <span class=s>&#34;x&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>with</span> <span class=p>=</span> <span class=s>&#34;y&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>alignment</span> <span class=p>=</span> <span class=s>&#34;z&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></div><p><strong>简单的var声明语句应该使用短赋值</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>s</span> <span class=p>=</span> <span class=s>&#34;somestring&#34;</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>s</span> <span class=o>:=</span> <span class=s>&#34;somestring&#34;</span>
+</span></span></code></pre></div><p><strong>默认情况下启用 &lsquo;-s&rsquo; 代码简化标志</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=p>=</span> <span class=p>[][]</span><span class=kt>int</span><span class=p>{[]</span><span class=kt>int</span><span class=p>{</span><span class=mi>1</span><span class=p>}}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=p>=</span> <span class=p>[][]</span><span class=kt>int</span><span class=p>{{</span><span class=mi>1</span><span class=p>}}</span>
+</span></span></code></pre></div><p><strong>八进制整数文字应在使用Go 1.13及更高版本的模块上使用 &lsquo;0o&rsquo; 前缀</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>const</span> <span class=nx>perm</span> <span class=p>=</span> <span class=mo>0755</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>const</span> <span class=nx>perm</span> <span class=p>=</span> <span class=mi>0</span><span class=nx>o755</span>
+</span></span></code></pre></div><p><strong>不是Go指令的注释应该以空格开头</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>//go:noinline
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>//Foo is awesome.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>Foo</span><span class=p>()</span> <span class=p>{}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>//go:noinline
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// Foo is awesome.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>Foo</span><span class=p>()</span> <span class=p>{}</span>
+</span></span></code></pre></div><p><strong>复合文字不应具有前导或尾随空行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=p>=</span> <span class=p>[]</span><span class=kt>string</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=s>&#34;foo&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=p>=</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>string</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=s>&#34;foo&#34;</span><span class=p>:</span> <span class=s>&#34;bar&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=p>=</span> <span class=p>[]</span><span class=kt>string</span><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=s>&#34;foo&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=p>=</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>string</span><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=s>&#34;foo&#34;</span><span class=p>:</span> <span class=s>&#34;bar&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>字段列表不应有前导或尾随空行</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Person</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>Name</span><span class=p>()</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>Age</span><span class=p>()</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>ZeroFields</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// No fields are needed here.
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>改为 gofumpt 格式化后：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Person</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=nf>Name</span><span class=p>()</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>Age</span><span class=p>()</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>ZeroFields</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=c1>// No fields are needed here.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><h2 id=五总结>五、总结</h2><p>gofumpt 是一款优秀的 go 代码格式化扩展工具，能够帮助我们进一步提升代码质量，来试试看吧！</p></article></div></main></body></html>
