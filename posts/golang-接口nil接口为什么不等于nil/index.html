@@ -1,0 +1,295 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='一、Go 接口的地位 Go 语言核心团队的技术负责人 Russ Cox 也曾说过这样一句话：“如果要从 Go 语言中挑选出一个特性放入其他语言，我会选择接口”，这句话足以说明接口这一语法特性在这位 Go 语言大神心目中的地位。
+为什么接口在 Go 中有这么高的地位呢？这是因为接口是 Go 这门静态语言中唯一“动静兼备”的语法特性。而且，接口“动静兼备”的特性给 Go 带来了强大的表达能力，但同时也给 Go 语言初学者带来了不少困惑。要想真正解决这些困惑，我们必须深入到 Go 运行时层面，看看 Go 语言在运行时是如何表示接口类型的。
+接下来，我们先来看看接口的静态与动态特性，看看“动静皆备”的含义。
+二、接口的静态特性与动态特性 2.1 接口的静态特性与动态特性介绍 接口的静态特性体现在接口类型变量具有静态类型。
+比如 var err error 中变量 err 的静态类型为 error。拥有静态类型，那就意味着编译器会在编译阶段对所有接口类型变量的赋值操作进行类型检查，编译器会检查右值的类型是否实现了该接口方法集合中的所有方法。如果不满足，就会报错：
+var err error = 1 // cannot use 1 (type int) as type error in assignment: int does not implement error (missing Error method) 而接口的动态特性，就体现在接口类型变量在运行时还存储了右值的真实类型信息，这个右值的真实类型被称为接口类型变量的动态类型。例如，下面示例代码：
+var err error err = errors.New("error1") fmt.Printf("%T\n", err) // *errors.'><title>Golang 接口:nil接口为什么不等于nil?
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-03-11 10:48:24 +0800 +0800">2024-03-11</time></p><h1>Golang 接口:nil接口为什么不等于nil?</h1><aside><nav id=TableOfContents><ul><li><a href=#一go-接口的地位>一、Go 接口的地位</a></li><li><a href=#二接口的静态特性与动态特性>二、接口的静态特性与动态特性</a></li><li><a href=#三nil-error-值--nil>三、nil error 值 != nil</a></li><li><a href=#四接口类型变量的内部表示>四、接口类型变量的内部表示</a><ul><li><a href=#第一种nil-接口变量>第一种：nil 接口变量</a></li><li><a href=#第二种空接口类型变量>第二种：空接口类型变量</a></li><li><a href=#第三种非空接口类型变量>第三种：非空接口类型变量</a></li><li><a href=#第四种空接口类型变量与非空接口类型变量的等值比较>第四种：空接口类型变量与非空接口类型变量的等值比较</a></li></ul></li><li><a href=#五小结>五、小结</a></li><li><a href=#六引用>六、引用</a></li></ul></nav></aside><h2 id=一go-接口的地位>一、Go 接口的地位</h2><p>Go 语言核心团队的技术负责人 <code>Russ Cox</code> 也曾说过这样一句话：“如果要从 Go 语言中挑选出一个特性放入其他语言，我会选择接口”，这句话足以说明接口这一语法特性在这位
+Go 语言大神心目中的地位。</p><p>为什么接口在 Go 中有这么高的地位呢？这是因为接口是 Go 这门静态语言中唯一“动静兼备”的语法特性。而且，接口“动静兼备”的特性给 Go 带来了强大的表达能力，但同时也给
+Go 语言初学者带来了不少困惑。要想真正解决这些困惑，我们必须深入到 Go 运行时层面，看看 Go 语言在运行时是如何表示接口类型的。</p><p>接下来，我们先来看看接口的静态与动态特性，看看“动静皆备”的含义。</p><h2 id=二接口的静态特性与动态特性>二、接口的静态特性与动态特性</h2><p>2.1 接口的静态特性与动态特性介绍
+接口的静态特性体现在接口类型变量具有静态类型。</p><p>比如 var err error 中变量 err 的静态类型为 error。拥有静态类型，那就意味着编译器会在编译阶段对所有接口类型变量的赋值操作进行类型检查，编译器会检查右值的类型是否实现了该接口方法集合中的所有方法。如果不满足，就会报错：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>err</span> <span class=kt>error</span> <span class=p>=</span> <span class=mi>1</span> <span class=c1>// cannot use 1 (type int) as type error in assignment: int does not implement error (missing Error method)
+</span></span></span></code></pre></div><p>而接口的动态特性，就体现在接口类型变量在运行时还存储了右值的真实类型信息，这个右值的真实类型被称为接口类型变量的动态类型。例如，下面示例代码：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>var</span> <span class=nx>err</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=nx>err</span> <span class=p>=</span> <span class=nx>errors</span><span class=p>.</span><span class=nf>New</span><span class=p>(</span><span class=s>&#34;error1&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%T\n&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span> <span class=c1>// *errors.errorString
+</span></span></span></code></pre></div><p>2.2 “动静皆备”的特性的好处
+首先，接口类型变量在程序运行时可以被赋值为不同的动态类型变量，每次赋值后，接口类型变量中存储的动态类型信息都会发生变化，这让 Go 语言可以像动态语言（比如
+Python）那样拥有使用 Duck Typing（鸭子类型）的灵活性。所谓鸭子类型，就是指某类型所表现出的特性（比如是否可以作为某接口类型的右值），不是由其基因（比如
+C++ 中的父类）决定的，而是由类型所表现出来的行为（比如类型拥有的方法）决定的。</p><p>比如下面的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>QuackableAnimal</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>Quack</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Duck</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>Duck</span><span class=p>)</span> <span class=nf>Quack</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;duck quack!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Dog</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>Dog</span><span class=p>)</span> <span class=nf>Quack</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;dog quack!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Bird</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>func</span> <span class=p>(</span><span class=nx>Bird</span><span class=p>)</span> <span class=nf>Quack</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;bird quack!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>AnimalQuackInForest</span><span class=p>(</span><span class=nx>a</span> <span class=nx>QuackableAnimal</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>a</span><span class=p>.</span><span class=nf>Quack</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>animals</span> <span class=o>:=</span> <span class=p>[]</span><span class=nx>QuackableAnimal</span><span class=p>{</span><span class=nb>new</span><span class=p>(</span><span class=nx>Duck</span><span class=p>),</span> <span class=nb>new</span><span class=p>(</span><span class=nx>Dog</span><span class=p>),</span> <span class=nb>new</span><span class=p>(</span><span class=nx>Bird</span><span class=p>)}</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>animal</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>animals</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>AnimalQuackInForest</span><span class=p>(</span><span class=nx>animal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>  
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>这个例子中，我们用接口类型 QuackableAnimal 来代表具有“会叫”这一特征的动物，而 Duck、Bird 和 Dog 类型各自都具有这样的特征，于是我们可以将这三个类型的变量赋值给
+QuackableAnimal 接口类型变量 a。每次赋值，变量 a 中存储的动态类型信息都不同，Quack 方法的执行结果将根据变量 a 中存储的动态类型信息而定。</p><p>这里的 Duck、Bird、Dog 都是“鸭子类型”，但它们之间并没有什么联系，之所以能作为右值赋值给 QuackableAnimal 类型变量，只是因为他们表现出了
+QuackableAnimal 所要求的特征罢了。</p><p>不过，与动态语言不同的是，Go 接口还可以保证“动态特性”使用时的安全性。比如，编译器在编译期就可以捕捉到将 int 类型变量传给 QuackableAnimal
+接口类型变量这样的明显错误，决不会让这样的错误遗漏到运行时才被发现。</p><p>接口类型的动静特性展示了其强大的一面，然而在日常使用中，对Gopher常常困惑与“nil 的 error 值不等于 nil”。下面我们来详细看一下。</p><h2 id=三nil-error-值--nil>三、nil error 值 != nil</h2><p>我们先来看一段改编自GO FAQ 中的例子的代码：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>MyError</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>ErrBad</span> <span class=p>=</span> <span class=nx>MyError</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>error</span><span class=p>:</span> <span class=nx>errors</span><span class=p>.</span><span class=nf>New</span><span class=p>(</span><span class=s>&#34;bad things happened&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>bad</span><span class=p>()</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>returnsError</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>p</span> <span class=o>*</span><span class=nx>MyError</span> <span class=p>=</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nf>bad</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>p</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>ErrBad</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>p</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>err</span> <span class=o>:=</span> <span class=nf>returnsError</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;error occur: %+v\n&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;ok&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>在这个例子中，我们的关注点集中在 returnsError 这个函数上面。这个函数定义了一个 *MyError 类型的变量 p，初值为 nil。如果函数 bad 返回
+false，returnsError 函数就会直接将 p（此时 p = nil）作为返回值返回给调用者，之后调用者会将 returnsError 函数的返回值（error 接口类型）与 nil
+进行比较，并根据比较结果做出最终处理。</p><p>我们运行这段程序后，输出如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kt>error</span> <span class=nx>occur</span><span class=p>:</span> <span class=p>&lt;</span><span class=kc>nil</span><span class=p>&gt;</span>
+</span></span></code></pre></div><p>按照预期：程序执行应该是p 为 nil，returnsError 返回 p，那么 main 函数中的 err 就等于 nil，于是程序输出 ok
+后退出。但是我们看到，示例程序并未按照预期，程序显然是进入了错误处理分支，输出了 err 的值。那这里就有一个问题了：明明 returnsError 函数返回的 p 值为
+nil，为什么却满足了 if err != nil 的条件进入错误处理分支呢？</p><p>为了弄清楚这个问题，我们来了解接口类型变量的内部表示。</p><h2 id=四接口类型变量的内部表示>四、接口类型变量的内部表示</h2><p>接口类型“动静兼备”的特性也决定了它的变量的内部表示绝不像一个静态类型变量（如 int、float64）那样简单，我们可以在 $GOROOT/src/runtime/runtime2.go
+中找到接口类型变量在运行时的表示：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// $GOROOT/src/runtime/runtime2.go
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>type</span> <span class=nx>iface</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>tab</span>  <span class=o>*</span><span class=nx>itab</span>
+</span></span><span class=line><span class=cl>    <span class=nx>data</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>eface</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>_type</span> <span class=o>*</span><span class=nx>_type</span>
+</span></span><span class=line><span class=cl>    <span class=nx>data</span>  <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>我们看到，在运行时层面，接口类型变量有两种内部表示：iface 和 eface，这两种表示分别用于不同的接口类型变量：</p><ul><li>eface 用于表示没有方法的空接口（empty interface）类型变量，也就是 interface{} 类型的变量；</li><li>iface 用于表示其余拥有方法的接口 interface 类型变量。</li></ul><p>这两个结构的共同点是它们都有两个指针字段，并且第二个指针字段的功能相同，都是指向当前赋值给该接口类型变量的动态类型变量的值。</p><p>那它们的不同点在哪呢？就在于 eface 表示的空接口类型并没有方法列表，因此它的第一个指针字段指向一个 _type 类型结构，这个结构为该接口类型变量的动态类型的信息，它的定义是这样的：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// $GOROOT/src/runtime/type.go
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>_type</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>size</span>       <span class=kt>uintptr</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ptrdata</span>    <span class=kt>uintptr</span> <span class=c1>// size of memory prefix holding all pointers
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>hash</span>       <span class=kt>uint32</span>
+</span></span><span class=line><span class=cl>    <span class=nx>tflag</span>      <span class=nx>tflag</span>
+</span></span><span class=line><span class=cl>    <span class=nx>align</span>      <span class=kt>uint8</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fieldAlign</span> <span class=kt>uint8</span>
+</span></span><span class=line><span class=cl>    <span class=nx>kind</span>       <span class=kt>uint8</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// function for comparing objects of this type
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// (ptr to object A, ptr to object B) -&gt; ==?
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>equal</span> <span class=kd>func</span> <span class=p>(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>,</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>)</span> <span class=kt>bool</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// gcdata stores the GC type data for the garbage collector.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// If the KindGCProg bit is set in kind, gcdata is a GC program.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// Otherwise it is a ptrmask bitmap. See mbitmap.go for details.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>gcdata</span>    <span class=o>*</span><span class=kt>byte</span>
+</span></span><span class=line><span class=cl>    <span class=nx>str</span>       <span class=nx>nameOff</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ptrToThis</span> <span class=nx>typeOff</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>而 iface 除了要存储动态类型信息之外，还要存储接口本身的信息（接口的类型信息、方法列表信息等）以及动态类型所实现的方法的信息，因此 iface
+的第一个字段指向一个 itab 类型结构。itab 结构的定义如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// $GOROOT/src/runtime/runtime2.go
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>type</span> <span class=nx>itab</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>inter</span> <span class=o>*</span><span class=nx>interfacetype</span>
+</span></span><span class=line><span class=cl>    <span class=nx>_type</span> <span class=o>*</span><span class=nx>_type</span>
+</span></span><span class=line><span class=cl>    <span class=nx>hash</span>  <span class=kt>uint32</span> <span class=c1>// copy of _type.hash. Used for type switches.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>_</span>     <span class=p>[</span><span class=mi>4</span><span class=p>]</span><span class=kt>byte</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fun</span>   <span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=kt>uintptr</span> <span class=c1>// variable sized. fun[0]==0 means _type does not implement inter.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>这里我们也可以看到，itab 结构中的第一个字段 inter 指向的 interfacetype 结构，存储着这个接口类型自身的信息。你看一下下面这段代码表示的
+interfacetype 类型定义，这个 interfacetype 结构由类型信息（typ）、包路径名（pkgpath）和接口方法集合切片（mhdr）组成。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// $GOROOT/src/runtime/type.go
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>type</span> <span class=nx>interfacetype</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>typ</span>     <span class=nx>_type</span>
+</span></span><span class=line><span class=cl>    <span class=nx>pkgpath</span> <span class=nx>name</span>
+</span></span><span class=line><span class=cl>    <span class=nx>mhdr</span>    <span class=p>[]</span><span class=nx>imethod</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>itab 结构中的字段 _type 则存储着这个接口类型变量的动态类型的信息，字段 fun 则是动态类型已实现的接口方法的调用地址数组。</p><p>下面我们再结合例子用图片来直观展现 eface 和 iface 的结构。首先我们看一个用 eface 表示的空接口类型变量的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>T</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>n</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>    <span class=nx>s</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>t</span> <span class=p>=</span> <span class=nx>T</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>n</span><span class=p>:</span> <span class=mi>17</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>s</span><span class=p>:</span> <span class=s>&#34;hello, interface&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>ei</span> <span class=kd>interface</span><span class=p>{}</span> <span class=p>=</span> <span class=nx>t</span> <span class=c1>// Go运行时使用eface结构表示ei
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>这个例子中的空接口类型变量 ei 在 Go 运行时的表示是这样的：
+<img src=https://s2.loli.net/2024/03/11/PtWcj5Fe7hHnRYV.png alt></p><p>我们看到空接口类型的表示较为简单，图中上半部分 _type 字段指向它的动态类型 T 的类型信息，下半部分的 data 则是指向一个 T 类型的实例值。</p><p>我们再来看一个更复杂的用 iface 表示非空接口类型变量的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>T</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>n</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>    <span class=nx>s</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>T</span><span class=p>)</span> <span class=nf>M1</span><span class=p>()</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>T</span><span class=p>)</span> <span class=nf>M2</span><span class=p>()</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>NonEmptyInterface</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>M1</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nf>M2</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>t</span> <span class=p>=</span> <span class=nx>T</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>n</span><span class=p>:</span> <span class=mi>18</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>s</span><span class=p>:</span> <span class=s>&#34;hello, interface&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>i</span> <span class=nx>NonEmptyInterface</span> <span class=p>=</span> <span class=nx>t</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>和 eface 比起来，iface 的表示稍微复杂些。我也画了一幅表示上面 NonEmptyInterface 接口类型变量在 Go 运行时表示的示意图：
+<img src=https://s2.loli.net/2024/03/11/Q9efoNhb4JgYkdF.png alt></p><p>由上面的这两幅图，我们可以看出，每个接口类型变量在运行时的表示都是由两部分组成的，针对不同接口类型我们可以简化记作：eface(_type, data) 和 iface(
+tab, data)。</p><p>而且，虽然 eface 和 iface 的第一个字段有所差别，但 tab 和 _type 可以统一看作是动态类型的类型信息。Go 语言中每种类型都会有唯一的 _type
+信息，无论是内置原生类型，还是自定义类型都有。Go 运行时会为程序内的全部类型建立只读的共享 _type
+信息表，因此拥有相同动态类型的同类接口类型变量的 _type/tab 信息是相同的。</p><p>而接口类型变量的 data
+部分则是指向一个动态分配的内存空间，这个内存空间存储的是赋值给接口类型变量的动态类型变量的值。未显式初始化的接口类型变量的值为nil，也就是这个变量的 _
+type/tab 和 data 都为 nil。</p><p>也就是说，我们判断两个接口类型变量是否相等，只需判断 _type/tab 以及 data 是否都相等即可。两个接口变量的 _type/tab
+不同时，即两个接口变量的动态类型不相同时，两个接口类型变量一定不等。</p><p>当两个接口变量的 _type/tab 相同时，对 data 的相等判断要有区分。当接口变量的动态类型为指针类型时 (*T)，Go 不会再额外分配内存存储指针值，而会将动态类型的指针值直接存入
+data 字段中，这样 data 值的相等性决定了两个接口类型变量是否相等；当接口变量的动态类型为非指针类型 (T) 时，我们判断的将不是 data 指针的值是否相等，而是判断
+data 指针指向的内存空间所存储的数据值是否相等，若相等，则两个接口类型变量相等。</p><p>不过，通过肉眼去辨别接口类型变量是否相等总是困难一些，我们可以引入一些 helper 函数。借助这些函数，我们可以清晰地输出接口类型变量的内部表示，这样就可以一目了然地看出两个变量是否相等了。</p><p>由于 eface 和 iface 是 runtime 包中的非导出结构体定义，我们不能直接在包外使用，所以也就无法直接访问到两个结构体中的数据。不过，Go 语言提供了
+println 预定义函数，可以用来输出 eface 或 iface 的两个指针字段的值。</p><p>在编译阶段，编译器会根据要输出的参数的类型将 println 替换为特定的函数，这些函数都定义在 $GOROOT/src/runtime/print.go 文件中，而针对 eface 和
+iface 类型的打印函数实现如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// $GOROOT/src/runtime/print.go
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>printeface</span><span class=p>(</span><span class=nx>e</span> <span class=nx>eface</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s>&#34;(&#34;</span><span class=p>,</span> <span class=nx>e</span><span class=p>.</span><span class=nx>_type</span><span class=p>,</span> <span class=s>&#34;,&#34;</span><span class=p>,</span> <span class=nx>e</span><span class=p>.</span><span class=nx>data</span><span class=p>,</span> <span class=s>&#34;)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>printiface</span><span class=p>(</span><span class=nx>i</span> <span class=nx>iface</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s>&#34;(&#34;</span><span class=p>,</span> <span class=nx>i</span><span class=p>.</span><span class=nx>tab</span><span class=p>,</span> <span class=s>&#34;,&#34;</span><span class=p>,</span> <span class=nx>i</span><span class=p>.</span><span class=nx>data</span><span class=p>,</span> <span class=s>&#34;)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>我们看到，printeface 和 printiface 会输出各自的两个指针字段的值。下面我们就来使用 println 函数输出各类接口类型变量的内部表示信息，并结合输出结果，解析接口类型变量的等值比较操作。</p><h3 id=第一种nil-接口变量>第一种：nil 接口变量</h3><p>我们知道，未赋初值的接口类型变量的值为 nil，这类变量也就是 nil 接口变量，我们来看这类变量的内部表示输出的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>printNilInterface</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// nil接口变量
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>var</span> <span class=nx>i</span> <span class=kd>interface</span><span class=p>{}</span> <span class=c1>// 空接口类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>var</span> <span class=nx>err</span> <span class=kt>error</span>     <span class=c1>// 非空接口类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nb>println</span><span class=p>(</span><span class=nx>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;i = nil:&#34;</span><span class=p>,</span> <span class=nx>i</span> <span class=o>==</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err = nil:&#34;</span><span class=p>,</span> <span class=nx>err</span> <span class=o>==</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;i = err:&#34;</span><span class=p>,</span> <span class=nx>i</span> <span class=o>==</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>运行这个函数，输出结果是这样的：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=p>(</span><span class=mh>0x0</span><span class=p>,</span> <span class=mh>0x0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>(</span><span class=mh>0x0</span><span class=p>,</span> <span class=mh>0x0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>i</span> <span class=p>=</span> <span class=kc>nil</span><span class=p>:</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=nx>err</span> <span class=p>=</span> <span class=kc>nil</span><span class=p>:</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=nx>i</span> <span class=p>=</span> <span class=nx>err</span><span class=p>:</span> <span class=kc>true</span>
+</span></span></code></pre></div><p>我们看到，无论是空接口类型还是非空接口类型变量，一旦变量值为 nil，那么它们内部表示均为 (0x0, 0x0)，也就是类型信息、数据值信息均为空。因此上面的变量
+i 和 err 等值判断为 true。</p><h3 id=第二种空接口类型变量>第二种：空接口类型变量</h3><p>下面是空接口类型变量的内部表示输出的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl>  <span class=kd>func</span> <span class=nf>printEmptyInterface</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>eif1</span> <span class=kd>interface</span><span class=p>{}</span> <span class=c1>// 空接口类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>var</span> <span class=nx>eif2</span> <span class=kd>interface</span><span class=p>{}</span> <span class=c1>// 空接口类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>var</span> <span class=nx>n</span><span class=p>,</span> <span class=nx>m</span> <span class=kt>int</span> <span class=p>=</span> <span class=mi>17</span><span class=p>,</span> <span class=mi>18</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>eif1</span> <span class=p>=</span> <span class=nx>n</span>
+</span></span><span class=line><span class=cl>    <span class=nx>eif2</span> <span class=p>=</span> <span class=nx>m</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif1:&#34;</span><span class=p>,</span> <span class=nx>eif1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif2:&#34;</span><span class=p>,</span> <span class=nx>eif2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif1 = eif2:&#34;</span><span class=p>,</span> <span class=nx>eif1</span> <span class=o>==</span> <span class=nx>eif2</span><span class=p>)</span> <span class=c1>// false
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=nx>eif2</span> <span class=p>=</span> <span class=mi>17</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif1:&#34;</span><span class=p>,</span> <span class=nx>eif1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif2:&#34;</span><span class=p>,</span> <span class=nx>eif2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif1 = eif2:&#34;</span><span class=p>,</span> <span class=nx>eif1</span> <span class=o>==</span> <span class=nx>eif2</span><span class=p>)</span> <span class=c1>// true
+</span></span></span><span class=line><span class=cl><span class=c1></span>    
+</span></span><span class=line><span class=cl>    <span class=nx>eif2</span> <span class=p>=</span> <span class=nb>int64</span><span class=p>(</span><span class=mi>17</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif1:&#34;</span><span class=p>,</span> <span class=nx>eif1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif2:&#34;</span><span class=p>,</span> <span class=nx>eif2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif1 = eif2:&#34;</span><span class=p>,</span> <span class=nx>eif1</span> <span class=o>==</span> <span class=nx>eif2</span><span class=p>)</span> <span class=c1>// false
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>这个例子的运行输出结果是这样的：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>eif1</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ac580</span><span class=p>,</span> <span class=mh>0xc00007ef48</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif2</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ac580</span><span class=p>,</span> <span class=mh>0xc00007ef40</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif1</span> <span class=p>=</span> <span class=nx>eif2</span><span class=p>:</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl><span class=nx>eif1</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ac580</span><span class=p>,</span> <span class=mh>0xc00007ef48</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif2</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ac580</span><span class=p>,</span> <span class=mh>0x10eb3d0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif1</span> <span class=p>=</span> <span class=nx>eif2</span><span class=p>:</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=nx>eif1</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ac580</span><span class=p>,</span> <span class=mh>0xc00007ef48</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif2</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ac640</span><span class=p>,</span> <span class=mh>0x10eb3d8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif1</span> <span class=p>=</span> <span class=nx>eif2</span><span class=p>:</span> <span class=kc>false</span>
+</span></span></code></pre></div><p>我们按顺序分析一下这个输出结果。</p><p>首先，代码执行到第 11 行时，eif1 与 eif2 已经分别被赋值整型值 17 与 18，这样 eif1 和 eif2 的动态类型的类型信息是相同的（都是 0x10ac580），但 data
+指针指向的内存块中存储的值不同，一个是 17，一个是 18，于是 eif1 不等于 eif2。</p><p>接着，代码执行到第 16 行的时候，eif2 已经被重新赋值为 17，这样 eif1 和 eif2 不仅存储的动态类型的类型信息是相同的（都是 0x10ac580），data
+指针指向的内存块中存储值也相同了，都是 17，于是 eif1 等于 eif2。</p><p>然后，代码执行到第 21 行时，eif2 已经被重新赋值了 int64 类型的数值 17。这样，eif1 和 eif2 存储的动态类型的类型信息就变成不同的了，一个是 int，一个是
+int64，即便 data 指针指向的内存块中存储值是相同的，最终 eif1 与 eif2 也是不相等的。</p><h3 id=第三种非空接口类型变量>第三种：非空接口类型变量</h3><p>这里，我们也直接来看一个非空接口类型变量的内部表示输出的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>T</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>t</span> <span class=nx>T</span><span class=p>)</span> <span class=nf>Error</span><span class=p>()</span> <span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=s>&#34;bad error&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>printNonEmptyInterface</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>err1</span> <span class=kt>error</span> <span class=c1>// 非空接口类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kd>var</span> <span class=nx>err2</span> <span class=kt>error</span> <span class=c1>// 非空接口类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>err1</span> <span class=p>=</span> <span class=p>(</span><span class=o>*</span><span class=nx>T</span><span class=p>)(</span><span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err1:&#34;</span><span class=p>,</span> <span class=nx>err1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err1 = nil:&#34;</span><span class=p>,</span> <span class=nx>err1</span> <span class=o>==</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>err1</span> <span class=p>=</span> <span class=nf>T</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>err2</span> <span class=p>=</span> <span class=nf>T</span><span class=p>(</span><span class=mi>6</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err1:&#34;</span><span class=p>,</span> <span class=nx>err1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err2:&#34;</span><span class=p>,</span> <span class=nx>err2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err1 = err2:&#34;</span><span class=p>,</span> <span class=nx>err1</span> <span class=o>==</span> <span class=nx>err2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>err2</span> <span class=p>=</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;%d\n&#34;</span><span class=p>,</span> <span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err1:&#34;</span><span class=p>,</span> <span class=nx>err1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err2:&#34;</span><span class=p>,</span> <span class=nx>err2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err1 = err2:&#34;</span><span class=p>,</span> <span class=nx>err1</span> <span class=o>==</span> <span class=nx>err2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>  
+</span></span></code></pre></div><p>这个例子的运行输出结果如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>err1</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed120</span><span class=p>,</span><span class=mh>0x0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err1</span> <span class=p>=</span> <span class=kc>nil</span><span class=p>:</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl><span class=nx>err1</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed1a0</span><span class=p>,</span><span class=mh>0x10eb310</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err2</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed1a0</span><span class=p>,</span><span class=mh>0x10eb318</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err1</span> <span class=p>=</span> <span class=nx>err2</span><span class=p>:</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl><span class=nx>err1</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed1a0</span><span class=p>,</span><span class=mh>0x10eb310</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err2</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed0c0</span><span class=p>,</span><span class=mh>0xc000010050</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err1</span> <span class=p>=</span> <span class=nx>err2</span><span class=p>:</span> <span class=kc>false</span>
+</span></span></code></pre></div><p>我们看到上面示例中每一轮通过 println 输出的 err1 和 err2 的 tab 和 data 值，要么 data 值不同，要么 tab 与 data 值都不同。</p><p>和空接口类型变量一样，只有 tab 和 data 指的数据内容一致的情况下，两个非空接口类型变量之间才能划等号。这里我们要注意 err1 下面的赋值情况：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>err1</span> <span class=p>=</span> <span class=p>(</span><span class=o>*</span><span class=nx>T</span><span class=p>)(</span><span class=kc>nil</span><span class=p>)</span>
+</span></span></code></pre></div><p>针对这种赋值，println 输出的 err1 是（0x10ed120, 0x0），也就是非空接口类型变量的类型信息并不为空，数据指针为空，因此它与 nil（0x0, 0x0）之间不能划等号。</p><p>现在我们再回到我们开头的那个问题，你是不是已经豁然开朗了呢？开头的问题中，从 returnsError 返回的 error 接口类型变量 err
+的数据指针虽然为空，但它的类型信息（iface.tab）并不为空，而是 *MyError 对应的类型信息，这样 err 与 nil（0x0,0x0）相比自然不相等，这就是我们开头那个问题的答案解析，现在你明白了吗？</p><h3 id=第四种空接口类型变量与非空接口类型变量的等值比较>第四种：空接口类型变量与非空接口类型变量的等值比较</h3><p>下面是非空接口类型变量和空接口类型变量之间进行比较的例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>printEmptyInterfaceAndNonEmptyInterface</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>eif</span> <span class=kd>interface</span><span class=p>{}</span> <span class=p>=</span> <span class=nf>T</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>err</span> <span class=kt>error</span> <span class=p>=</span> <span class=nf>T</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif:&#34;</span><span class=p>,</span> <span class=nx>eif</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif = err:&#34;</span><span class=p>,</span> <span class=nx>eif</span> <span class=o>==</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nx>err</span> <span class=p>=</span> <span class=nf>T</span><span class=p>(</span><span class=mi>6</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif:&#34;</span><span class=p>,</span> <span class=nx>eif</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;err:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=s>&#34;eif = err:&#34;</span><span class=p>,</span> <span class=nx>eif</span> <span class=o>==</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>这个示例的输出结果如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>eif</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10b3b00</span><span class=p>,</span> <span class=mh>0x10eb4d0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed380</span><span class=p>,</span> <span class=mh>0x10eb4d8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif</span> <span class=p>=</span> <span class=nx>err</span><span class=p>:</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=nx>eif</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10b3b00</span><span class=p>,</span> <span class=mh>0x10eb4d0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>err</span><span class=p>:</span> <span class=p>(</span><span class=mh>0x10ed380</span><span class=p>,</span> <span class=mh>0x10eb4e0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>eif</span> <span class=p>=</span> <span class=nx>err</span><span class=p>:</span> <span class=kc>false</span>
+</span></span></code></pre></div><p>你可以看到，空接口类型变量和非空接口类型变量内部表示的结构有所不同（第一个字段：_type vs. tab），两者似乎一定不能相等。但 Go 在进行等值比较时，类型比较使用的是
+eface 的 _type 和 iface 的 tab._type，因此就像我们在这个例子中看到的那样，当 eif 和 err 都被赋值为 T(5) 时，两者之间是划等号的。</p><p>好了，到这里，我们已经理解了各类接口类型变量在运行时层的表示。我们可以通过 println 可以查看这个表示信息，从中我们也知道了接口变量只有在类型信息与值信息都一致的情况下才能划等号。</p><h2 id=五小结>五、小结</h2><p>接口类型作为参与构建 Go 应用骨架的重要参与者，在 Go 语言中有着很高的地位。它这个地位的取得离不开它拥有的“动静兼备”的语法特性。Go 接口的动态特性让
+Go 拥有与动态语言相近的灵活性，而静态特性又在编译阶段保证了这种灵活性的安全。</p><p>要更好地理解 Go 接口的这两种特性，我们需要深入到 Go 接口在运行时的表示层面上去。接口类型变量在运行时表示为 eface 和 iface，eface
+用于表示空接口类型变量，iface 用于表示非空接口类型变量。只有两个接口类型变量的类型信息（eface.<em>type/iface.tab.</em>
+type）相同，且数据指针（eface.data/iface.data）所指数据相同时，两个接口类型变量才是相等的。</p><p>我们可以通过 println 输出接口类型变量的两部分指针变量的值。而且，通过拷贝 runtime 包 eface 和 iface 相关类型源码，我们还可以自定义输出
+eface/iface 详尽信息的函数，不过要注意的是，由于 runtime 层代码的演进，这个函数可能不具备在 Go 版本间的移植性。</p><p>最后，接口类型变量的赋值本质上是一种装箱操作，装箱操作是由 Go 编译器和运行时共同完成的，有一定的性能开销，对于性能敏感的系统来说，我们应该尽量避免或减少这类装箱操作。</p><h2 id=六引用>六、引用</h2><p><a href=https://www.cnblogs.com/taoxiaoxin/p/17818224.html>https://www.cnblogs.com/taoxiaoxin/p/17818224.html</a></p></article></div></main></body></html>
