@@ -1,0 +1,68 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='枚举类不支持实例化； 成员的值不能在类的外部做任何修改，每个成员都有`name`,`value`两个属性，其中`name`为该枚举值的名称，`value`为该枚举值的内容； 定义枚举时，成员名称不允许重复，但在默认情况下，不同的成员值允许相同，两个相同值的成员，第二个成员的名称将会被视作第一个成员的别名，若要限制不能定义相同值的成员。可以使用装饰器`@unique`； 枚举支持迭代器，可以遍历枚举成员；如果枚举有值重复的成员，循环遍历枚举时只获取值重复成员的第一个成员，若想把值重复的成员也遍历出来，要用枚举的一个特殊属性:`__members__`； from enum import Enum from typing import Optional class BaseEnm(Enum): def getCode(self): """根据枚举名称取状态码code @return: 状态码code """ return self.value[0] def getMessage(self): """根据枚举名称取状态说明message @return: 状态说明message """ return self.value[1] @classmethod def messageByCode(cls, code) -> Optional[str]: """根据状态码获取状态码说明""" for name, member in cls.__members__.items(): if code in member.value: return cls[name].getMessage() return None @unique class CallStateResult(BaseEnm): """通话状态结果""" USER_STATE_NULL = (0, "未知的初始状态") USER_STATE_ANSWERED = (1, "接通") USER_STATE_POWER_OFF = (2, "关机") USER_STATE_NOT_EXIST = (3, "空号") USER_STATE_INVALID_NUM = (4, "非法号码") USER_STATE_OUTSERVICE = (5, "停机") USER_STATE_NOT_IN_SERVICE = (6, "不在服务区") USER_STATE_NOT_ANSWER = (7, "无人接听") USER_STATE_BUSY = (8, "用户忙") USER_STATE_NOT_REACHABLE = (9, "无法接通") USER_STATE_NOT_LOCALNUM_NEED_ZERO = (10, "本地号码未加零") USER_STATE_LOCALNUM_ADD_ZERO = (11, "本地号码多加零") USER_STATE_BARRING_INCOMING = (12, "呼入限制") USER_STATE_CALL_REMINDER = (13, "来电提醒") USER_STATE_DEFAULTING = (14, "欠费") USER_STATE_LINE_BUSY = (15, "网络忙") USER_STATE_FORWARDED = (16, "呼叫转移失败") USER_STATE_CANNOT_CONNECTED = (17, "无法接听") USER_STATE_NUMBER_CHANGE = (18, "改号") USER_STATE_LINE_FAULT = (19, "线路故障") USER_STATE_CALL_REJECTED = (20, "拒接") USER_STATE_NOT_RECOGNITION = (21, "未知状态") USER_STATE_CALL_FAILED = (22, "呼叫失败") USER_STATE_HANGUP = (100, "通话结束") if __name__ == &#39;__main__&#39;: print(CallStateResult.'><title>Python枚举类自定义状态
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2021-09-23 03:02:00 +0800 +0800">2021-09-23</time></p><h1>Python枚举类自定义状态</h1><ul><li>枚举类不支持实例化；</li><li>成员的值不能在类的外部做任何修改，每个成员都有`name`,`value`两个属性，其中`name`为该枚举值的名称，`value`为该枚举值的内容；</li><li>定义枚举时，成员名称不允许重复，但在默认情况下，不同的成员值允许相同，两个相同值的成员，第二个成员的名称将会被视作第一个成员的别名，若要限制不能定义相同值的成员。可以使用装饰器`@unique`；</li><li>枚举支持迭代器，可以遍历枚举成员；如果枚举有值重复的成员，循环遍历枚举时只获取值重复成员的第一个成员，若想把值重复的成员也遍历出来，要用枚举的一个特殊属性:`__members__`；</li></ul><pre tabindex=0><code>from enum import Enum
+from typing import Optional
+
+class BaseEnm(Enum):
+
+  def getCode(self):
+    &#34;&#34;&#34;根据枚举名称取状态码code
+
+    @return: 状态码code
+   &#34;&#34;&#34;
+    return self.value[0]
+
+  def getMessage(self):
+    &#34;&#34;&#34;根据枚举名称取状态说明message
+
+    @return: 状态说明message
+    &#34;&#34;&#34;
+    return self.value[1]
+
+  @classmethod
+  def messageByCode(cls, code) -&gt; Optional[str]:
+    &#34;&#34;&#34;根据状态码获取状态码说明&#34;&#34;&#34;
+    for name, member in cls.__members__.items():
+      if code in member.value:
+        return cls[name].getMessage()
+    return None
+
+@unique
+class CallStateResult(BaseEnm):
+  &#34;&#34;&#34;通话状态结果&#34;&#34;&#34;
+
+  USER_STATE_NULL = (0, &#34;未知的初始状态&#34;)
+  USER_STATE_ANSWERED = (1, &#34;接通&#34;)
+  USER_STATE_POWER_OFF = (2, &#34;关机&#34;)
+  USER_STATE_NOT_EXIST = (3, &#34;空号&#34;)
+  USER_STATE_INVALID_NUM = (4, &#34;非法号码&#34;)
+  USER_STATE_OUTSERVICE = (5, &#34;停机&#34;)
+  USER_STATE_NOT_IN_SERVICE = (6, &#34;不在服务区&#34;)
+  USER_STATE_NOT_ANSWER = (7, &#34;无人接听&#34;)
+  USER_STATE_BUSY = (8, &#34;用户忙&#34;)
+  USER_STATE_NOT_REACHABLE = (9, &#34;无法接通&#34;)
+  USER_STATE_NOT_LOCALNUM_NEED_ZERO = (10, &#34;本地号码未加零&#34;)
+  USER_STATE_LOCALNUM_ADD_ZERO = (11, &#34;本地号码多加零&#34;)
+  USER_STATE_BARRING_INCOMING = (12, &#34;呼入限制&#34;)
+  USER_STATE_CALL_REMINDER = (13, &#34;来电提醒&#34;)
+  USER_STATE_DEFAULTING = (14, &#34;欠费&#34;)
+  USER_STATE_LINE_BUSY = (15, &#34;网络忙&#34;)
+  USER_STATE_FORWARDED = (16, &#34;呼叫转移失败&#34;)
+  USER_STATE_CANNOT_CONNECTED = (17, &#34;无法接听&#34;)
+  USER_STATE_NUMBER_CHANGE = (18, &#34;改号&#34;)
+  USER_STATE_LINE_FAULT = (19, &#34;线路故障&#34;)
+  USER_STATE_CALL_REJECTED = (20, &#34;拒接&#34;)
+  USER_STATE_NOT_RECOGNITION = (21, &#34;未知状态&#34;)
+  USER_STATE_CALL_FAILED = (22, &#34;呼叫失败&#34;)
+  USER_STATE_HANGUP = (100, &#34;通话结束&#34;)
+
+
+if __name__ == &#39;__main__&#39;:
+  print(CallStateResult.USER_STATE_NULL)
+  print(CallStateResult.USER_STATE_NULL.getCode())
+  print(CallStateResult.USER_STATE_NULL.getMessage())
+  print(CallStateResult.messageByCode(0))
+</code></pre><p>输出</p><pre tabindex=0><code>CallStateResult.USER_STATE_NULL
+0
+未知的初始状态
+未知的初始状态
+</code></pre></article></div></main></body></html>

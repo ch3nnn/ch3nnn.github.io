@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>开源 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%BC%80%E6%BA%90/</link><description>Recent content in 开源 on Ch3nnn!Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 08 Jan 2022 17:00:00 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%BC%80%E6%BA%90/index.xml" rel="self" type="application/rss+xml"/><item><title>桌面字幕——实时语音翻译</title><link>https://blog.ch3nnn.cn/posts/%E6%A1%8C%E9%9D%A2%E5%AD%97%E5%B9%95%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E7%BF%BB%E8%AF%91/</link><pubDate>Sat, 08 Jan 2022 17:00:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%A1%8C%E9%9D%A2%E5%AD%97%E5%B9%95%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E7%BF%BB%E8%AF%91/</guid><description>介绍
+这是一个基于Java11 + idea 2021.2.2 有道智能云Ai-实时语音翻译转写实现的翻译桌面字幕。 代码实现非常简单，根据有道智能云开发文档里面的demo代码复制粘贴就完成了。
+实时语音识别的效果不错，可以用于在线小语种教学视频。
+github:https://github.com/ct437383389/DesktopSubtitles
+效果:
+技术栈
+使用 JavaFx 实现透明窗口 + Label Java11 使用方式
+填写 StreamSpeechTask run方法 智能云 appKey appSecret
+资料
+在此感谢大佬提供参考源码实时语音翻译https://github.com/yi-ge/desktop-subtitle 有道智能云实时语音翻译文档https://ai.youdao.com/streamingAudio.s</description></item></channel></rss>

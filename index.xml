@@ -81,7 +81,18 @@ API网关方式的核心要点是，所有的客户端和消费端都通过统�
 API 网关作为客户端和服务端的中间桥梁，为微服务系统提供统一的管理机制： 除了基础的请求分发、API 管理和条件路由等功能，还包括身份验证、监控报警、调用链追踪、负载均衡、限流隔离和熔断降级。身份认证：下图表示的是微服务联合 API 网关如何进行身份认证的，由图可见所有请求都通过网关，从而有效地隐藏了微服务。
 监控报警/调用链追踪： API 作为客户端和服务端的中间桥梁，是微服务监控的最好载体，API 网关监控功能的主要职责是及时发现网关以及后端服务器的连接异常，在 API 的监控平台上面用户可以随时查看日志信息，监控信息，调用链等等，并且主机发生的任何异常都会自动报警到控制台。有些网关甚至可以做到给客户端和服务端双向报警。
 限流隔离/熔断降级： 随着互联网业务规模的增加，系统的并发度增高，多个服务之间相互调用链路，一条核心链路往往可能调用十个服务。如果在链路中，某个服务的 rt（响应时间）急剧上升，上游服务不断请求，造成恶性循环，上游等待结果线程数越多，使得更上游服务阻塞最终整条链路无法使用，从而导致服务雪崩，所以对入口流量进行整治管理是很有必要的，下图表示微服务系统是如何结合 API 网关进行限流隔离和熔断降级的。
-主流网关选择 在微服务领域，有许多开源网关实现，有 NGINX、Kong、Apache APISIX 和 Envoy 等，Java 技术栈的有 Netfilx Zuul、Spring Cloud Gateway、Soul 等。或许你会问“有了 NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对比。</description></item><item><title>Golang-channel通道</title><link>https://blog.ch3nnn.cn/posts/golang-channel%E9%80%9A%E9%81%93/</link><pubDate>Sun, 19 Mar 2023 17:41:05 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/golang-channel%E9%80%9A%E9%81%93/</guid><description>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。
+主流网关选择 在微服务领域，有许多开源网关实现，有 NGINX、Kong、Apache APISIX 和 Envoy 等，Java 技术栈的有 Netfilx Zuul、Spring Cloud Gateway、Soul 等。或许你会问“有了 NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对比。</description></item><item><title>Crx搜搜 - 一个牛X的扩展商店</title><link>https://blog.ch3nnn.cn/posts/crx%E6%90%9C%E6%90%9C-%E4%B8%80%E4%B8%AA%E7%89%9Bx%E7%9A%84%E6%89%A9%E5%B1%95%E5%95%86%E5%BA%97/</link><pubDate>Thu, 30 Mar 2023 10:08:23 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/crx%E6%90%9C%E6%90%9C-%E4%B8%80%E4%B8%AA%E7%89%9Bx%E7%9A%84%E6%89%A9%E5%B1%95%E5%95%86%E5%BA%97/</guid><description>由于 Chrome 扩展商店
+无法访问，很多浏览器的官方扩展商店无人维护，国内各种下载站套路太多，导致很难下载到所需要的浏览器扩展/插件。
+Crx搜搜(opens new window)利用独家技术，实时解析各大扩展商店最新版扩展下载地址，直接下载.crx或.xpi安装包。 现已支持以下扩展商店：
+扩展/应用商店 支持功能 Chrome 扩展商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Edge 扩展商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Firefox 扩展商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Microsoft 应用商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Opera 扩展商店 ✔️ 解析 ✔️ 下载 ❌ 在线安装 ✔️ 离线安装 ❌ 查看详情 ❌ 搜索 📖 功能简介 下载的扩展兼容以下浏览器：</description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>uTools 是什么？ uTools = your tools（你的工具集）
+uTools 是一个极简、插件化的现代桌面软件，通过自由选配丰富的插件，打造得心应手的工具集合。
+通过快捷键（默认alt + space）就可以快速呼出这个搜索框。你可以往输入框内粘贴文本、图片、截图、文件、文件夹等等，能够处理此内容的插件也早已准备就绪，统一的设计风格和操作方式，助你高效的得到结果。
+uTools 能做什么？ 最简单的，uTools 可以作为一个程序快速启动器，支持英文、英文驼峰、中文拼音、拼音首字母来打开你的本地程序。除程序外， win10+ 和 MacOS 用户还可以快速搜索并打开「控制面板」内的细项。总之，你只要还记得一个大概的名字，直接输入基本都能找到。
+一切皆插件！ 启动已安装的程序仅仅是最基础的功能，uTools 最大的特点就是拥有强大的插件系统。
+现在已有 700+ 的插件供你选择，每个插件解决一个具体场景的问题，简洁美观、即用即走。
+输入插件应用市场进入插件管理，你就可以根据自己的需求挑选安装，组合成自己最称手的工具集合，为各种日常操作提供便利，不断产生的新插件，将为你带来无限可能。
+超级面板 可以通过鼠标右键/中键（可配置），快速打开 uTools 超级面板，uTools 会根据当前选择的内容（文本、截图、文件、文件夹）自动匹配已安装的插件供你选择。与平时使用右键类似的习惯，uTools 超级面板却能为你带来完全不一样的内容及体验。
+针对英文，还提供单词词典和整句翻译功能。</description></item><item><title>Golang-channel通道</title><link>https://blog.ch3nnn.cn/posts/golang-channel%E9%80%9A%E9%81%93/</link><pubDate>Sun, 19 Mar 2023 17:41:05 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/golang-channel%E9%80%9A%E9%81%93/</guid><description>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。
 channel 有哪些应用 停止信号 channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。
 定时任务 与计时器结合，一般有两种做法：实现超时控制、实现定期执行某个任务。 有时候，需要执行某项操作，但又不想它耗费太长时间，上一个定时器就可以搞定。这就是时控制：
 select { case &amp;lt;- time.After(100*time.Millisecond): case &amp;lt;- s.stopc: return false } 等待 100 ms 后，如果 s.stopc 还没有读出数据或者被关闭，就直接结束。
@@ -158,4 +169,146 @@ $ cat go.mod module demo/firstProject go 1.</description></item><item><title>「
 保持持续学习的激情、态度 持续开源贡献 真的需要运动(感觉自己要废了) 感情上还是需要更加谦让 &amp;hellip; 写在最后 最后, 最后, Happy New Year &amp;hellip; 或者至少, 平平安安度过新的一年 各位, 继续加油吧! 冲冲冲!</description></item><item><title>About</title><link>https://blog.ch3nnn.cn/about/</link><pubDate>Mon, 29 Aug 2022 14:04:30 +0800</pubDate><guid>https://blog.ch3nnn.cn/about/</guid><description>关于作者 我叫陈通, 来自南方的某个小城市. 现坐标：杭州.
 对自己的技术栈认为: 擅长增删改查、代码搬运、面向搜索引擎编程.
 👀 正在学习 Golang ⭐️ Github https://github.com/ch3nnn 📗 Blog 平时想起来就写点 [Ch3nnnnn个人博客] 📖 CSDN [CSDN博客] 💬 微信公众号: 暹罗猫十七 联系方式 终端执行以下命令:
-echo &amp;#39;H4sIAHY712MC/+VWy0oDMRTd5ysuzL4ggouudOEHqAuXUsZAC85Uii5c6lrwF/QHuhIFC/ozU4p/ISLM3HMfSRQ3YqBlMpOcnJx7cm8CZdp+M5md0fvNsls9jUNqZD2N7 ehq1i5iu7u1sz2q500IOfjjWE8nF7R+XXZvD+u753F2Bp0cXZ7HRbPX5oeGgqUPDqmen0bqXm43q8fN/XWaQqh+uf0ZQCXF56uvH/ur+k+kpyhAtgqx6TCcD4MZlQnIyPU95F8B zeHD9wD5a7a3HwAyOopmEaDUkMNhSADC0zAfZfaQjbLTOKBWsciHXFEO0CsKW/Q1NL1hGpsxliEytoyK8A6LhtaFvw5CMRlV2wM6zo4PtT+8LTv8NMMKcIfxWi5c3jW20NpyPGrs A9oMCIhgpLgnjC0zeVB0XEn7wAMEnSRZkolSLmCcFJmn0DZWljBlDo5HdY62kgFJ66Y1tPp2K6p6MlkgrmadzYfWyTFrihllp+qh0fkCnuaJmqKPnhkfecDTVW8gI9OXPHPFVQ9d KKNjZKqQzgE6K4MkyaC4VU/fQNSNxDnL/+V++AGgTu5uRQwAAA==&amp;#39; | base64 --decode | gzip -d</description></item></channel></rss>
+echo &amp;#39;H4sIAHY712MC/+VWy0oDMRTd5ysuzL4ggouudOEHqAuXUsZAC85Uii5c6lrwF/QHuhIFC/ozU4p/ISLM3HMfSRQ3YqBlMpOcnJx7cm8CZdp+M5md0fvNsls9jUNqZD2N7 ehq1i5iu7u1sz2q500IOfjjWE8nF7R+XXZvD+u753F2Bp0cXZ7HRbPX5oeGgqUPDqmen0bqXm43q8fN/XWaQqh+uf0ZQCXF56uvH/ur+k+kpyhAtgqx6TCcD4MZlQnIyPU95F8B zeHD9wD5a7a3HwAyOopmEaDUkMNhSADC0zAfZfaQjbLTOKBWsciHXFEO0CsKW/Q1NL1hGpsxliEytoyK8A6LhtaFvw5CMRlV2wM6zo4PtT+8LTv8NMMKcIfxWi5c3jW20NpyPGrs A9oMCIhgpLgnjC0zeVB0XEn7wAMEnSRZkolSLmCcFJmn0DZWljBlDo5HdY62kgFJ66Y1tPp2K6p6MlkgrmadzYfWyTFrihllp+qh0fkCnuaJmqKPnhkfecDTVW8gI9OXPHPFVQ9d KKNjZKqQzgE6K4MkyaC4VU/fQNSNxDnL/+V++AGgTu5uRQwAAA==&amp;#39; | base64 --decode | gzip -d</description></item><item><title>桌面字幕——实时语音翻译</title><link>https://blog.ch3nnn.cn/posts/%E6%A1%8C%E9%9D%A2%E5%AD%97%E5%B9%95%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E7%BF%BB%E8%AF%91/</link><pubDate>Sat, 08 Jan 2022 17:00:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%A1%8C%E9%9D%A2%E5%AD%97%E5%B9%95%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E7%BF%BB%E8%AF%91/</guid><description>介绍
+这是一个基于Java11 + idea 2021.2.2 有道智能云Ai-实时语音翻译转写实现的翻译桌面字幕。 代码实现非常简单，根据有道智能云开发文档里面的demo代码复制粘贴就完成了。
+实时语音识别的效果不错，可以用于在线小语种教学视频。
+github:https://github.com/ct437383389/DesktopSubtitles
+效果:
+技术栈
+使用 JavaFx 实现透明窗口 + Label Java11 使用方式
+填写 StreamSpeechTask run方法 智能云 appKey appSecret
+资料
+在此感谢大佬提供参考源码实时语音翻译https://github.com/yi-ge/desktop-subtitle 有道智能云实时语音翻译文档https://ai.youdao.com/streamingAudio.s</description></item><item><title>Python枚举类自定义状态</title><link>https://blog.ch3nnn.cn/posts/python%E6%9E%9A%E4%B8%BE%E7%B1%BB%E8%87%AA%E5%AE%9A%E4%B9%89%E7%8A%B6%E6%80%81/</link><pubDate>Thu, 23 Sep 2021 03:02:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/python%E6%9E%9A%E4%B8%BE%E7%B1%BB%E8%87%AA%E5%AE%9A%E4%B9%89%E7%8A%B6%E6%80%81/</guid><description>枚举类不支持实例化； 成员的值不能在类的外部做任何修改，每个成员都有`name`,`value`两个属性，其中`name`为该枚举值的名称，`value`为该枚举值的内容； 定义枚举时，成员名称不允许重复，但在默认情况下，不同的成员值允许相同，两个相同值的成员，第二个成员的名称将会被视作第一个成员的别名，若要限制不能定义相同值的成员。可以使用装饰器`@unique`； 枚举支持迭代器，可以遍历枚举成员；如果枚举有值重复的成员，循环遍历枚举时只获取值重复成员的第一个成员，若想把值重复的成员也遍历出来，要用枚举的一个特殊属性:`__members__`； from enum import Enum from typing import Optional class BaseEnm(Enum): def getCode(self): &amp;#34;&amp;#34;&amp;#34;根据枚举名称取状态码code @return: 状态码code &amp;#34;&amp;#34;&amp;#34; return self.value[0] def getMessage(self): &amp;#34;&amp;#34;&amp;#34;根据枚举名称取状态说明message @return: 状态说明message &amp;#34;&amp;#34;&amp;#34; return self.value[1] @classmethod def messageByCode(cls, code) -&amp;gt; Optional[str]: &amp;#34;&amp;#34;&amp;#34;根据状态码获取状态码说明&amp;#34;&amp;#34;&amp;#34; for name, member in cls.__members__.items(): if code in member.value: return cls[name].getMessage() return None @unique class CallStateResult(BaseEnm): &amp;#34;&amp;#34;&amp;#34;通话状态结果&amp;#34;&amp;#34;&amp;#34; USER_STATE_NULL = (0, &amp;#34;未知的初始状态&amp;#34;) USER_STATE_ANSWERED = (1, &amp;#34;接通&amp;#34;) USER_STATE_POWER_OFF = (2, &amp;#34;关机&amp;#34;) USER_STATE_NOT_EXIST = (3, &amp;#34;空号&amp;#34;) USER_STATE_INVALID_NUM = (4, &amp;#34;非法号码&amp;#34;) USER_STATE_OUTSERVICE = (5, &amp;#34;停机&amp;#34;) USER_STATE_NOT_IN_SERVICE = (6, &amp;#34;不在服务区&amp;#34;) USER_STATE_NOT_ANSWER = (7, &amp;#34;无人接听&amp;#34;) USER_STATE_BUSY = (8, &amp;#34;用户忙&amp;#34;) USER_STATE_NOT_REACHABLE = (9, &amp;#34;无法接通&amp;#34;) USER_STATE_NOT_LOCALNUM_NEED_ZERO = (10, &amp;#34;本地号码未加零&amp;#34;) USER_STATE_LOCALNUM_ADD_ZERO = (11, &amp;#34;本地号码多加零&amp;#34;) USER_STATE_BARRING_INCOMING = (12, &amp;#34;呼入限制&amp;#34;) USER_STATE_CALL_REMINDER = (13, &amp;#34;来电提醒&amp;#34;) USER_STATE_DEFAULTING = (14, &amp;#34;欠费&amp;#34;) USER_STATE_LINE_BUSY = (15, &amp;#34;网络忙&amp;#34;) USER_STATE_FORWARDED = (16, &amp;#34;呼叫转移失败&amp;#34;) USER_STATE_CANNOT_CONNECTED = (17, &amp;#34;无法接听&amp;#34;) USER_STATE_NUMBER_CHANGE = (18, &amp;#34;改号&amp;#34;) USER_STATE_LINE_FAULT = (19, &amp;#34;线路故障&amp;#34;) USER_STATE_CALL_REJECTED = (20, &amp;#34;拒接&amp;#34;) USER_STATE_NOT_RECOGNITION = (21, &amp;#34;未知状态&amp;#34;) USER_STATE_CALL_FAILED = (22, &amp;#34;呼叫失败&amp;#34;) USER_STATE_HANGUP = (100, &amp;#34;通话结束&amp;#34;) if __name__ == &amp;#39;__main__&amp;#39;: print(CallStateResult.</description></item><item><title>更换（Pypi）pip源到国内镜像</title><link>https://blog.ch3nnn.cn/posts/%E6%9B%B4%E6%8D%A2pypipip%E6%BA%90%E5%88%B0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F/</link><pubDate>Mon, 22 Feb 2021 03:09:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E6%9B%B4%E6%8D%A2pypipip%E6%BA%90%E5%88%B0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F/</guid><description>pip国内的一些镜像 阿里云https://mirrors.aliyun.com/pypi/simple/ 中国科技大学https://pypi.mirrors.ustc.edu.cn/simple/ 豆瓣(douban)https://pypi.douban.com/simple/ 清华大学https://pypi.tuna.tsinghua.edu.cn/simple/ 中国科学技术大学https://pypi.mirrors.ustc.edu.cn/simple/ 提示：若担心安全问题请使用HTTPS加密源
+修改源方法： 临时使用： Linux Mac Windows 通用命令
+可以在使用pip的时候在后面加上-i参数，指定pip源
+pip install scrapy -ihttps://pypi.tuna.tsinghua.edu.cn/simple
+永久修改： Linux:
+修改 pip.conf 文件 (没有就创建一个)
+$HOME/.config/pip/pip.conf
+修改内容如下：
+[global]
+index-url =https://pypi.tuna.tsinghua.edu.cn/simple12
+Mac:
+修改 pip.conf 文件
+$HOME/Library/Application Support/pip/pip.conf
+如果没有上面的目录,在如下目录创建 pip.conf
+$HOME/.config/pip/pip.conf
+修改内容如下：
+[global]
+index-url =https://pypi.tuna.tsinghua.edu.cn/simple12
+Windows:
+修改 pip.conf 文件 (没有就创建一个)
+%APPDATA%\pip\pip.ini
+修改内容如下：
+[global]
+index-url =https://pypi.tuna.tsinghua.edu.cn/simple
+修改文件后，执行命令发生错误 使用非HTTPS加密源（如豆瓣源），在执行命令发生错误，在命令最后加上--trusted-host pypi.douban.com
+pip install django -ihttp://pypi.douban.com/simple&amp;ndash;trusted-hostpypi.douban.com</description></item><item><title>Python 使用-gRPC详解</title><link>https://blog.ch3nnn.cn/posts/grpc%E8%AF%A6%E8%A7%A3/</link><pubDate>Thu, 24 Dec 2020 09:05:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/grpc%E8%AF%A6%E8%A7%A3/</guid><description>RPC 框架原理 RPC 框架的目标就是让远程服务调用更加简单、透明，RPC 框架负责屏蔽底层的传输方式（TCP 或者 UDP）、序列化方式（XML/Json/ 二进制）和通信细节。服务调用者可以像调用本地接口一样调用远程的服务提供者，而不需要关心底层通信细节和调用过程。
+RPC 框架的调用原理图如下所示：
+gRPC是什么？ 官方文档-Python
+gRPC是什么可以用官网的一句话来概括
+A high-performance, open-source universal RPC framework
+**所谓RPC(remote procedure call 远程过程调用)框架实际是提供了一套机制，使得应用程序之间可以进行通信，而且也遵从server/client模型。使用的时候客户端调用server端提供的接口就像是调用本地的函数一样。**如下图所示就是一个典型的RPC结构图。
+gRPC有什么好处以及在什么场景下需要用gRPC 既然是server/client模型，那么我们直接用restful api不是也可以满足吗，为什么还需要RPC呢？下面我们就来看看RPC到底有哪些优势
+gRPC vs. Restful API gRPC和restful API都提供了一套通信机制，用于server/client模型通信，而且它们都使用http作为底层的传输协议(严格地说, gRPC使用的http2.0，而restful api则不一定)。不过gRPC还是有些特有的优势，如下：
+gRPC可以通过protobuf来定义接口，从而可以有更加严格的接口约束条件。关于protobuf可以参见笔者之前的小文Google Protobuf简明教程 另外，通过protobuf可以将数据序列化为二进制编码，这会大幅减少需要传输的数据量，从而大幅提高性能。 gRPC可以方便地支持流式通信(理论上通过http2.0就可以使用streaming模式, 但是通常web服务的restful api似乎很少这么用，通常的流式数据应用如视频流，一般都会使用专门的协议如HLS，RTMP等，这些就不是我们通常web服务了，而是有专门的服务器应用。） gRPC HelloWorld实例详解 gRPC的使用通常包括如下几个步骤：
+通过protobuf来定义接口和数据类型 编写gRPC server端代码 编写gRPC client端代码
+下面来通过一个实例来详细讲解上述的三步。
+下边的hello world实例完成之后，其目录结果如下： 定义接口和数据类型 通过protobuf定义接口和数据类型 syntax = &amp;#34;proto3&amp;#34;; package rpc_package; // define a service service HelloWorldService { // define the interface and data type rpc SayHello (HelloRequest) returns (HelloReply) {} } // define the data type of request message HelloRequest { string name = 1; } // define the data type of response message HelloReply { string message = 1; } 使用gRPC protobuf生成工具生成对应语言的库函数 python -m grpc_tools.</description></item><item><title>PostmanCn:Postman中文版</title><link>https://blog.ch3nnn.cn/posts/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</link><pubDate>Mon, 21 Dec 2020 08:30:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</guid><description>最新版本：7.36.1
+更新时间：2020-12-18
+点击下载
+介绍 Postman中文版 汉化 持续更新中
+安装教程 Windows Postman-*-win64-中文版.zip 解压直接用
+app.zip 解压&amp;amp;&amp;amp;替换文件 应用程序目录/resources/app.asar
+Mac Postman官网下载&amp;amp;安装Postman Mac版
+下载 Postman-*-Mac-汉化版app.zip
+复制到 Postman安装目录 /&amp;hellip;/Postman.app/Contents/Resources/
+解压 替换 app目录即可
+Linux 解压 替换 app目录即可
+https://www.postman.com/downloads/这个是Postman官网的下载页面
+https://gitee.com/hlmd/PostmanCn/这个是这里的汉化的</description></item><item><title>MacOS开启外接显示器HiDP</title><link>https://blog.ch3nnn.cn/posts/macos%E5%BC%80%E5%90%AF%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8hidp/</link><pubDate>Tue, 01 Dec 2020 03:05:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/macos%E5%BC%80%E5%90%AF%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8hidp/</guid><description>对以下系统和显示器有效：
+macOS 10.12 Sierra
+macOS 10.13 High Sierra
+macOS 10.14 Mojave
+macOS 10.15 Catalina
+Dell P2416D, DisplayPort, 1920x1080 HiDPI
+Dell P2418D, DisplayPort, 1920x1080 HiDPI
+Acer XB241YU, HDMI, 1920x1080 HiDPI
+0x1 准备工作： 1. 打开系统HiDPI (在终端运行） sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool YES 如果使用 4K 或更高分辨率的显示器，macOS 很可能原生支持 HiDPI，建议直接从5. 下载 RDM尝试选择 HiDPI 分辨率。如无法启用或没有合适的分辨率，再使用配置文件。
+0x2 获得显示器信息 获得显示器的 VendorID 和 ProductID （制造商ID 和 产品ID），在终端运行：
+ioreg -lw0 | grep IODisplayPrefsKey | grep -o &amp;#39;/[^/]\+&amp;#34;$&amp;#39; 输出大概是这样的：
+&amp;gt; ioreg -lw0 | grep IODisplayPrefsKey | grep -o &amp;#39;/[^/]\+&amp;#34;$&amp;#39; /AppleBacklightDisplay-610-a029&amp;#34; /AppleDisplay-10ac-a0c4&amp;#34; 这条指令的输出会有多个，注意识别你想要调整的显示器。第一条AppleBacklightDisplay-610-a029是MBP的内置显示屏。第二个是外接显示器。（当然，也可以合上 MBP 屏幕，这样只会输出正在使用的外接显示器）</description></item><item><title>Navicat Premium 15.0.22 中文语言包</title><link>https://blog.ch3nnn.cn/posts/navicatpremium15.0.22%E4%B8%AD%E6%96%87%E8%AF%AD%E8%A8%80%E5%8C%85/</link><pubDate>Mon, 09 Nov 2020 10:57:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/navicatpremium15.0.22%E4%B8%AD%E6%96%87%E8%AF%AD%E8%A8%80%E5%8C%85/</guid><description>Navicat Premium是一个可多重连接的数据库管理工具，Navicat 的功能足以符合专业开发人员的所有需求，但是对数据库服务器的新手来说又相当容易学习。它可让你以单一程序同時连接到目前世面上所有版本的主流数据库并进行管理和操作，支持的数据库有： MySQL、SQL Server、SQLite、Oracle 及 PostgreSQL。让管理不同类型的数据库更加方便。
+汉化包 15.0.12 汉化 下载链接: https://pan.baidu.com/s/1SITpWMdXfBhYlis-YL14Tg 密码: vljg中文包 解压复制汉化文件夹放到/Applications/Navicat Premium.app/Contents/Resources 汉化完成
+PS:这个zh-Hans.lproj汉化文件是从Navicat Premium官方中文版提取 无毒无害 12.0.12 汉化 下载https://www.pipipan.com/fs/13114864-217250713中文包 复制汉化文件夹放到/Applications/Navicat Premium.app/Contents/Resources 汉化完成
+PS:这个zh-Hans.lproj汉化文件是从Navicat Premium 12.0.12官方中文版提取 无毒无害</description></item><item><title>「超级右键」Mac上最强的右键菜单工具，让你效率飞起！</title><link>https://blog.ch3nnn.cn/posts/%E8%B6%85%E7%BA%A7%E5%8F%B3%E9%94%AEmac%E4%B8%8A%E6%9C%80%E5%BC%BA%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E5%B7%A5%E5%85%B7%E8%AE%A9%E4%BD%A0%E6%95%88%E7%8E%87%E9%A3%9E%E8%B5%B7/</link><pubDate>Mon, 26 Oct 2020 15:03:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E8%B6%85%E7%BA%A7%E5%8F%B3%E9%94%AEmac%E4%B8%8A%E6%9C%80%E5%BC%BA%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E5%B7%A5%E5%85%B7%E8%AE%A9%E4%BD%A0%E6%95%88%E7%8E%87%E9%A3%9E%E8%B5%B7/</guid><description>简介 我对该产品的评价只有六个字：实用、效率、快、得我心
+超级右键主要实现了： Mac电脑上右键的扩展，能够新建、发送/复制文件到某个位置、快速打开常用目录、自定义文件夹图标、拷贝路径、终端/iTerm/VSCode 里进入路径、显示隐藏文件、彻底删除文件、剪切粘贴文件、百度翻译、谷歌翻译、右键截图、标注、贴图等等。
+**「超级右键」**有一部分功能是借鉴Windows系统的，也有开发者自己新创的功能，总的来说功能完善，且使用快捷，是目前Mac上最强大的右键工具，绝对是Mac用户装机必备。
+功能 1.新建文件 **默认支持新建：**TXT/RTF/XML/Word/Excel/PPT/WPS文字/WPS表格/WPS演示/Pages/Numbers/Keynote/Ai/PSD/Markdown格式的文件。
+同时还支持
+用户自定义添加其他类型文件进行新建。 新建后自动打开文件 新建的时候启用弹窗，命名文件名和文件位置 将新建的文件类型添加到一级菜单目录 新建文件
+2.复制/发动文件到指定路径 这个功能可以说非常的实用，以前在Mac上要转移文件的位置，很多时候要先拷贝，然后一层层的打开路径，很费事，有了超级右键，一键发动到位，很方便。
+复制文件到
+3.常用目录 **「超级右键」**允许用户自定义常用目录，然后使用右键快速打开，非常方便。
+常用目录
+4.自定义文件夹图标 很多时候，你可能已经厌倦了千篇一律的蓝色文件，想给文件夹带去一点色彩，变得个性化，从视觉上好分辨一些，**「超级右键」**就能帮你轻松办到。
+自定义文件夹图标
+5.剪切、粘贴 Mac上本来是没有剪切功能的，从Windows转Mac的朋友们肯定觉得不习惯吧。**「超级右键」**为右键新增了剪切、粘贴功能，使用起来非常顺手。
+剪切、粘贴
+6.截图 Better 365将超级右键与其截图工具iShot进行了联动，可以使用右键调用进行截图，前提是你必须安装了iShot。
+右键截图
+截图
+7.贴图、标注 你还可以直接选中本地已存在的图片，将其贴图，并标记
+贴图标注
+贴图标注
+8.拷贝当前路径 **「超级右键」**可以让你非常方便的拷贝路径，省去手码路径的麻烦。
+拷贝当前路径
+9、终端、iTerm、VSCode、Sublime Text里打开 如果你需要在终端、等工具里打开文件、路径等，**「超级右键」**也将助你快人一步。
+终端、iTerm、VScode等打开 10.显示/隐藏文件 你可以快速地隐藏你电脑上的文件，保护隐私，只有你知道如何显示
+显示/隐藏文件
+11.彻底删除 彻底删除允许我们不经过废纸篓，直接删掉文件。
+12.百度翻译、谷歌翻译、转化为二维码 请输入图片标题
+听我说了这么多，不去下载安装体验一把，还在等什么呢？在App Store搜索“超级右键”就可以免费下载啦，快让你快人一步吧！
+请输入图片标题</description></item><item><title>Zeal——好用的离线API文档大全</title><link>https://blog.ch3nnn.cn/posts/zeal%E5%A5%BD%E7%94%A8%E7%9A%84%E7%A6%BB%E7%BA%BFapi%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/</link><pubDate>Mon, 14 Sep 2020 04:39:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/zeal%E5%A5%BD%E7%94%A8%E7%9A%84%E7%A6%BB%E7%BA%BFapi%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/</guid><description>Zeal是一款离线文档浏览器，其灵感来自 OS X平台上的 Dash，目前支持 Window 和 Liunx。基于 QT5。
+支持呼出热键。只要按下组合箭 ALT+Space 即可在任何地方显示面板，不用时可以用热键隐藏的系统托盘。
+可同时搜索多个文档
+不依赖网络
+GPL 协议开放源码
+Dash 中的文档都可以在 Zeal 中使用。
+安装：
+WIndows 自带二进制安装包
+Linux 需要安装 QT( &amp;gt;= 5) 和 bsdtar。
+软件截图：</description></item><item><title>简洁的 Mac 图床客户端 uPic</title><link>https://blog.ch3nnn.cn/posts/%E7%AE%80%E6%B4%81%E7%9A%84mac%E5%9B%BE%E5%BA%8A%E5%AE%A2%E6%88%B7%E7%AB%AFupic/</link><pubDate>Sun, 28 Jun 2020 14:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E7%AE%80%E6%B4%81%E7%9A%84mac%E5%9B%BE%E5%BA%8A%E5%AE%A2%E6%88%B7%E7%AB%AFupic/</guid><description>☁️ 简洁的 Mac 图床客户端 uPic 📑 简介 uPic(upload Picture) 是一款 Mac 端的图床(文件)上传客户端
+可将图片、各种文件上传到配置好的指定提供商的对象存储中。
+然后快速获取可供互联网访问的文件 URL
+**💡 特点：**无论是本地文件、或者屏幕截图都可自动上传，菜单栏显示实时上传进度。上传完成后文件链接自动复制到剪切板，让你无论是在写博客、灌水聊天都能快速插入图片。
+连接格式可以是普通 URL、HTML 或者 Markdown，仍由你掌控。
+🔋 支持图床：smms、又拍云 USS、七牛云 KODO、阿里云 OSS、腾讯云 COS、微博、Github、Gitee、Amazon S3、自定义上传接口、…
+🚀 如何安装 下载安装 1.Homebrew: brew cask install upic 2.手动 从Github release下载。
+如果访问 Github 下载困难的，可以从Gitee release下载。
+检查 Finder 扩展权限 1.打开 uPic
+2.打开系统偏好设置-扩展-访达扩展确保uPicFinderExtension是勾选状态
+🕹 使用方式 功能 描述 预览 🖥 选择文件上传 从Finder选择文件上传。可设置全局快捷键 ⌨️ 复制文件上传 上传已拷贝到剪切板的文件。可设置全局快捷键 📸 截图上传 直接拉框截图上传。可设置全局快捷键 🖱 拖拽本地文件上传 拖拽文件到状态栏上传 🖱 拖拽浏览器图片上传 从浏览器拖拽图片到状态栏上传 📂 Finder 中右键上传 右击文件上传 ⌨️ 命令行上传 通过执行命令调用 uPic 上传文件 🧰 更多功能 1.</description></item><item><title>使用 Floccus + 坚果云无梯子跨平台同步 Chrome 浏览器书签</title><link>https://blog.ch3nnn.cn/posts/%E4%BD%BF%E7%94%A8floccus+%E5%9D%9A%E6%9E%9C%E4%BA%91%E6%97%A0%E6%A2%AF%E5%AD%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B9%A6%E7%AD%BE/</link><pubDate>Fri, 17 Apr 2020 03:23:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/%E4%BD%BF%E7%94%A8floccus+%E5%9D%9A%E6%9E%9C%E4%BA%91%E6%97%A0%E6%A2%AF%E5%AD%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B9%A6%E7%AD%BE/</guid><description>​
+采用的方案是 Chrome / Cent Browser / Firefox / yandex 等 + Floccus + 坚果云（WebDav）实现书签的跨平台多终端同步的。理论上，只要支持Floccus扩展的浏览器，都能实现。
+首先给出 FloccusGitHub的地址：https://github.com/marcelklehr/floccus
+Floccus 插件的地址：https://chrome.google.com/webstore/detail/fnaicdffflnofjppbagibeoednhnbjhg
+安装好并配置完毕:
+开始 一、坚果云上的配置
+坚果云注册一个免费版个人账号（每日流量限制：上传1G，下载3G，够用了），注册成功登录后，点击右上角的用户名下拉菜单。
+注册:https://www.jianguoyun.com/
+需要先注册应用
+这里需要在我的书签添加自定义名称 在插件服务器地址中需要用到
+二、浏览器上的配置
+添加账户
+位置1中填入 坚果云服务器地址，即：https://dav.jianguoyun.com/dav/自定义书签名称
+注意地址后面还有在坚果云添加的书签名称 例如https://dav.jianguoyun.com/dav/bookmarks
+位置2中填入你在坚果云中的注册的用户名，
+位置3中填入在坚果云中为第三方应用生产的应用管理密码。
+将界面拖下来一点，看到有个“本地文件夹”配置，点击“选择文件夹”，出来的列表中，点击 “书签栏” 右边的“选取”按钮
+一般就选择根路径这样书签所有收藏网址都能同步
+修改自动同步时间间隔的，默认15分钟，这里我觉得没必要改，或者你觉得要同步间隔有必要调整，也可以修改一下。
+设置完毕后，拉倒最底部，点击“保存”。
+然后点击“同步”手动启动同步一次。 一般就能够成功把本地的“书签栏”目录中的浏览器同步保存到坚果云中的 我的文件 目录下的 bookmarks.xbel文件中了。
+参考学习：
+Floccus – 跨平台浏览器「书签同步」插件
+WebDAV是什么？网盘的WebDAV有什么用？
+yandex的Floccus插件安装教程</description></item></channel></rss>
