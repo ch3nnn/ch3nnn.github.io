@@ -11,68 +11,68 @@ package main func foo(argVal int) (*int) { var fooVal1 = new(int) var fooVal2 = 
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-03-07 13:38:48 +0000 UTC">2023-03-07</time></p><h1>Golang-逃逸分析</h1><h3 id=什么是堆栈>什么是堆/栈</h3><ul><li>堆（Heap）：一般来讲是人为手动进行管理，手动申请、分配、释放。一般所涉及的内存大小并不定，一般会存放较大的对象。另外其分配相对慢，涉及到的指令动作也相对多</li><li>栈（Stack）：由编译器进行管理，自动申请、分配、释放。一般不会太大，我们常见的函数参数（不同平台允许存放的数量不同），局部变量等等都会存放在栈上</li></ul><h3 id=什么是逃逸分析>什么是逃逸分析</h3><p>我们如何知道一个对象是应该放在堆内存，还是栈内存之上呢？可以官网的FAQ（地址：<a href=https://go.dev/doc/faq#stack_or_heap>https://go.dev/doc/faq#stack_or_heap</a>）中找到答案.
 <img src=https://s2.loli.net/2023/03/07/5xzbUkInvQrVpDu.png alt></p><p>大致意思是:</p><blockquote><p>从正确性的角度来看，你不需要知道。Go中的每个变量都存在，只要有对它的引用。实现选择的存储位置与语言的语义无关。
 存储位置确实对编写高效的程序有影响。如果可能的话，Go编译器将为该函数的堆栈帧中的函数分配局部变量。但是，如果编译器不能证明该变量在函数返回后没有被引用，那么编译器必须在有垃圾回收的堆上分配该变量，以避免悬空指针错误。此外，如果局部变量非常大，那么将其存储在堆中可能比存储在栈中更有意义。
-在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。</p></blockquote><h3 id=在什么阶段确立逃逸>在什么阶段确立逃逸</h3><p>Go语言虽然没有明确说明逃逸分析规则，但是有以下几点准则，是可以参考的。</p><ul><li>逃逸分析是在编译器完成的，这是不同于jvm的运行时逃逸分析</li><li>如果变量在函数外部没有引用，则优先放到栈中</li><li>如果变量在函数外部存在引用，则必定放在堆中</li></ul><h3 id=逃逸规则>逃逸规则</h3><p>我们其实都知道一个普遍的规则，就是如果变量需要使用堆空间，那么他就应该进行逃逸。但是实际上Golang并不仅仅把逃逸的规则如此泛泛。Golang会有很多场景具备出现逃逸的现象。</p><p>一般我们给一个引用类对象中的引用类成员进行赋值，可能出现逃逸现象。可以理解为访问一个引用对象实际上底层就是通过一个指针来间接的访问了，但如果再访问里面的引用成员就会有第二次间接访问，这样操作这部分对象的话，极大可能会出现逃逸的现象。</p><p>Go语言中的引用类型有<code>func</code>（函数类型），<code>interface</code>（接口类型），<code>slice</code>（切片类型），<code>map</code>（字典类型），<code>channel</code>（管道类型），<code>*</code>（指针类型）等。</p><h3 id=怎么确定是否逃逸>怎么确定是否逃逸</h3><p>可以使用编译器提供的指令<code>-gcflags</code> 就可以看到详细的逃逸分析过程，命令如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>go build -gcflags <span class=s1>&#39;-m -l&#39;</span> main.go
-</span></span></code></pre></div><p>其指令涉及的参数如下：</p><ul><li>-m：打印出逃逸分析的优化策略，实际上最多总共可以用 4 个 -m，但是这样子调试的信息量较大，一般用一个就足够了。</li><li>-l ：禁用函数内联，在这里禁用掉 inline 能更好的观察逃逸情况，减少干扰。</li></ul><h3 id=常见逃逸案例分析>常见逃逸案例分析</h3><p><strong>new的变量在栈还是堆</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>(</span><span class=nx>argVal</span> <span class=kt>int</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>fooVal1</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>fooVal2</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>fooVal3</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>fooVal4</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>fooVal5</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	
-</span></span><span class=line><span class=cl>    <span class=c1>//此处循环是防止go编译器将foo优化成inline(内联函数)
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//即使fooVal3发生逃逸，地址与其他也是连续的
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=mi>5</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>        <span class=nb>println</span><span class=p>(</span><span class=nx>argVal</span><span class=p>,</span> <span class=nx>fooVal1</span><span class=p>,</span> <span class=nx>fooVal2</span><span class=p>,</span> <span class=nx>fooVal3</span><span class=p>,</span> <span class=nx>fooVal4</span><span class=p>,</span> <span class=nx>fooVal5</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>    <span class=c1>//fooVal3
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=nx>fooVal3</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=nx>mainVal</span> <span class=o>:=</span> <span class=nf>foo</span><span class=p>(</span><span class=mi>666</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>    <span class=nb>println</span><span class=p>(</span><span class=o>*</span><span class=nx>mainVal</span><span class=p>,</span> <span class=nx>mainVal</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>我们将fooVal 1-5 全部用<code>new</code>的方式来开辟, 编译运行看结果, 显然<code>fooVal3</code>发生了逃逸</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ go build -gcflags <span class=s1>&#39;-m -l&#39;</span> main.go
-</span></span><span class=line><span class=cl><span class=c1># command-line-arguments</span>
-</span></span><span class=line><span class=cl>./main.go:5:29: new<span class=o>(</span>int<span class=o>)</span> does not escape
-</span></span><span class=line><span class=cl>./main.go:6:29: new<span class=o>(</span>int<span class=o>)</span> does not escape
-</span></span><span class=line><span class=cl>./main.go:7:29: new<span class=o>(</span>int<span class=o>)</span> escapes to heap
-</span></span><span class=line><span class=cl>./main.go:8:29: new<span class=o>(</span>int<span class=o>)</span> does not escape
-</span></span><span class=line><span class=cl>./main.go:9:29: new<span class=o>(</span>int<span class=o>)</span> does not escape
-</span></span></code></pre></div><p><strong>暴露外部指针</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>()</span> <span class=o>*</span><span class=kt>int</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>a</span> <span class=o>:=</span> <span class=mi>666</span>
-</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=o>&amp;</span><span class=nx>a</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>_</span> <span class=p>=</span> <span class=nf>foo</span><span class=p>()</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>逃逸分析如下，变量<code>a</code>发生了逃逸</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ go build -gcflags <span class=s1>&#39;-m -l&#39;</span> main.go
-</span></span><span class=line><span class=cl><span class=c1># command-line-arguments</span>
-</span></span><span class=line><span class=cl>./main.go:4:2: moved to heap: a
+在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。</p></blockquote><h3 id=在什么阶段确立逃逸>在什么阶段确立逃逸</h3><p>Go语言虽然没有明确说明逃逸分析规则，但是有以下几点准则，是可以参考的。</p><ul><li>逃逸分析是在编译器完成的，这是不同于jvm的运行时逃逸分析</li><li>如果变量在函数外部没有引用，则优先放到栈中</li><li>如果变量在函数外部存在引用，则必定放在堆中</li></ul><h3 id=逃逸规则>逃逸规则</h3><p>我们其实都知道一个普遍的规则，就是如果变量需要使用堆空间，那么他就应该进行逃逸。但是实际上Golang并不仅仅把逃逸的规则如此泛泛。Golang会有很多场景具备出现逃逸的现象。</p><p>一般我们给一个引用类对象中的引用类成员进行赋值，可能出现逃逸现象。可以理解为访问一个引用对象实际上底层就是通过一个指针来间接的访问了，但如果再访问里面的引用成员就会有第二次间接访问，这样操作这部分对象的话，极大可能会出现逃逸的现象。</p><p>Go语言中的引用类型有<code>func</code>（函数类型），<code>interface</code>（接口类型），<code>slice</code>（切片类型），<code>map</code>（字典类型），<code>channel</code>（管道类型），<code>*</code>（指针类型）等。</p><h3 id=怎么确定是否逃逸>怎么确定是否逃逸</h3><p>可以使用编译器提供的指令<code>-gcflags</code> 就可以看到详细的逃逸分析过程，命令如下：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>go build -gcflags <span style=color:#2544bb>&#39;-m -l&#39;</span> main.go
+</span></span></code></pre></div><p>其指令涉及的参数如下：</p><ul><li>-m：打印出逃逸分析的优化策略，实际上最多总共可以用 4 个 -m，但是这样子调试的信息量较大，一般用一个就足够了。</li><li>-l ：禁用函数内联，在这里禁用掉 inline 能更好的观察逃逸情况，减少干扰。</li></ul><h3 id=常见逃逸案例分析>常见逃逸案例分析</h3><p><strong>new的变量在栈还是堆</strong></p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>foo</span>(argVal <span style=color:#005a5f>int</span>) (<span style=color:#00538b>*</span><span style=color:#005a5f>int</span>) {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal1 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal2 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal3 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal4 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal5 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span>	
+</span></span><span style=display:flex><span>    <span style=color:#505050>//此处循环是防止go编译器将foo优化成inline(内联函数)
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#505050>//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#505050>//即使fooVal3发生逃逸，地址与其他也是连续的
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; <span style=color:#0000c0>5</span>; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>        <span style=color:#8f0075>println</span>(argVal, fooVal1, fooVal2, fooVal3, fooVal4, fooVal5)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>//fooVal3
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>return</span> fooVal3
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
+</span></span><span style=display:flex><span>    mainVal <span style=color:#00538b>:=</span> <span style=color:#721045>foo</span>(<span style=color:#0000c0>666</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8f0075>println</span>(<span style=color:#00538b>*</span>mainVal, mainVal)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>我们将fooVal 1-5 全部用<code>new</code>的方式来开辟, 编译运行看结果, 显然<code>fooVal3</code>发生了逃逸</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ go build -gcflags <span style=color:#2544bb>&#39;-m -l&#39;</span> main.go
+</span></span><span style=display:flex><span><span style=color:#505050># command-line-arguments</span>
+</span></span><span style=display:flex><span>./main.go:5:29: new<span style=color:#00538b>(</span>int<span style=color:#00538b>)</span> does not escape
+</span></span><span style=display:flex><span>./main.go:6:29: new<span style=color:#00538b>(</span>int<span style=color:#00538b>)</span> does not escape
+</span></span><span style=display:flex><span>./main.go:7:29: new<span style=color:#00538b>(</span>int<span style=color:#00538b>)</span> escapes to heap
+</span></span><span style=display:flex><span>./main.go:8:29: new<span style=color:#00538b>(</span>int<span style=color:#00538b>)</span> does not escape
+</span></span><span style=display:flex><span>./main.go:9:29: new<span style=color:#00538b>(</span>int<span style=color:#00538b>)</span> does not escape
+</span></span></code></pre></div><p><strong>暴露外部指针</strong></p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>foo</span>() <span style=color:#00538b>*</span><span style=color:#005a5f>int</span> {
+</span></span><span style=display:flex><span>	a <span style=color:#00538b>:=</span> <span style=color:#0000c0>666</span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> <span style=color:#00538b>&amp;</span>a
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
+</span></span><span style=display:flex><span>	_ = <span style=color:#721045>foo</span>()
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>逃逸分析如下，变量<code>a</code>发生了逃逸</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ go build -gcflags <span style=color:#2544bb>&#39;-m -l&#39;</span> main.go
+</span></span><span style=display:flex><span><span style=color:#505050># command-line-arguments</span>
+</span></span><span style=display:flex><span>./main.go:4:2: moved to heap: a
 </span></span></code></pre></div><p>这种情况直接满足我们上述中的原则：变量在函数外部存在引用。这个很好理解，因为当函数执行完毕，对应的栈帧就被销毁，但是引用已经被返回到函数之外。
-如果这时外部从引用地址取值，虽然地址还在，但是这块内存已经被释放回收了，这就是非法内存，问题可就大了。所以，很明显，这种情况必须分配到堆上。</p><p><strong>变量所占内存过大</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>foo</span><span class=p>(){</span>
-</span></span><span class=line><span class=cl>	<span class=nx>s</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>([]</span><span class=kt>int</span><span class=p>,</span> <span class=mi>10000</span><span class=p>,</span> <span class=mi>10000</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=nx>i</span><span class=o>:=</span><span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nb>len</span><span class=p>(</span><span class=nx>s</span><span class=p>);</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=nx>s</span><span class=p>[</span><span class=nx>i</span><span class=p>]</span> <span class=p>=</span> <span class=nx>i</span>
-</span></span><span class=line><span class=cl>    <span class=p>}</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nf>foo</span><span class=p>()</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>逃逸分析如下，变量<code>make([]int, 10000, 10000)</code>发生了逃逸</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ go build -gcflags <span class=s1>&#39;-m -l&#39;</span> main.go
-</span></span><span class=line><span class=cl><span class=c1># command-line-arguments</span>
-</span></span><span class=line><span class=cl>./main.go:4:11: make<span class=o>([]</span>int, 10000, 10000<span class=o>)</span> escapes to heap
+如果这时外部从引用地址取值，虽然地址还在，但是这块内存已经被释放回收了，这就是非法内存，问题可就大了。所以，很明显，这种情况必须分配到堆上。</p><p><strong>变量所占内存过大</strong></p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>foo</span>(){
+</span></span><span style=display:flex><span>	s <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>([]<span style=color:#005a5f>int</span>, <span style=color:#0000c0>10000</span>, <span style=color:#0000c0>10000</span>)
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>for</span> i<span style=color:#00538b>:=</span><span style=color:#0000c0>0</span>; i &lt; <span style=color:#8f0075>len</span>(s); i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>		s[i] = i
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
+</span></span><span style=display:flex><span>	<span style=color:#721045>foo</span>()
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>逃逸分析如下，变量<code>make([]int, 10000, 10000)</code>发生了逃逸</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ go build -gcflags <span style=color:#2544bb>&#39;-m -l&#39;</span> main.go
+</span></span><span style=display:flex><span><span style=color:#505050># command-line-arguments</span>
+</span></span><span style=display:flex><span>./main.go:4:11: make<span style=color:#00538b>([]</span>int, 10000, 10000<span style=color:#00538b>)</span> escapes to heap
 </span></span></code></pre></div><p>当我们创建了一个容量为10000的int类型的底层数组对象时，由于对象过大，它也会被分配到堆上。这里我们不禁要想一个问题，为啥大对象需要分配到堆上。</p><h3 id=小结>小结</h3><ul><li>逃逸分析是在编译器完成的，不是在运行时分析。</li><li>静态分配到栈上，性能一般会比动态分配到堆上好。</li><li>底层分配到堆，还是栈，实际上对你来说是透明的，不需要过度关心、纠结。</li><li>每个 Go 版本的逃逸分析都会有所不同（会改变，会优化）。</li><li>到处都用指针传递并不一定是最好的，要合理的用对。</li><li>遇到怀疑，直接通过 <code>go build -gcflags '-m -l'</code> 可以看到逃逸分析的过程和结果，胜过道听途说。</li></ul><h3 id=参考>参考</h3><ul><li><a href=https://golang2.eddycjy.com/posts/ch6/08-stack-heap/>逃逸分析：变量在哪儿</a></li><li><a href=https://mp.weixin.qq.com/s/xUt3E3yxJIwvCJWuHRxOVw>不喜欢水文？详解 Go 逃逸分析卷给你看</a></li><li><a href=https://www.yuque.com/aceld/golang/yyrlis>Golang中逃逸现象, 变量“何时栈?何时堆?”</a></li></ul></article></div></main></body></html>

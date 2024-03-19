@@ -7,118 +7,118 @@ package main import ( "fmt" "testing" ) func modify(ip *int) { fmt.Printf("函�
 原始指针的内存地址是：0xc00000e038 函数里接收到的指针的内存地址是：0xc00000e040 int值被修改了，新值为: 1 什么是传引用(引用传递) 传引用，也叫做引用传递， 指在调用函数时将实际参数的地址直接传递到函数中，那么在函数中对参数所进行的修改，将影响到实际参数。
 在 Go 语言中，官方已经明确了没有传引用，也就是没有引用传递这一情况。
 争议最大的 map 和 slice 这时候又有小伙伴疑惑了，你看 Go 语言中的 map 和 slice 类型，能直接修改，难道不是同个内存地址，不是引用了？'><title>Golang:值传递还是引用传递
-</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-01-09 18:09:14 +0000 UTC">2023-01-09</time></p><h1>Golang:值传递还是引用传递</h1><h2 id=go-官方的定义>Go 官方的定义</h2><p>本部分引用 Go 官方 FAQ 的 “When are function parameters passed by value?”，内容如下。</p><p>如同 C 系列的所有语言一样，Go 语言中的所有东西都是以值传递的。也就是说，一个函数总是得到一个被传递的东西的副本，就像有一个赋值语句将值赋给参数一样。</p><h2 id=传值和传引用>传值和传引用</h2><h3 id=什么是传值值传递>什么是传值（值传递）</h3><p>传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。<strong>其指的是在调用函数时将实际参数复制一份传递到函数中，这样在函数中如果对参数进行修改，将不会影响到实际参数。</strong> 比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。</p><p>对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我们看个例子。</p><p>test_demo.go</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;testing&#34;</span>
-</span></span><span class=line><span class=cl><span class=p>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>modify</span><span class=p>(</span><span class=nx>ip</span> <span class=o>*</span><span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;函数里接收到的指针的内存地址是：%p\n&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>ip</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=o>*</span><span class=nx>ip</span> <span class=p>=</span> <span class=mi>1</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestDemo</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>i</span> <span class=o>:=</span> <span class=mi>10</span>
-</span></span><span class=line><span class=cl>	<span class=nx>ip</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>i</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;原始指针的内存地址是：%p\n&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>ip</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nf>modify</span><span class=p>(</span><span class=nx>ip</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;int值被修改了，新值为:&#34;</span><span class=p>,</span> <span class=nx>i</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>输出结果:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>原始指针的内存地址是：0xc00000e038
-</span></span><span class=line><span class=cl>函数里接收到的指针的内存地址是：0xc00000e040
-</span></span><span class=line><span class=cl>int值被修改了，新值为: 1
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-01-09 18:09:14 +0000 UTC">2023-01-09</time></p><h1>Golang:值传递还是引用传递</h1><h2 id=go-官方的定义>Go 官方的定义</h2><p>本部分引用 Go 官方 FAQ 的 “When are function parameters passed by value?”，内容如下。</p><p>如同 C 系列的所有语言一样，Go 语言中的所有东西都是以值传递的。也就是说，一个函数总是得到一个被传递的东西的副本，就像有一个赋值语句将值赋给参数一样。</p><h2 id=传值和传引用>传值和传引用</h2><h3 id=什么是传值值传递>什么是传值（值传递）</h3><p>传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。<strong>其指的是在调用函数时将实际参数复制一份传递到函数中，这样在函数中如果对参数进行修改，将不会影响到实际参数。</strong> 比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。</p><p>对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我们看个例子。</p><p>test_demo.go</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;testing&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>modify</span>(ip <span style=color:#00538b>*</span><span style=color:#005a5f>int</span>) {
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;函数里接收到的指针的内存地址是：%p\n&#34;</span>, <span style=color:#00538b>&amp;</span>ip)
+</span></span><span style=display:flex><span>	<span style=color:#00538b>*</span>ip = <span style=color:#0000c0>1</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>TestDemo</span>(t <span style=color:#00538b>*</span>testing.T) {
+</span></span><span style=display:flex><span>	i <span style=color:#00538b>:=</span> <span style=color:#0000c0>10</span>
+</span></span><span style=display:flex><span>	ip <span style=color:#00538b>:=</span> <span style=color:#00538b>&amp;</span>i
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;原始指针的内存地址是：%p\n&#34;</span>, <span style=color:#00538b>&amp;</span>ip)
+</span></span><span style=display:flex><span>	<span style=color:#721045>modify</span>(ip)
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;int值被修改了，新值为:&#34;</span>, i)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>输出结果:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-text data-lang=text><span style=display:flex><span>原始指针的内存地址是：0xc00000e038
+</span></span><span style=display:flex><span>函数里接收到的指针的内存地址是：0xc00000e040
+</span></span><span style=display:flex><span>int值被修改了，新值为: 1
 </span></span></code></pre></div><h3 id=什么是传引用引用传递>什么是传引用(引用传递)</h3><p>传引用，也叫做引用传递， <strong>指在调用函数时将实际参数的地址直接传递到函数中</strong>，那么在函数中对参数所进行的修改，将影响到实际参数。</p><p>在 Go 语言中，官方已经明确了没有传引用，也就是没有引用传递这一情况。</p><p><strong>争议最大的 map 和 slice</strong>
-这时候又有小伙伴疑惑了，你看 Go 语言中的 map 和 slice 类型，能直接修改，难道不是同个内存地址，不是引用了？</p><p>其实在 FAQ 中有一句提醒很重要：“map 和 slice 的行为类似于指针，它们是包含指向底层 map 或 slice 数据的指针的描述符”。</p><p><strong>迷惑map</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;testing&#34;</span>
-</span></span><span class=line><span class=cl><span class=p>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>modify</span><span class=p>(</span><span class=nx>p</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;函数里接收到map的内存地址是：%p\n&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>p</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>p</span><span class=p>[</span><span class=s>&#34;张三&#34;</span><span class=p>]</span> <span class=p>=</span> <span class=mi>20</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestDemo</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>persons</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>int</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>persons</span><span class=p>[</span><span class=s>&#34;张三&#34;</span><span class=p>]</span> <span class=p>=</span> <span class=mi>19</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=nx>mp</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>persons</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;原始map的内存地址是：%p\n&#34;</span><span class=p>,</span> <span class=nx>mp</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nf>modify</span><span class=p>(</span><span class=nx>persons</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;map值被修改了，新值为:&#34;</span><span class=p>,</span> <span class=nx>persons</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>输出结果:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>原始map的内存地址是：0xc000114028
-</span></span><span class=line><span class=cl>函数里接收到map的内存地址是：0xc000114030
-</span></span></code></pre></div><p>确实是值传递，那修改后的 map 的结果应该是什么。既然是值传递，那肯定就是 “这次一定！"，对吗？</p><p>输出结果:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>map值被修改了，新值为: map[张三:20]
-</span></span></code></pre></div><p>原因:</p><p>指针类型可以修改，非指针类型不行，可以大胆的猜测，使用<code>make</code>函数创建的<code>map</code>是不是一个指针类型呢？看一下源代码:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// makemap implements a Go map creation make(map[k]v, hint)
-</span></span></span><span class=line><span class=cl><span class=c1>// If the compiler has determined that the map or the first bucket
-</span></span></span><span class=line><span class=cl><span class=c1>// can be created on the stack, h and/or bucket may be non-nil.
-</span></span></span><span class=line><span class=cl><span class=c1>// If h != nil, the map can be created directly in h.
-</span></span></span><span class=line><span class=cl><span class=c1>// If bucket != nil, bucket can be used as the first bucket.
-</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>makemap</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>maptype</span><span class=p>,</span> <span class=nx>hint</span> <span class=kt>int64</span><span class=p>,</span> <span class=nx>h</span> <span class=o>*</span><span class=nx>hmap</span><span class=p>,</span> <span class=nx>bucket</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>)</span> <span class=o>*</span><span class=nx>hmap</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=c1>//省略无关代码
-</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
-</span></span></code></pre></div><p>通过查看<code>src/runtime/hashmap.go</code>源代码发现，注意其返回的是 <code>*hmap</code>类型，是一个指针。也就是 Go 语言通过对 <code>map</code> 类型的相关方法进行封装，达到了用户需要关注指针传递的作用。</p><p>现在看<code>func modify(p map)</code>这样的函数，其实就等于<code>func modify(p *hmap)</code>，和前面什么是值传递里举的<code>func modify(ip *int)</code>的例子一样，可以参考分析。</p><p>这类情况我们称其为 <strong>“引用类型”</strong> ，但 “引用类型” 不等同于就是传引用，又或是引用传递了，还是有比较明确的区别的。</p><p><strong>chan类型</strong></p><p>chan类型本质上和map类型是一样的，这里不做过多的介绍，参考下源代码:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>makechan</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>chantype</span><span class=p>,</span> <span class=nx>size</span> <span class=kt>int64</span><span class=p>)</span> <span class=o>*</span><span class=nx>hchan</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=c1>//省略无关代码
-</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
-</span></span></code></pre></div><p><code>chan</code>也是一个引用类型，和<code>map</code>相差无几，<code>make</code>返回的是一个<code>*hchan</code>。</p><p><strong>和map、chan都不一样的slice</strong></p><p><code>slice</code>和<code>map</code>、<code>chan</code>都不太一样的，一样的是，它也是引用类型，它也可以在函数中修改对应的内容。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;testing&#34;</span>
-</span></span><span class=line><span class=cl><span class=p>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>modify</span><span class=p>(</span><span class=nx>ages</span> <span class=p>[]</span><span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;函数里接收到slice的内存地址是%p\n&#34;</span><span class=p>,</span> <span class=nx>ages</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>ages</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=p>=</span> <span class=mi>1</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestDemo</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>ages</span> <span class=o>:=</span> <span class=p>[]</span><span class=kt>int</span><span class=p>{</span><span class=mi>6</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>6</span><span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;原始slice的内存地址是%p\n&#34;</span><span class=p>,</span> <span class=nx>ages</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nf>modify</span><span class=p>(</span><span class=nx>ages</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>ages</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
+这时候又有小伙伴疑惑了，你看 Go 语言中的 map 和 slice 类型，能直接修改，难道不是同个内存地址，不是引用了？</p><p>其实在 FAQ 中有一句提醒很重要：“map 和 slice 的行为类似于指针，它们是包含指向底层 map 或 slice 数据的指针的描述符”。</p><p><strong>迷惑map</strong></p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;testing&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>modify</span>(p <span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]<span style=color:#005a5f>int</span>) {
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;函数里接收到map的内存地址是：%p\n&#34;</span>, <span style=color:#00538b>&amp;</span>p)
+</span></span><span style=display:flex><span>	p[<span style=color:#2544bb>&#34;张三&#34;</span>] = <span style=color:#0000c0>20</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>TestDemo</span>(t <span style=color:#00538b>*</span>testing.T) {
+</span></span><span style=display:flex><span>	persons <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span>	persons[<span style=color:#2544bb>&#34;张三&#34;</span>] = <span style=color:#0000c0>19</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	mp <span style=color:#00538b>:=</span> <span style=color:#00538b>&amp;</span>persons
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;原始map的内存地址是：%p\n&#34;</span>, mp)
+</span></span><span style=display:flex><span>	<span style=color:#721045>modify</span>(persons)
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;map值被修改了，新值为:&#34;</span>, persons)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>输出结果:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-text data-lang=text><span style=display:flex><span>原始map的内存地址是：0xc000114028
+</span></span><span style=display:flex><span>函数里接收到map的内存地址是：0xc000114030
+</span></span></code></pre></div><p>确实是值传递，那修改后的 map 的结果应该是什么。既然是值传递，那肯定就是 “这次一定！"，对吗？</p><p>输出结果:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-text data-lang=text><span style=display:flex><span>map值被修改了，新值为: map[张三:20]
+</span></span></code></pre></div><p>原因:</p><p>指针类型可以修改，非指针类型不行，可以大胆的猜测，使用<code>make</code>函数创建的<code>map</code>是不是一个指针类型呢？看一下源代码:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// makemap implements a Go map creation make(map[k]v, hint)
+</span></span></span><span style=display:flex><span><span style=color:#505050>// If the compiler has determined that the map or the first bucket
+</span></span></span><span style=display:flex><span><span style=color:#505050>// can be created on the stack, h and/or bucket may be non-nil.
+</span></span></span><span style=display:flex><span><span style=color:#505050>// If h != nil, the map can be created directly in h.
+</span></span></span><span style=display:flex><span><span style=color:#505050>// If bucket != nil, bucket can be used as the first bucket.
+</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> <span style=color:#721045>makemap</span>(t <span style=color:#00538b>*</span>maptype, hint <span style=color:#005a5f>int64</span>, h <span style=color:#00538b>*</span>hmap, bucket unsafe.Pointer) <span style=color:#00538b>*</span>hmap {
+</span></span><span style=display:flex><span>    <span style=color:#505050>//省略无关代码
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span></code></pre></div><p>通过查看<code>src/runtime/hashmap.go</code>源代码发现，注意其返回的是 <code>*hmap</code>类型，是一个指针。也就是 Go 语言通过对 <code>map</code> 类型的相关方法进行封装，达到了用户需要关注指针传递的作用。</p><p>现在看<code>func modify(p map)</code>这样的函数，其实就等于<code>func modify(p *hmap)</code>，和前面什么是值传递里举的<code>func modify(ip *int)</code>的例子一样，可以参考分析。</p><p>这类情况我们称其为 <strong>“引用类型”</strong> ，但 “引用类型” 不等同于就是传引用，又或是引用传递了，还是有比较明确的区别的。</p><p><strong>chan类型</strong></p><p>chan类型本质上和map类型是一样的，这里不做过多的介绍，参考下源代码:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>makechan</span>(t <span style=color:#00538b>*</span>chantype, size <span style=color:#005a5f>int64</span>) <span style=color:#00538b>*</span>hchan {
+</span></span><span style=display:flex><span>    <span style=color:#505050>//省略无关代码
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span></code></pre></div><p><code>chan</code>也是一个引用类型，和<code>map</code>相差无几，<code>make</code>返回的是一个<code>*hchan</code>。</p><p><strong>和map、chan都不一样的slice</strong></p><p><code>slice</code>和<code>map</code>、<code>chan</code>都不太一样的，一样的是，它也是引用类型，它也可以在函数中修改对应的内容。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;testing&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>modify</span>(ages []<span style=color:#005a5f>int</span>) {
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;函数里接收到slice的内存地址是%p\n&#34;</span>, ages)
+</span></span><span style=display:flex><span>	ages[<span style=color:#0000c0>0</span>] = <span style=color:#0000c0>1</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>TestDemo</span>(t <span style=color:#00538b>*</span>testing.T) {
+</span></span><span style=display:flex><span>	ages <span style=color:#00538b>:=</span> []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>6</span>, <span style=color:#0000c0>6</span>, <span style=color:#0000c0>6</span>}
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;原始slice的内存地址是%p\n&#34;</span>, ages)
+</span></span><span style=display:flex><span>	<span style=color:#721045>modify</span>(ages)
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Println</span>(ages)
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>从结果来看，两者的内存地址一样，也成功的变更到了变量 <code>ages</code> 的值。这难道不是引用传递吗?
-关注两个细节：</p><ul><li>没有用 <code>& </code>来取地址。</li><li>可以直接用 <code>%p</code> 来打印。</li></ul><p>之所以可以同时做到上面这两件事，是因为标准库 <code>fmt</code> 针对在这一块做了优化：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>p</span> <span class=o>*</span><span class=nx>pp</span><span class=p>)</span> <span class=nf>fmtPointer</span><span class=p>(</span><span class=nx>value</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>Value</span><span class=p>,</span> <span class=nx>verb</span> <span class=kt>rune</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>u</span> <span class=kt>uintptr</span>
-</span></span><span class=line><span class=cl>    <span class=k>switch</span> <span class=nx>value</span><span class=p>.</span><span class=nf>Kind</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=k>case</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>Chan</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>Func</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>Map</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>Ptr</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>Slice</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nx>UnsafePointer</span><span class=p>:</span>
-</span></span><span class=line><span class=cl>        <span class=nx>u</span> <span class=p>=</span> <span class=nx>value</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>    <span class=k>default</span><span class=p>:</span>
-</span></span><span class=line><span class=cl>        <span class=nx>p</span><span class=p>.</span><span class=nf>badVerb</span><span class=p>(</span><span class=nx>verb</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>        <span class=k>return</span>
-</span></span><span class=line><span class=cl>    <span class=p>}</span>
-</span></span><span class=line><span class=cl>    <span class=c1>//省略部分代码
-</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
-</span></span></code></pre></div><p>通过源代码发现，对于<code>chan</code>、<code>map</code>、<code>slice</code>等被当成指针处理，通过<code>value.Pointer()</code>获取对应的值的指针。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// If v&#39;s Kind is Slice, the returned pointer is to the first
-</span></span></span><span class=line><span class=cl><span class=c1>// element of the slice. If the slice is nil the returned value
-</span></span></span><span class=line><span class=cl><span class=c1>// is 0.  If the slice is empty but non-nil the return value is non-zero.
-</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>v</span> <span class=nx>Value</span><span class=p>)</span> <span class=nf>Pointer</span><span class=p>()</span> <span class=kt>uintptr</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=c1>// TODO: deprecate
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>k</span> <span class=o>:=</span> <span class=nx>v</span><span class=p>.</span><span class=nf>kind</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>    <span class=k>switch</span> <span class=nx>k</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=c1>//省略无关代码
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>case</span> <span class=nx>Slice</span><span class=p>:</span>
-</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>(</span><span class=o>*</span><span class=nx>SliceHeader</span><span class=p>)(</span><span class=nx>v</span><span class=p>.</span><span class=nx>ptr</span><span class=p>).</span><span class=nx>Data</span>
-</span></span><span class=line><span class=cl>    <span class=p>}</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>很明显了，当是<code>slice</code>类型的时候，返回是<code>slice</code>这个结构体里，字段<code>Data</code>第一个元素的地址。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>SliceHeader</span> <span class=kd>struct</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=nx>Data</span> <span class=kt>uintptr</span>
-</span></span><span class=line><span class=cl>    <span class=nx>Len</span>  <span class=kt>int</span>
-</span></span><span class=line><span class=cl>    <span class=nx>Cap</span>  <span class=kt>int</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>slice</span> <span class=kd>struct</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=nx>array</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span>
-</span></span><span class=line><span class=cl>    <span class=nx>len</span>   <span class=kt>int</span>
-</span></span><span class=line><span class=cl>    <span class=nx>cap</span>   <span class=kt>int</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
+关注两个细节：</p><ul><li>没有用 <code>& </code>来取地址。</li><li>可以直接用 <code>%p</code> 来打印。</li></ul><p>之所以可以同时做到上面这两件事，是因为标准库 <code>fmt</code> 针对在这一块做了优化：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> (p <span style=color:#00538b>*</span>pp) <span style=color:#721045>fmtPointer</span>(value reflect.Value, verb <span style=color:#005a5f>rune</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> u <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>switch</span> value.<span style=color:#721045>Kind</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>case</span> reflect.Chan, reflect.Func, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
+</span></span><span style=display:flex><span>        u = value.<span style=color:#721045>Pointer</span>()
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>default</span>:
+</span></span><span style=display:flex><span>        p.<span style=color:#721045>badVerb</span>(verb)
+</span></span><span style=display:flex><span>        <span style=color:#5317ac>return</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#505050>//省略部分代码
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span></code></pre></div><p>通过源代码发现，对于<code>chan</code>、<code>map</code>、<code>slice</code>等被当成指针处理，通过<code>value.Pointer()</code>获取对应的值的指针。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// If v&#39;s Kind is Slice, the returned pointer is to the first
+</span></span></span><span style=display:flex><span><span style=color:#505050>// element of the slice. If the slice is nil the returned value
+</span></span></span><span style=display:flex><span><span style=color:#505050>// is 0.  If the slice is empty but non-nil the return value is non-zero.
+</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> (v Value) <span style=color:#721045>Pointer</span>() <span style=color:#005a5f>uintptr</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// TODO: deprecate
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    k <span style=color:#00538b>:=</span> v.<span style=color:#721045>kind</span>()
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>switch</span> k {
+</span></span><span style=display:flex><span>    <span style=color:#505050>//省略无关代码
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>case</span> Slice:
+</span></span><span style=display:flex><span>        <span style=color:#5317ac>return</span> (<span style=color:#00538b>*</span>SliceHeader)(v.ptr).Data
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>很明显了，当是<code>slice</code>类型的时候，返回是<code>slice</code>这个结构体里，字段<code>Data</code>第一个元素的地址。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>type</span> SliceHeader <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>    Data <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span>    Len  <span style=color:#005a5f>int</span>
+</span></span><span style=display:flex><span>    Cap  <span style=color:#005a5f>int</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>type</span> slice <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>    array unsafe.Pointer
+</span></span><span style=display:flex><span>    len   <span style=color:#005a5f>int</span>
+</span></span><span style=display:flex><span>    cap   <span style=color:#005a5f>int</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>在 Go 语言运行时，传递的也是相应 <code>slice</code> 类型的底层数组的指针，但需要注意，其使用的是指针的副本。严格意义是引用类型，依旧是值传递。<code>slice</code>是一种结构体+元素指针的混合类型，通过元素<code>array(Data)</code>的指针，可以达到修改<code>slice</code>里存储元素的目的。</p><h2 id=总结>总结</h2><p>最终可以确认的是Go语言中所有的传参都是值传递（传值），都是一个副本，一个拷贝。</p><p>让最多人犯迷糊的就是 <code>slice</code>、<code>map</code>、<code>chan</code> 等类型，都会认为是 “引用传递”，从而认为 Go 语言的 xxx 就是引用传递。正因为它们还引用类型（指针、map、slice、chan等这些），这样就可以修改原内容数据。</p><p><strong>再记住，Go里只有传值（值传递）。</strong></p><h2 id=参考>参考</h2><p><a href=https://eddycjy.com/posts/go/value-quote/>群里又吵起来了，Go 是传值还是传引用？</a>
 <a href=https://zhuanlan.zhihu.com/p/34203214>Go语言参数传递是传值还是传引用</a></p></article></div></main></body></html>

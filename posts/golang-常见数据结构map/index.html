@@ -26,112 +26,112 @@ map 这种数据结构在其他编程语言中也称为字典（Python）、hash
 没有找到键相同的键值对 —— 在链表的末尾追加新键值对；将键值对写入哈希之后，要通过某个键在其中获取映射的值，就会经历如下的过程：
 <img src=https://cdn.ch3nnn.cn/img202304111037651.png alt></p><p>Key11 展示了一个键在哈希表中不存在的例子，当哈希表发现它命中 4 号桶时，它会依次遍历桶中的链表，然而遍历到链表的末尾也没有找到期望的键，所以哈希表中没有该键对应的值。</p><p>在一个性能比较好的哈希表中，每一个桶中都应该有 0-1 个元素，有时会有 2-3 个，很少会超过这个数量，计算哈希、定位桶和遍历链表三个过程是哈希表读写操作的主要开销，使用拉链法实现的哈希也有装载因子这一概念：
 <code>装载因子 := 元素数量 / 桶数量</code>
-与开放地址法一样，拉链法的装载因子越大，哈希的读写性能就越差，在一般情况下使用拉链法的哈希表装载因子都不会超过 1，当哈希表的装载因子较大时就会触发哈希的扩容，创建更多的桶来存储哈希中的元素，保证性能不会出现严重的下降。如果有 1000 个桶的哈希表存储了 10000 个键值对，它的性能是保存 1000 个键值对的 1/10，但是仍然比在链表中直接读写好 1000 倍。</p><h2 id=map-底层数据结构>Map 底层数据结构</h2><p>Go 语言运行时同时使用了多个数据结构组合表示哈希表，其中使用 hmap 结构体来表示哈希 其实是 hashmap 的缩写，我们先来看一下这个结构体内部的字段：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>hmap</span> <span class=kd>struct</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// map中存入元素的个数, golang 中调用 len(map) 的时候直接返回该字段
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>count</span>     <span class=kt>int</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// 状态标记位，通过与定义的枚举值进行&amp;操作可以判断当前是否处于这种状态
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>flags</span>     <span class=kt>uint8</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// 2^B 表示bucket的数量， B 表示取hash后多少位来做bucket的分组
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>B</span>         <span class=kt>uint8</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// overflow bucket 的数量的近似数
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>noverflow</span> <span class=kt>uint16</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// hash seed （hash 种子） 一般是一个素数
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>hash0</span>     <span class=kt>uint32</span>
-</span></span><span class=line><span class=cl>	
-</span></span><span class=line><span class=cl>	<span class=c1>// 共有2^B个 bucket ，但是如果没有元素存入，这个字段可能为nil
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>buckets</span>    <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// 在扩容期间，将旧的bucket数组放在这里， 新buckets会是这个的两倍大
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>oldbuckets</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// 表示已经完成扩容迁移的bucket的指针， 地址小于当前指针的bucket已经迁移完成
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>nevacuate</span>  <span class=kt>uintptr</span>
-</span></span><span class=line><span class=cl>	
-</span></span><span class=line><span class=cl>	<span class=c1>// optional fields
-</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>extra</span> <span class=o>*</span><span class=nx>mapextra</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
+与开放地址法一样，拉链法的装载因子越大，哈希的读写性能就越差，在一般情况下使用拉链法的哈希表装载因子都不会超过 1，当哈希表的装载因子较大时就会触发哈希的扩容，创建更多的桶来存储哈希中的元素，保证性能不会出现严重的下降。如果有 1000 个桶的哈希表存储了 10000 个键值对，它的性能是保存 1000 个键值对的 1/10，但是仍然比在链表中直接读写好 1000 倍。</p><h2 id=map-底层数据结构>Map 底层数据结构</h2><p>Go 语言运行时同时使用了多个数据结构组合表示哈希表，其中使用 hmap 结构体来表示哈希 其实是 hashmap 的缩写，我们先来看一下这个结构体内部的字段：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>type</span> hmap <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>	<span style=color:#505050>// map中存入元素的个数, golang 中调用 len(map) 的时候直接返回该字段
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    count     <span style=color:#005a5f>int</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 状态标记位，通过与定义的枚举值进行&amp;操作可以判断当前是否处于这种状态
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    flags     <span style=color:#005a5f>uint8</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 2^B 表示bucket的数量， B 表示取hash后多少位来做bucket的分组
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    B         <span style=color:#005a5f>uint8</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// overflow bucket 的数量的近似数
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    noverflow <span style=color:#005a5f>uint16</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// hash seed （hash 种子） 一般是一个素数
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    hash0     <span style=color:#005a5f>uint32</span>
+</span></span><span style=display:flex><span>	
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 共有2^B个 bucket ，但是如果没有元素存入，这个字段可能为nil
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    buckets    unsafe.Pointer
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 在扩容期间，将旧的bucket数组放在这里， 新buckets会是这个的两倍大
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    oldbuckets unsafe.Pointer
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 表示已经完成扩容迁移的bucket的指针， 地址小于当前指针的bucket已经迁移完成
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    nevacuate  <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span>	
+</span></span><span style=display:flex><span>	<span style=color:#505050>// optional fields
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    extra <span style=color:#00538b>*</span>mapextra
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p><code>count</code> 表示当前哈希表中的元素数量；
 <code>B</code> 表示当前哈希表持有的 buckets 数量，但是因为哈希表中桶的数量都 2 的倍数，所以该字段会存储对数，也就是 len(buckets) == 2^B；
 <code>hash0</code> 是哈希的种子，它能为哈希函数的结果引入随机性，这个值在创建哈希表时确定，并在调用哈希函数时作为参数传入；
 <code>oldbuckets</code> 是哈希在扩容时用于保存之前 buckets 的字段，它的大小是当前 buckets 的一半；</p><p>哈希表的数据结构如图:
-<img src=https://cdn.ch3nnn.cn/img202304111044236.png alt></p><p>如上图所示哈希表 hmap 的桶就是 bmap，也就是我们常说的"桶"的底层数据结构, 每一个 bmap 都能存储 8 个键值对(key/value)，map 使用 hash 函数得到 hash 值决定分配到哪个桶, 然后又根据hash 值的高 8 位来寻找放在桶的那个位置。当哈希表中存储的数据过多，单个桶无法装满时就会使用 extra.overflow 中桶存储溢出的数据。上述两种不同的桶在内存中是连续存储的，我们在这里将它们分别称为正常桶和溢出桶，上图中黄色的 bmap 就是正常桶，绿色的 bmap 是溢出桶，溢出桶是在 Go 语言还使用 C 语言实现时就使用的设计3，由于它能够减少扩容的频率所以一直使用至今。</p><p>这个桶的结构体 bmap 在 Go 语言源代码中的定义只包含一个简单的 tophash 字段，tophash 存储了键的哈希的高 8 位，通过比较不同键的哈希的高 8 位可以减少访问键值对次数以提高性能：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>bmap</span> <span class=kd>struct</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=nx>tophash</span> <span class=p>[</span><span class=nx>bucketCnt</span><span class=p>]</span><span class=kt>uint8</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>bmap 结构体其实不止包含 tophash 字段，由于哈希表中可能存储不同类型的键值对并且 Go 语言也不支持泛型，所以键值对占据的内存空间大小只能在编译时进行推导，这些字段在运行时也都是通过计算内存地址的方式直接访问的，所以它的定义中就没有包含这些字段，但是我们能根据编译期间的 cmd/compile/internal/gc.bmap 函数对它的结构重建：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>bmap</span> <span class=kd>struct</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=nx>topbits</span>  <span class=p>[</span><span class=mi>8</span><span class=p>]</span><span class=kt>uint8</span>
-</span></span><span class=line><span class=cl>    <span class=nx>keys</span>     <span class=p>[</span><span class=mi>8</span><span class=p>]</span><span class=nx>keytype</span>
-</span></span><span class=line><span class=cl>    <span class=nx>values</span>   <span class=p>[</span><span class=mi>8</span><span class=p>]</span><span class=nx>valuetype</span>
-</span></span><span class=line><span class=cl>    <span class=nx>pad</span>      <span class=kt>uintptr</span>
-</span></span><span class=line><span class=cl>    <span class=nx>overflow</span> <span class=kt>uintptr</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>如果哈希表存储的数据逐渐增多，我们会对哈希表进行扩容或者使用额外的桶存储溢出的数据，不会让单个桶中的数据超过 8 个，不过溢出桶只是临时的解决方案，创建过多的溢出桶最终也会导致哈希的扩容。</p><h2 id=map-存与取>Map 存与取</h2><p>在 map 中存与取本质上都是在进行一个工作， 那就是:</p><ol><li>查询当前 k/v 应该存储的位置。</li><li>赋值/取值， 所以我们理解了 map 中 key 的定位我们就理解了存取。</li></ol><p><strong>底层代码</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>hexo_blog</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;unsafe&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>mapaccess2</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>maptype</span><span class=p>,</span> <span class=nx>h</span> <span class=o>*</span><span class=nx>hmap</span><span class=p>,</span> <span class=nx>key</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>)</span> <span class=p>(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>,</span> <span class=kt>bool</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    map 为空，或者元素数为0，直接返回未找到
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>if</span> <span class=nx>h</span> <span class=o>==</span> <span class=kc>nil</span> <span class=o>||</span> <span class=nx>h</span><span class=p>.</span><span class=nx>count</span> <span class=o>==</span> <span class=mi>0</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>zeroVal</span><span class=p>[</span><span class=mi>0</span><span class=p>]),</span> <span class=kc>false</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    不支持并发读写
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>if</span> <span class=nx>h</span><span class=p>.</span><span class=nx>flags</span><span class=o>&amp;</span><span class=nx>hashWriting</span> <span class=o>!=</span> <span class=mi>0</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=nf>throw</span><span class=p>(</span><span class=s>&#34;concurrent    map    read    and    map    write&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    根据hash 函数算出hash值，注意key的类型不同可能使用的hash函数也不同
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>hash</span> <span class=o>:=</span> <span class=nx>t</span><span class=p>.</span><span class=nf>hasher</span><span class=p>(</span><span class=nx>key</span><span class=p>,</span> <span class=nb>uintptr</span><span class=p>(</span><span class=nx>h</span><span class=p>.</span><span class=nx>hash0</span><span class=p>))</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    如果 B = 5，那么结果用二进制表示就是 11111 ,返回的是B位全1的值
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>m</span> <span class=o>:=</span> <span class=nf>bucketMask</span><span class=p>(</span><span class=nx>h</span><span class=p>.</span><span class=nx>B</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    根据hash的后B位，定位在bucket数组中的位置
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>b</span> <span class=o>:=</span> <span class=p>(</span><span class=o>*</span><span class=nx>bmap</span><span class=p>)(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>h</span><span class=p>.</span><span class=nx>buckets</span><span class=p>)</span> <span class=o>+</span> <span class=p>(</span><span class=nx>hash</span><span class=o>&amp;</span><span class=nx>m</span><span class=p>)</span><span class=o>*</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nx>bucketsize</span><span class=p>)))</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    当  h.oldbuckets 非空时，说明 map 发生了扩容
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>//    这时候，新的 buckets 里可能还没有老的内容
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>//    所以一定要在老的里面找，否则有可能发生“消失”的诡异现象
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>if</span> <span class=nx>c</span> <span class=o>:=</span> <span class=nx>h</span><span class=p>.</span><span class=nx>oldbuckets</span><span class=p>;</span> <span class=nx>c</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>!</span><span class=nx>h</span><span class=p>.</span><span class=nf>sameSizeGrow</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>			<span class=c1>//    说明之前只有一半的    bucket，需要除    2
-</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=nx>m</span> <span class=o>&gt;&gt;=</span> <span class=mi>1</span>
-</span></span><span class=line><span class=cl>		<span class=p>}</span>
-</span></span><span class=line><span class=cl>		<span class=nx>oldb</span> <span class=o>:=</span> <span class=p>(</span><span class=o>*</span><span class=nx>bmap</span><span class=p>)(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>c</span><span class=p>)</span> <span class=o>+</span> <span class=p>(</span><span class=nx>hash</span><span class=o>&amp;</span><span class=nx>m</span><span class=p>)</span><span class=o>*</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nx>bucketsize</span><span class=p>)))</span>
-</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>!</span><span class=nf>evacuated</span><span class=p>(</span><span class=nx>oldb</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>			<span class=nx>b</span> <span class=p>=</span> <span class=nx>oldb</span>
-</span></span><span class=line><span class=cl>		<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    tophash 取其 8bit 的值
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>top</span> <span class=o>:=</span> <span class=nf>tophash</span><span class=p>(</span><span class=nx>hash</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=c1>//    一个 bucket 在存储满 8 个元素后，就再也放不下了，这时候会创建新的 bucket，挂在原来的 bucket 的 overflow 指针成员上
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=c1>//    遍历当前bucket的所有链式bucket
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>for</span> <span class=p>;</span> <span class=nx>b</span> <span class=o>!=</span> <span class=kc>nil</span><span class=p>;</span> <span class=nx>b</span> <span class=p>=</span> <span class=nx>b</span><span class=p>.</span><span class=nf>overflow</span><span class=p>(</span><span class=nx>t</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=c1>//    在bucket的8个位置上查询
-</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=nb>uintptr</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>bucketCnt</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>			<span class=c1>//    如果找到了相等的 tophash，那说明就是这个 bucket 了
-</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=k>if</span> <span class=nx>b</span><span class=p>.</span><span class=nx>tophash</span><span class=p>[</span><span class=nx>i</span><span class=p>]</span> <span class=o>!=</span> <span class=nx>top</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>				<span class=k>continue</span>
-</span></span><span class=line><span class=cl>			<span class=p>}</span>
-</span></span><span class=line><span class=cl>			<span class=c1>//    根据内存结构定位key的位置
-</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=nx>k</span> <span class=o>:=</span> <span class=nf>add</span><span class=p>(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=nx>b</span><span class=p>),</span> <span class=nx>dataOffset</span><span class=o>+</span><span class=nx>i</span><span class=o>*</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nx>keysize</span><span class=p>))</span>
-</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>t</span><span class=p>.</span><span class=nx>indirectkey</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>				<span class=nx>k</span> <span class=p>=</span> <span class=o>*</span><span class=p>((</span><span class=o>*</span><span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>)(</span><span class=nx>k</span><span class=p>))</span>
-</span></span><span class=line><span class=cl>			<span class=p>}</span>
-</span></span><span class=line><span class=cl>			<span class=c1>// 校验找到的key是否匹配
-</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=k>if</span> <span class=nx>t</span><span class=p>.</span><span class=nx>key</span><span class=p>.</span><span class=nf>equal</span><span class=p>(</span><span class=nx>key</span><span class=p>,</span> <span class=nx>k</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>				<span class=c1>// 定位v的位置
-</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=nx>v</span> <span class=o>:=</span> <span class=nf>add</span><span class=p>(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=nx>b</span><span class=p>),</span> <span class=nx>dataOffset</span><span class=o>+</span><span class=nx>bucketCnt</span><span class=o>*</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nx>keysize</span><span class=p>)</span><span class=o>+</span><span class=nx>i</span><span class=o>*</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nx>valuesize</span><span class=p>))</span>
-</span></span><span class=line><span class=cl>				<span class=k>if</span> <span class=nx>t</span><span class=p>.</span><span class=nx>indirectvalue</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>					<span class=nx>v</span> <span class=p>=</span> <span class=o>*</span><span class=p>((</span><span class=o>*</span><span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>)(</span><span class=nx>v</span><span class=p>))</span>
-</span></span><span class=line><span class=cl>				<span class=p>}</span>
-</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>v</span><span class=p>,</span> <span class=kc>true</span>
-</span></span><span class=line><span class=cl>			<span class=p>}</span>
-</span></span><span class=line><span class=cl>		<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=c1>//    所有    bucket    都没有找到，返回零值和    false
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>return</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>zeroVal</span><span class=p>[</span><span class=mi>0</span><span class=p>]),</span> <span class=kc>false</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><h2 id=map-扩容>Map 扩容</h2><p>在 golang 中 map 和 slice 一样都是在初始化时首先申请较小的内存空间, 随着哈希表中元素的逐渐增加，哈希的性能会逐渐恶化，所以我们需要更多的桶和更大的内存保证哈希的读写性能：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>mapassign</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>maptype</span><span class=p>,</span> <span class=nx>h</span> <span class=o>*</span><span class=nx>hmap</span><span class=p>,</span> <span class=nx>key</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span><span class=p>)</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nx>Pointer</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=o>...</span>
-</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>!</span><span class=nx>h</span><span class=p>.</span><span class=nf>growing</span><span class=p>()</span> <span class=o>&amp;&amp;</span> <span class=p>(</span><span class=nf>overLoadFactor</span><span class=p>(</span><span class=nx>h</span><span class=p>.</span><span class=nx>count</span><span class=o>+</span><span class=mi>1</span><span class=p>,</span> <span class=nx>h</span><span class=p>.</span><span class=nx>B</span><span class=p>)</span> <span class=o>||</span> <span class=nf>tooManyOverflowBuckets</span><span class=p>(</span><span class=nx>h</span><span class=p>.</span><span class=nx>noverflow</span><span class=p>,</span> <span class=nx>h</span><span class=p>.</span><span class=nx>B</span><span class=p>))</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>        <span class=nf>hashGrow</span><span class=p>(</span><span class=nx>t</span><span class=p>,</span> <span class=nx>h</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>        <span class=k>goto</span> <span class=nx>again</span>
-</span></span><span class=line><span class=cl>    <span class=p>}</span>
-</span></span><span class=line><span class=cl>    <span class=o>...</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
+<img src=https://cdn.ch3nnn.cn/img202304111044236.png alt></p><p>如上图所示哈希表 hmap 的桶就是 bmap，也就是我们常说的"桶"的底层数据结构, 每一个 bmap 都能存储 8 个键值对(key/value)，map 使用 hash 函数得到 hash 值决定分配到哪个桶, 然后又根据hash 值的高 8 位来寻找放在桶的那个位置。当哈希表中存储的数据过多，单个桶无法装满时就会使用 extra.overflow 中桶存储溢出的数据。上述两种不同的桶在内存中是连续存储的，我们在这里将它们分别称为正常桶和溢出桶，上图中黄色的 bmap 就是正常桶，绿色的 bmap 是溢出桶，溢出桶是在 Go 语言还使用 C 语言实现时就使用的设计3，由于它能够减少扩容的频率所以一直使用至今。</p><p>这个桶的结构体 bmap 在 Go 语言源代码中的定义只包含一个简单的 tophash 字段，tophash 存储了键的哈希的高 8 位，通过比较不同键的哈希的高 8 位可以减少访问键值对次数以提高性能：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>type</span> bmap <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>    tophash [bucketCnt]<span style=color:#005a5f>uint8</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>bmap 结构体其实不止包含 tophash 字段，由于哈希表中可能存储不同类型的键值对并且 Go 语言也不支持泛型，所以键值对占据的内存空间大小只能在编译时进行推导，这些字段在运行时也都是通过计算内存地址的方式直接访问的，所以它的定义中就没有包含这些字段，但是我们能根据编译期间的 cmd/compile/internal/gc.bmap 函数对它的结构重建：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>type</span> bmap <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>    topbits  [<span style=color:#0000c0>8</span>]<span style=color:#005a5f>uint8</span>
+</span></span><span style=display:flex><span>    keys     [<span style=color:#0000c0>8</span>]keytype
+</span></span><span style=display:flex><span>    values   [<span style=color:#0000c0>8</span>]valuetype
+</span></span><span style=display:flex><span>    pad      <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span>    overflow <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>如果哈希表存储的数据逐渐增多，我们会对哈希表进行扩容或者使用额外的桶存储溢出的数据，不会让单个桶中的数据超过 8 个，不过溢出桶只是临时的解决方案，创建过多的溢出桶最终也会导致哈希的扩容。</p><h2 id=map-存与取>Map 存与取</h2><p>在 map 中存与取本质上都是在进行一个工作， 那就是:</p><ol><li>查询当前 k/v 应该存储的位置。</li><li>赋值/取值， 所以我们理解了 map 中 key 的定位我们就理解了存取。</li></ol><p><strong>底层代码</strong></p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> hexo_blog
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> <span style=color:#2544bb>&#34;unsafe&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>mapaccess2</span>(t <span style=color:#00538b>*</span>maptype, h <span style=color:#00538b>*</span>hmap, key unsafe.Pointer) (unsafe.Pointer, <span style=color:#005a5f>bool</span>) {
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    map 为空，或者元素数为0，直接返回未找到
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>if</span> h <span style=color:#00538b>==</span> <span style=color:#0000c0>nil</span> <span style=color:#00538b>||</span> h.count <span style=color:#00538b>==</span> <span style=color:#0000c0>0</span> {
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> unsafe.<span style=color:#721045>Pointer</span>(<span style=color:#00538b>&amp;</span>zeroVal[<span style=color:#0000c0>0</span>]), <span style=color:#0000c0>false</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    不支持并发读写
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>if</span> h.flags<span style=color:#00538b>&amp;</span>hashWriting <span style=color:#00538b>!=</span> <span style=color:#0000c0>0</span> {
+</span></span><span style=display:flex><span>		<span style=color:#721045>throw</span>(<span style=color:#2544bb>&#34;concurrent    map    read    and    map    write&#34;</span>)
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    根据hash 函数算出hash值，注意key的类型不同可能使用的hash函数也不同
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	hash <span style=color:#00538b>:=</span> t.<span style=color:#721045>hasher</span>(key, <span style=color:#8f0075>uintptr</span>(h.hash0))
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    如果 B = 5，那么结果用二进制表示就是 11111 ,返回的是B位全1的值
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	m <span style=color:#00538b>:=</span> <span style=color:#721045>bucketMask</span>(h.B)
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    根据hash的后B位，定位在bucket数组中的位置
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	b <span style=color:#00538b>:=</span> (<span style=color:#00538b>*</span>bmap)(unsafe.<span style=color:#721045>Pointer</span>(<span style=color:#8f0075>uintptr</span>(h.buckets) <span style=color:#00538b>+</span> (hash<span style=color:#00538b>&amp;</span>m)<span style=color:#00538b>*</span><span style=color:#8f0075>uintptr</span>(t.bucketsize)))
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    当  h.oldbuckets 非空时，说明 map 发生了扩容
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>//    这时候，新的 buckets 里可能还没有老的内容
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>//    所以一定要在老的里面找，否则有可能发生“消失”的诡异现象
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>if</span> c <span style=color:#00538b>:=</span> h.oldbuckets; c <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>if</span> !h.<span style=color:#721045>sameSizeGrow</span>() {
+</span></span><span style=display:flex><span>			<span style=color:#505050>//    说明之前只有一半的    bucket，需要除    2
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>			m <span style=color:#00538b>&gt;&gt;=</span> <span style=color:#0000c0>1</span>
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		oldb <span style=color:#00538b>:=</span> (<span style=color:#00538b>*</span>bmap)(unsafe.<span style=color:#721045>Pointer</span>(<span style=color:#8f0075>uintptr</span>(c) <span style=color:#00538b>+</span> (hash<span style=color:#00538b>&amp;</span>m)<span style=color:#00538b>*</span><span style=color:#8f0075>uintptr</span>(t.bucketsize)))
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>if</span> !<span style=color:#721045>evacuated</span>(oldb) {
+</span></span><span style=display:flex><span>			b = oldb
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    tophash 取其 8bit 的值
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	top <span style=color:#00538b>:=</span> <span style=color:#721045>tophash</span>(hash)
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    一个 bucket 在存储满 8 个元素后，就再也放不下了，这时候会创建新的 bucket，挂在原来的 bucket 的 overflow 指针成员上
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>//    遍历当前bucket的所有链式bucket
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>for</span> ; b <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span>; b = b.<span style=color:#721045>overflow</span>(t) {
+</span></span><span style=display:flex><span>		<span style=color:#505050>//    在bucket的8个位置上查询
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>		<span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#8f0075>uintptr</span>(<span style=color:#0000c0>0</span>); i &lt; bucketCnt; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>			<span style=color:#505050>//    如果找到了相等的 tophash，那说明就是这个 bucket 了
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>			<span style=color:#5317ac>if</span> b.tophash[i] <span style=color:#00538b>!=</span> top {
+</span></span><span style=display:flex><span>				<span style=color:#5317ac>continue</span>
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>			<span style=color:#505050>//    根据内存结构定位key的位置
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>			k <span style=color:#00538b>:=</span> <span style=color:#721045>add</span>(unsafe.<span style=color:#721045>Pointer</span>(b), dataOffset<span style=color:#00538b>+</span>i<span style=color:#00538b>*</span><span style=color:#8f0075>uintptr</span>(t.keysize))
+</span></span><span style=display:flex><span>			<span style=color:#5317ac>if</span> t.indirectkey {
+</span></span><span style=display:flex><span>				k = <span style=color:#00538b>*</span>((<span style=color:#00538b>*</span>unsafe.Pointer)(k))
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>			<span style=color:#505050>// 校验找到的key是否匹配
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>			<span style=color:#5317ac>if</span> t.key.<span style=color:#721045>equal</span>(key, k) {
+</span></span><span style=display:flex><span>				<span style=color:#505050>// 定位v的位置
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>				v <span style=color:#00538b>:=</span> <span style=color:#721045>add</span>(unsafe.<span style=color:#721045>Pointer</span>(b), dataOffset<span style=color:#00538b>+</span>bucketCnt<span style=color:#00538b>*</span><span style=color:#8f0075>uintptr</span>(t.keysize)<span style=color:#00538b>+</span>i<span style=color:#00538b>*</span><span style=color:#8f0075>uintptr</span>(t.valuesize))
+</span></span><span style=display:flex><span>				<span style=color:#5317ac>if</span> t.indirectvalue {
+</span></span><span style=display:flex><span>					v = <span style=color:#00538b>*</span>((<span style=color:#00538b>*</span>unsafe.Pointer)(v))
+</span></span><span style=display:flex><span>				}
+</span></span><span style=display:flex><span>				<span style=color:#5317ac>return</span> v, <span style=color:#0000c0>true</span>
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>//    所有    bucket    都没有找到，返回零值和    false
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>return</span> unsafe.<span style=color:#721045>Pointer</span>(<span style=color:#00538b>&amp;</span>zeroVal[<span style=color:#0000c0>0</span>]), <span style=color:#0000c0>false</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=map-扩容>Map 扩容</h2><p>在 golang 中 map 和 slice 一样都是在初始化时首先申请较小的内存空间, 随着哈希表中元素的逐渐增加，哈希的性能会逐渐恶化，所以我们需要更多的桶和更大的内存保证哈希的读写性能：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>mapassign</span>(t <span style=color:#00538b>*</span>maptype, h <span style=color:#00538b>*</span>hmap, key unsafe.Pointer) unsafe.Pointer {
+</span></span><span style=display:flex><span>    <span style=color:#00538b>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>if</span> !h.<span style=color:#721045>growing</span>() <span style=color:#00538b>&amp;&amp;</span> (<span style=color:#721045>overLoadFactor</span>(h.count<span style=color:#00538b>+</span><span style=color:#0000c0>1</span>, h.B) <span style=color:#00538b>||</span> <span style=color:#721045>tooManyOverflowBuckets</span>(h.noverflow, h.B)) {
+</span></span><span style=display:flex><span>        <span style=color:#721045>hashGrow</span>(t, h)
+</span></span><span style=display:flex><span>        <span style=color:#5317ac>goto</span> again
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#00538b>...</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p><code>runtime.mapassign</code> 函数会在以下两种情况发生时触发哈希的扩容：</p><ul><li>装载因子已经超过 6.5(触发增量扩容)；</li><li>哈希使用了太多溢出桶, 桶数量过多(触发等量扩容)；不过由于 Go 语言哈希的扩容不是一个原子的过程，所以 <code>runtime.mapassign</code> 函数还需要判断当前哈希是否已经处于扩容状态，避免二次扩容造成混乱。</li></ul><p>根据触发的条件不同扩容的方式分成两种，<strong>增量扩容</strong>与<strong>等量扩容（重新排列并分配内存）</strong>。如果这次扩容是溢出的桶太多导致的，那么这次扩容就是等量扩容 sameSizeGrow，sameSizeGrow 是一种特殊情况下发生的扩容，当我们持续向哈希中插入数据并将它们全部删除时，如果哈希表中的数据量没有超过阈值，就会不断积累溢出桶造成缓慢的内存泄漏。runtime: limit the number of map overflow buckets 引入了 sameSizeGrow 通过重用已有的哈希扩容机制，一旦哈希中出现了过多的溢出桶，它就会创建新桶保存数据，垃圾回收会清理老的溢出桶并释放内存5。</p><h2 id=参考>参考</h2><p><a href=https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/>Go 语言设计与实现-哈希表</a>
 <a href=https://juejin.cn/post/7133161294378565668#heading-5>Golang 中 map 探究</a></p></article></div></main></body></html>

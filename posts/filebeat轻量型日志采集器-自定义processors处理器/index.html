@@ -2,112 +2,112 @@
 定义在filebeat中的配置文件 filebeat通常以配置文件的方式加载插件。让定义一下自定义配置。
 filebeat.inputs: - type: log paths: - example/example.log processors: # 自定义处理器插件 - parse_text: file_has_suffix: example.log output.console: pretty: true go文件中的配置 package actions type config struct { FileHasSuffix string `config:"file_has_suffix" validate:"required"` } 初始化加载插件 func init() { processors.RegisterPlugin("parse_text", checks.ConfigChecked(NewParseText, checks.RequireFields("file_has_suffix")), ) } Run接口 处理 filebeat 读取到的每行日志数据message, 这里我们就可以自定义一些处理解析逻辑, 下面逻辑是将日志数据按,切分,重新组装到event.Fields字段里.
 func (p parseText) Run(event *beat.Event) (*beat.Event, error) { if !p.isParseFile(event) { return event, nil } message, err := p.getMessage(event) if err !'><title>Filebeat轻量型日志采集器-自定义processors处理器
-</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-02-23 18:14:25 +0000 UTC">2023-02-23</time></p><h1>Filebeat轻量型日志采集器-自定义processors处理器</h1><h2 id=引入对beat的依赖>引入对beat的依赖</h2><p><code>go get github.com/elastic/beats/v7</code></p><h2 id=定义在filebeat中的配置文件>定义在filebeat中的配置文件</h2><p>filebeat通常以配置文件的方式加载插件。让定义一下自定义配置。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>filebeat.inputs</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>log</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>paths</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>example/example.log</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>processors</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># 自定义处理器插件  </span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>parse_text</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>file_has_suffix</span><span class=p>:</span><span class=w> </span><span class=l>example.log</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>output.console</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>pretty</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span></code></pre></div><h2 id=go文件中的配置>go文件中的配置</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>actions</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>config</span> <span class=kd>struct</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>FileHasSuffix</span> <span class=kt>string</span> <span class=s>`config:&#34;file_has_suffix&#34; validate:&#34;required&#34;`</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><h2 id=初始化加载插件>初始化加载插件</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>init</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>processors</span><span class=p>.</span><span class=nf>RegisterPlugin</span><span class=p>(</span><span class=s>&#34;parse_text&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>		<span class=nx>checks</span><span class=p>.</span><span class=nf>ConfigChecked</span><span class=p>(</span><span class=nx>NewParseText</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>			<span class=nx>checks</span><span class=p>.</span><span class=nf>RequireFields</span><span class=p>(</span><span class=s>&#34;file_has_suffix&#34;</span><span class=p>)),</span>
-</span></span><span class=line><span class=cl>	<span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><h2 id=run接口>Run接口</h2><p>处理 <strong>filebeat</strong> 读取到的每行日志数据<code>message</code>, 这里我们就可以自定义一些处理解析逻辑, 下面逻辑是将日志数据按<code>,</code>切分,重新组装到<code>event.Fields</code>字段里.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>p</span> <span class=nx>parseText</span><span class=p>)</span> <span class=nf>Run</span><span class=p>(</span><span class=nx>event</span> <span class=o>*</span><span class=nx>beat</span><span class=p>.</span><span class=nx>Event</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>beat</span><span class=p>.</span><span class=nx>Event</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>!</span><span class=nx>p</span><span class=p>.</span><span class=nf>isParseFile</span><span class=p>(</span><span class=nx>event</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>event</span><span class=p>,</span> <span class=kc>nil</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=nx>message</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>p</span><span class=p>.</span><span class=nf>getMessage</span><span class=p>(</span><span class=nx>event</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>event</span><span class=p>,</span> <span class=kc>nil</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>	<span class=c1>// 按空格切分文本
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>split</span> <span class=o>:=</span> <span class=nx>strings</span><span class=p>.</span><span class=nf>Split</span><span class=p>(</span><span class=nx>message</span><span class=p>,</span> <span class=s>&#34;,&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=nx>p</span><span class=p>.</span><span class=nx>result</span><span class=p>[</span><span class=s>&#34;split&#34;</span><span class=p>]</span> <span class=p>=</span> <span class=nx>split</span>
-</span></span><span class=line><span class=cl>	<span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=p>=</span> <span class=nx>event</span><span class=p>.</span><span class=nx>Fields</span><span class=p>.</span><span class=nf>Put</span><span class=p>(</span><span class=s>&#34;parse_text&#34;</span><span class=p>,</span> <span class=nx>p</span><span class=p>.</span><span class=nx>result</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>event</span><span class=p>,</span> <span class=kc>nil</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><h2 id=main函数>main函数</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
-</span></span><span class=line><span class=cl>	<span class=s>&#34;os&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=nx>_</span> <span class=s>&#34;filebeat-plugin/pkg/processors/actions&#34;</span>  <span class=c1>// 这里需要将自定义插件注册
-</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=s>&#34;github.com/elastic/beats/v7/filebeat/cmd&#34;</span>
-</span></span><span class=line><span class=cl>	<span class=nx>inputs</span> <span class=s>&#34;github.com/elastic/beats/v7/filebeat/input/default-inputs&#34;</span>
-</span></span><span class=line><span class=cl><span class=p>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>cmd</span><span class=p>.</span><span class=nf>Filebeat</span><span class=p>(</span><span class=nx>inputs</span><span class=p>.</span><span class=nx>Init</span><span class=p>,</span> <span class=nx>cmd</span><span class=p>.</span><span class=nf>FilebeatSettings</span><span class=p>()).</span><span class=nf>Execute</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>		<span class=nx>os</span><span class=p>.</span><span class=nf>Exit</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><h2 id=打包-build>打包 build</h2><p>项目路径下执行 <code>go build -o filebeat.exe ./cmd/filebeat/</code></p><h2 id=解析结果及源日志>解析结果及源日志</h2><p>源日志如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>I,am,Bat,I
-</span></span></code></pre></div><p>解析后 <code>parse_text</code> 字段数据如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=s2>&#34;parse_text&#34;</span><span class=err>:</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=nt>&#34;split&#34;</span><span class=p>:</span> <span class=p>[</span>
-</span></span><span class=line><span class=cl>      <span class=s2>&#34;I&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>      <span class=s2>&#34;am&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>      <span class=s2>&#34;Bat&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>      <span class=s2>&#34;I&#34;</span>
-</span></span><span class=line><span class=cl>    <span class=p>]</span>
-</span></span><span class=line><span class=cl>  <span class=p>}</span><span class=err>,</span>
-</span></span></code></pre></div><p>完整解析结果如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>{
-</span></span><span class=line><span class=cl>  &#34;@timestamp&#34;: &#34;2023-02-23T10:26:05.154Z&#34;,
-</span></span><span class=line><span class=cl>  &#34;@metadata&#34;: {
-</span></span><span class=line><span class=cl>    &#34;beat&#34;: &#34;filebeat&#34;,
-</span></span><span class=line><span class=cl>    &#34;type&#34;: &#34;_doc&#34;,
-</span></span><span class=line><span class=cl>    &#34;version&#34;: &#34;7.13.4&#34;
-</span></span><span class=line><span class=cl>  },
-</span></span><span class=line><span class=cl>  &#34;host&#34;: {
-</span></span><span class=line><span class=cl>    &#34;name&#34;: &#34;chentong.local&#34;
-</span></span><span class=line><span class=cl>  },
-</span></span><span class=line><span class=cl>  &#34;agent&#34;: {
-</span></span><span class=line><span class=cl>    &#34;version&#34;: &#34;7.13.4&#34;,
-</span></span><span class=line><span class=cl>    &#34;hostname&#34;: &#34;chentong.local&#34;,
-</span></span><span class=line><span class=cl>    &#34;ephemeral_id&#34;: &#34;02d53454-19dc-4fff-9182-8f04a402e399&#34;,
-</span></span><span class=line><span class=cl>    &#34;id&#34;: &#34;f10cf835-535b-4714-8bc4-1c0b3636ae1d&#34;,
-</span></span><span class=line><span class=cl>    &#34;name&#34;: &#34;chentong.local&#34;,
-</span></span><span class=line><span class=cl>    &#34;type&#34;: &#34;filebeat&#34;
-</span></span><span class=line><span class=cl>  },
-</span></span><span class=line><span class=cl>  &#34;ecs&#34;: {
-</span></span><span class=line><span class=cl>    &#34;version&#34;: &#34;1.8.0&#34;
-</span></span><span class=line><span class=cl>  },
-</span></span><span class=line><span class=cl>  &#34;parse_text&#34;: {
-</span></span><span class=line><span class=cl>    &#34;split&#34;: [
-</span></span><span class=line><span class=cl>      &#34;I&#34;,
-</span></span><span class=line><span class=cl>      &#34;am&#34;,
-</span></span><span class=line><span class=cl>      &#34;Bat&#34;,
-</span></span><span class=line><span class=cl>      &#34;I&#34;
-</span></span><span class=line><span class=cl>    ]
-</span></span><span class=line><span class=cl>  },
-</span></span><span class=line><span class=cl>  &#34;log&#34;: {
-</span></span><span class=line><span class=cl>    &#34;offset&#34;: 187,
-</span></span><span class=line><span class=cl>    &#34;file&#34;: {
-</span></span><span class=line><span class=cl>      &#34;path&#34;: &#34;filebeat-plugin/example/example.log&#34;
-</span></span><span class=line><span class=cl>    }
-</span></span><span class=line><span class=cl>  },
-</span></span><span class=line><span class=cl>  &#34;message&#34;: &#34;I,am,Bat,I&#34;,
-</span></span><span class=line><span class=cl>  &#34;input&#34;: {
-</span></span><span class=line><span class=cl>    &#34;type&#34;: &#34;log&#34;
-</span></span><span class=line><span class=cl>  }
-</span></span><span class=line><span class=cl>}
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-02-23 18:14:25 +0000 UTC">2023-02-23</time></p><h1>Filebeat轻量型日志采集器-自定义processors处理器</h1><h2 id=引入对beat的依赖>引入对beat的依赖</h2><p><code>go get github.com/elastic/beats/v7</code></p><h2 id=定义在filebeat中的配置文件>定义在filebeat中的配置文件</h2><p>filebeat通常以配置文件的方式加载插件。让定义一下自定义配置。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-yaml data-lang=yaml><span style=display:flex><span>filebeat.inputs:
+</span></span><span style=display:flex><span>  - type: <span style=color:#0000c0>log</span>
+</span></span><span style=display:flex><span>    paths:
+</span></span><span style=display:flex><span>      - <span style=color:#0000c0>example/example.log</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>processors:
+</span></span><span style=display:flex><span>  <span style=color:#505050># 自定义处理器插件  </span>
+</span></span><span style=display:flex><span>  - parse_text:
+</span></span><span style=display:flex><span>      file_has_suffix: <span style=color:#0000c0>example.log</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>output.console:
+</span></span><span style=display:flex><span>  pretty: <span style=color:#0000c0>true</span>
+</span></span></code></pre></div><h2 id=go文件中的配置>go文件中的配置</h2><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> actions
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>type</span> config <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>	FileHasSuffix <span style=color:#005a5f>string</span> <span style=color:#2544bb>`config:&#34;file_has_suffix&#34; validate:&#34;required&#34;`</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=初始化加载插件>初始化加载插件</h2><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>init</span>() {
+</span></span><span style=display:flex><span>	processors.<span style=color:#721045>RegisterPlugin</span>(<span style=color:#2544bb>&#34;parse_text&#34;</span>,
+</span></span><span style=display:flex><span>		checks.<span style=color:#721045>ConfigChecked</span>(NewParseText,
+</span></span><span style=display:flex><span>			checks.<span style=color:#721045>RequireFields</span>(<span style=color:#2544bb>&#34;file_has_suffix&#34;</span>)),
+</span></span><span style=display:flex><span>	)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=run接口>Run接口</h2><p>处理 <strong>filebeat</strong> 读取到的每行日志数据<code>message</code>, 这里我们就可以自定义一些处理解析逻辑, 下面逻辑是将日志数据按<code>,</code>切分,重新组装到<code>event.Fields</code>字段里.</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> (p parseText) <span style=color:#721045>Run</span>(event <span style=color:#00538b>*</span>beat.Event) (<span style=color:#00538b>*</span>beat.Event, <span style=color:#005a5f>error</span>) {
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> !p.<span style=color:#721045>isParseFile</span>(event) {
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> event, <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	message, err <span style=color:#00538b>:=</span> p.<span style=color:#721045>getMessage</span>(event)
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> event, <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 按空格切分文本
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	split <span style=color:#00538b>:=</span> strings.<span style=color:#721045>Split</span>(message, <span style=color:#2544bb>&#34;,&#34;</span>)
+</span></span><span style=display:flex><span>	p.result[<span style=color:#2544bb>&#34;split&#34;</span>] = split
+</span></span><span style=display:flex><span>	_, err = event.Fields.<span style=color:#721045>Put</span>(<span style=color:#2544bb>&#34;parse_text&#34;</span>, p.result)
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>, err
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> event, <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=main函数>main函数</h2><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;os&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	_ <span style=color:#2544bb>&#34;filebeat-plugin/pkg/processors/actions&#34;</span>  <span style=color:#505050>// 这里需要将自定义插件注册
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#2544bb>&#34;github.com/elastic/beats/v7/filebeat/cmd&#34;</span>
+</span></span><span style=display:flex><span>	inputs <span style=color:#2544bb>&#34;github.com/elastic/beats/v7/filebeat/input/default-inputs&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> cmd.<span style=color:#721045>Filebeat</span>(inputs.Init, cmd.<span style=color:#721045>FilebeatSettings</span>()).<span style=color:#721045>Execute</span>(); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>		os.<span style=color:#721045>Exit</span>(<span style=color:#0000c0>1</span>)
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=打包-build>打包 build</h2><p>项目路径下执行 <code>go build -o filebeat.exe ./cmd/filebeat/</code></p><h2 id=解析结果及源日志>解析结果及源日志</h2><p>源日志如下:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-text data-lang=text><span style=display:flex><span>I,am,Bat,I
+</span></span></code></pre></div><p>解析后 <code>parse_text</code> 字段数据如下:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#2544bb>&#34;parse_text&#34;</span>: {
+</span></span><span style=display:flex><span>    &#34;split&#34;: [
+</span></span><span style=display:flex><span>      <span style=color:#2544bb>&#34;I&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#2544bb>&#34;am&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#2544bb>&#34;Bat&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#2544bb>&#34;I&#34;</span>
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>  },
+</span></span></code></pre></div><p>完整解析结果如下:</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-text data-lang=text><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  &#34;@timestamp&#34;: &#34;2023-02-23T10:26:05.154Z&#34;,
+</span></span><span style=display:flex><span>  &#34;@metadata&#34;: {
+</span></span><span style=display:flex><span>    &#34;beat&#34;: &#34;filebeat&#34;,
+</span></span><span style=display:flex><span>    &#34;type&#34;: &#34;_doc&#34;,
+</span></span><span style=display:flex><span>    &#34;version&#34;: &#34;7.13.4&#34;
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  &#34;host&#34;: {
+</span></span><span style=display:flex><span>    &#34;name&#34;: &#34;chentong.local&#34;
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  &#34;agent&#34;: {
+</span></span><span style=display:flex><span>    &#34;version&#34;: &#34;7.13.4&#34;,
+</span></span><span style=display:flex><span>    &#34;hostname&#34;: &#34;chentong.local&#34;,
+</span></span><span style=display:flex><span>    &#34;ephemeral_id&#34;: &#34;02d53454-19dc-4fff-9182-8f04a402e399&#34;,
+</span></span><span style=display:flex><span>    &#34;id&#34;: &#34;f10cf835-535b-4714-8bc4-1c0b3636ae1d&#34;,
+</span></span><span style=display:flex><span>    &#34;name&#34;: &#34;chentong.local&#34;,
+</span></span><span style=display:flex><span>    &#34;type&#34;: &#34;filebeat&#34;
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  &#34;ecs&#34;: {
+</span></span><span style=display:flex><span>    &#34;version&#34;: &#34;1.8.0&#34;
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  &#34;parse_text&#34;: {
+</span></span><span style=display:flex><span>    &#34;split&#34;: [
+</span></span><span style=display:flex><span>      &#34;I&#34;,
+</span></span><span style=display:flex><span>      &#34;am&#34;,
+</span></span><span style=display:flex><span>      &#34;Bat&#34;,
+</span></span><span style=display:flex><span>      &#34;I&#34;
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  &#34;log&#34;: {
+</span></span><span style=display:flex><span>    &#34;offset&#34;: 187,
+</span></span><span style=display:flex><span>    &#34;file&#34;: {
+</span></span><span style=display:flex><span>      &#34;path&#34;: &#34;filebeat-plugin/example/example.log&#34;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  &#34;message&#34;: &#34;I,am,Bat,I&#34;,
+</span></span><span style=display:flex><span>  &#34;input&#34;: {
+</span></span><span style=display:flex><span>    &#34;type&#34;: &#34;log&#34;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><h2 id=源码>源码</h2><p><a href=https://github.com/ch3nnn/filebeat-plugin>https://github.com/ch3nnn/filebeat-plugin</a></p></article></div></main></body></html>

@@ -5,122 +5,122 @@ xcode-select --install brew update brew install mercurial gvm安装 我使用 zs
 $ echo $SHELL /bin/zsh 对于 zsh，您可以这样安装：
 $ zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm No existing Go versions detected Installed GVM v1.0.22 Please restart your terminal session or to get started right away run `source /Users/user_name/.gvm/scripts/gvm` ~/.zshrc 以下行被添加到最后一行
 [[ -s "/Users/user_name/.'><title>Golang-使用gvm进行版本控制
-</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-08-14 18:00:01 +0000 UTC">2023-08-14</time></p><h1>Golang-使用gvm进行版本控制</h1><p>当你想为每个项目切换 go 版本时，gvm (Go Version Manager) 很方便。</p><p>这里，我将介绍“如何在Mac上安装gvm”和“如何使用gvm”</p><h2 id=使用准备>使用准备</h2><h3 id=仅适用于-mac-的准备工作>仅适用于 Mac 的准备工作</h3><p>按照MacOSX 要求中的说明执行以下命令。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>xcode-select --install
-</span></span><span class=line><span class=cl>brew update
-</span></span><span class=line><span class=cl>brew install mercurial
-</span></span></code></pre></div><h3 id=gvm安装>gvm安装</h3><p>我使用 zsh 作为我的 shell。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=nv>$SHELL</span>
-</span></span><span class=line><span class=cl>/bin/zsh
-</span></span></code></pre></div><p>对于 zsh，您可以这样安装：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ zsh &lt; &lt;<span class=o>(</span>curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer<span class=o>)</span>
-</span></span><span class=line><span class=cl>Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm
-</span></span><span class=line><span class=cl>No existing Go versions detected
-</span></span><span class=line><span class=cl>Installed GVM v1.0.22
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Please restart your terminal session or to get started right away run
-</span></span><span class=line><span class=cl> <span class=sb>`</span><span class=nb>source</span> /Users/user_name/.gvm/scripts/gvm<span class=sb>`</span>
-</span></span></code></pre></div><p><code>~/.zshrc</code> 以下行被添加到最后一行</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=o>[[</span> -s <span class=s2>&#34;/Users/user_name/.gvm/scripts/gvm&#34;</span> <span class=o>]]</span> <span class=o>&amp;&amp;</span> <span class=nb>source</span> <span class=s2>&#34;/Users/user_name/.gvm/scripts/gvm&#34;</span>
-</span></span></code></pre></div><p>重新启动终端 gvm 即可使用</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ gvm <span class=nb>help</span>
-</span></span><span class=line><span class=cl>Usage: gvm <span class=o>[</span>command<span class=o>]</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Description:
-</span></span><span class=line><span class=cl>  GVM is the Go Version Manager
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Commands:
-</span></span><span class=line><span class=cl>  version    - print the gvm version number
-</span></span><span class=line><span class=cl>  get        - gets the latest code <span class=o>(</span><span class=k>for</span> debugging<span class=o>)</span>
-</span></span><span class=line><span class=cl>  use        - <span class=k>select</span> a go version to use <span class=o>(</span>--default to <span class=nb>set</span> permanently<span class=o>)</span>
-</span></span><span class=line><span class=cl>  diff       - view changes to Go root
-</span></span><span class=line><span class=cl>  <span class=nb>help</span>       - display this usage text
-</span></span><span class=line><span class=cl>  implode    - completely remove gvm
-</span></span><span class=line><span class=cl>  install    - install go versions
-</span></span><span class=line><span class=cl>  uninstall  - uninstall go versions
-</span></span><span class=line><span class=cl>  cross      - install go cross compilers
-</span></span><span class=line><span class=cl>  linkthis   - link this directory into GOPATH
-</span></span><span class=line><span class=cl>  list       - list installed go versions
-</span></span><span class=line><span class=cl>  listall    - list available versions
-</span></span><span class=line><span class=cl>  <span class=nb>alias</span>      - manage go version aliases
-</span></span><span class=line><span class=cl>  pkgset     - manage go packages sets
-</span></span><span class=line><span class=cl>  pkgenv     - edit the environment <span class=k>for</span> a package <span class=nb>set</span>
-</span></span></code></pre></div><h2 id=如何使用gvm>如何使用gvm</h2><h3 id=查看可以安装的版本>查看可以安装的版本</h3><p><code>gvm listall</code> 您可以检查可以安装哪个版本</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ gvm listall
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>gvm gos <span class=o>(</span>available<span class=o>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>   go1
-</span></span><span class=line><span class=cl>   go1.0.1
-</span></span><span class=line><span class=cl>   go1.0.2
-</span></span><span class=line><span class=cl>   go1.0.3
-</span></span><span class=line><span class=cl>   go1.1
-</span></span><span class=line><span class=cl>   go1.1rc2
-</span></span><span class=line><span class=cl>   go1.1rc3
-</span></span><span class=line><span class=cl>   :
-</span></span></code></pre></div><h3 id=安装-go-版本>安装 go 版本</h3><p>M1 Mac 我正在使用，但是当我执行以下命令时，出现错误</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ gvm install go1.16.15 -B
-</span></span><span class=line><span class=cl>Installing go1.16.15 from binary <span class=nb>source</span>
-</span></span><span class=line><span class=cl>ERROR: Binary Go unavailable <span class=k>for</span> this platform
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ gvm install go1.17.5 -B 
-</span></span><span class=line><span class=cl>Installing go1.17.5 from binary <span class=nb>source</span>
-</span></span><span class=line><span class=cl>ERROR: Binary Go unavailable <span class=k>for</span> this platform
-</span></span></code></pre></div><p>我在以下方面取得了成功：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ brew install <span class=nv>go</span>
-</span></span><span class=line><span class=cl><span class=o>==</span>&gt; Downloading https://ghcr.io/v2/homebrew/core/go/manifests/1.18
-</span></span><span class=line><span class=cl><span class=c1>######################################################################## 100.0%</span>
-</span></span><span class=line><span class=cl>    :
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ gvm install go1.16.15   
-</span></span><span class=line><span class=cl>Installing go1.16.15...
-</span></span><span class=line><span class=cl> * Compiling...
-</span></span><span class=line><span class=cl>go1.16.15 successfully installed!
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ gvm use go1.16.15 --default
-</span></span><span class=line><span class=cl>Now using version go1.16.15
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ go version          
-</span></span><span class=line><span class=cl>go version go1.16.15 darwin/arm64
-</span></span></code></pre></div><p>之后，即使我卸载了用brew安装的go，我也能够安装另一个版本的go。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ brew uninstall go          
-</span></span><span class=line><span class=cl>Uninstalling /opt/homebrew/Cellar/go/1.18... <span class=o>(</span>11,947 files, 595.3MB<span class=o>)</span>
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ gvm install go1.17.5   
-</span></span><span class=line><span class=cl>Installing go1.17.5...
-</span></span><span class=line><span class=cl> * Compiling...
-</span></span><span class=line><span class=cl>go1.17.5 successfully installed!
-</span></span></code></pre></div><p>1.16.15 已安装 1.17.5 ，但为每个版本生成了一个文件夹，如下所示。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ ls ~/.gvm/gos 
-</span></span><span class=line><span class=cl>go1.16.15       go1.17.5
-</span></span></code></pre></div><h3 id=切换go版本来使用>切换go版本来使用</h3><p>我目前正在go1.16.15 使用</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ gvm list
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>gvm gos <span class=o>(</span>installed<span class=o>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=o>=</span>&gt; go1.16.15
-</span></span><span class=line><span class=cl>   go1.17.5
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=nv>$GOPATH</span>
-</span></span><span class=line><span class=cl>/Users/user_name/.gvm/pkgsets/go1.16.15/global
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=nv>$GOROOT</span>
-</span></span><span class=line><span class=cl>/Users/user_name/.gvm/gos/go1.16.15
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ go version
-</span></span><span class=line><span class=cl>go version go1.16.15 darwin/arm64
-</span></span><span class=line><span class=cl>$
-</span></span><span class=line><span class=cl>$ which go
-</span></span><span class=line><span class=cl>/Users/user_name/.gvm/gos/go1.16.15/bin/go
-</span></span></code></pre></div><p><code>1.17.5</code> 我会尝试切换到</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ gvm use go1.17.5 --default 
-</span></span><span class=line><span class=cl>Now using version go1.17.5
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ gvm list                  
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>gvm gos <span class=o>(</span>installed<span class=o>)</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>   go1.16.15
-</span></span><span class=line><span class=cl><span class=o>=</span>&gt; go1.17.5
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=nv>$GOPATH</span>
-</span></span><span class=line><span class=cl>/Users/user_name/.gvm/pkgsets/go1.17.5/global
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=nv>$GOROOT</span>
-</span></span><span class=line><span class=cl>/Users/user_name/.gvm/gos/go1.17.5
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ go version
-</span></span><span class=line><span class=cl>go version go1.17.5 darwin/arm64
-</span></span><span class=line><span class=cl>$ 
-</span></span><span class=line><span class=cl>$ which go
-</span></span><span class=line><span class=cl>/Users/user_name/.gvm/gos/go1.17.5/bin/go
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-08-14 18:00:01 +0000 UTC">2023-08-14</time></p><h1>Golang-使用gvm进行版本控制</h1><p>当你想为每个项目切换 go 版本时，gvm (Go Version Manager) 很方便。</p><p>这里，我将介绍“如何在Mac上安装gvm”和“如何使用gvm”</p><h2 id=使用准备>使用准备</h2><h3 id=仅适用于-mac-的准备工作>仅适用于 Mac 的准备工作</h3><p>按照MacOSX 要求中的说明执行以下命令。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>xcode-select --install
+</span></span><span style=display:flex><span>brew update
+</span></span><span style=display:flex><span>brew install mercurial
+</span></span></code></pre></div><h3 id=gvm安装>gvm安装</h3><p>我使用 zsh 作为我的 shell。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ <span style=color:#8f0075>echo</span> <span style=color:#00538b>$SHELL</span>
+</span></span><span style=display:flex><span>/bin/zsh
+</span></span></code></pre></div><p>对于 zsh，您可以这样安装：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ zsh &lt; &lt;<span style=color:#00538b>(</span>curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm
+</span></span><span style=display:flex><span>No existing Go versions detected
+</span></span><span style=display:flex><span>Installed GVM v1.0.22
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Please restart your terminal session or to get started right away run
+</span></span><span style=display:flex><span> <span style=color:#2544bb>`</span><span style=color:#8f0075>source</span> /Users/user_name/.gvm/scripts/gvm<span style=color:#2544bb>`</span>
+</span></span></code></pre></div><p><code>~/.zshrc</code> 以下行被添加到最后一行</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#00538b>[[</span> -s <span style=color:#2544bb>&#34;/Users/user_name/.gvm/scripts/gvm&#34;</span> <span style=color:#00538b>]]</span> <span style=color:#00538b>&amp;&amp;</span> <span style=color:#8f0075>source</span> <span style=color:#2544bb>&#34;/Users/user_name/.gvm/scripts/gvm&#34;</span>
+</span></span></code></pre></div><p>重新启动终端 gvm 即可使用</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ gvm <span style=color:#8f0075>help</span>
+</span></span><span style=display:flex><span>Usage: gvm <span style=color:#00538b>[</span>command<span style=color:#00538b>]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Description:
+</span></span><span style=display:flex><span>  GVM is the Go Version Manager
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Commands:
+</span></span><span style=display:flex><span>  version    - print the gvm version number
+</span></span><span style=display:flex><span>  get        - gets the latest code <span style=color:#00538b>(</span><span style=color:#5317ac>for</span> debugging<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>  use        - <span style=color:#5317ac>select</span> a go version to use <span style=color:#00538b>(</span>--default to <span style=color:#8f0075>set</span> permanently<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>  diff       - view changes to Go root
+</span></span><span style=display:flex><span>  <span style=color:#8f0075>help</span>       - display this usage text
+</span></span><span style=display:flex><span>  implode    - completely remove gvm
+</span></span><span style=display:flex><span>  install    - install go versions
+</span></span><span style=display:flex><span>  uninstall  - uninstall go versions
+</span></span><span style=display:flex><span>  cross      - install go cross compilers
+</span></span><span style=display:flex><span>  linkthis   - link this directory into GOPATH
+</span></span><span style=display:flex><span>  list       - list installed go versions
+</span></span><span style=display:flex><span>  listall    - list available versions
+</span></span><span style=display:flex><span>  <span style=color:#8f0075>alias</span>      - manage go version aliases
+</span></span><span style=display:flex><span>  pkgset     - manage go packages sets
+</span></span><span style=display:flex><span>  pkgenv     - edit the environment <span style=color:#5317ac>for</span> a package <span style=color:#8f0075>set</span>
+</span></span></code></pre></div><h2 id=如何使用gvm>如何使用gvm</h2><h3 id=查看可以安装的版本>查看可以安装的版本</h3><p><code>gvm listall</code> 您可以检查可以安装哪个版本</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ gvm listall
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>gvm gos <span style=color:#00538b>(</span>available<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   go1
+</span></span><span style=display:flex><span>   go1.0.1
+</span></span><span style=display:flex><span>   go1.0.2
+</span></span><span style=display:flex><span>   go1.0.3
+</span></span><span style=display:flex><span>   go1.1
+</span></span><span style=display:flex><span>   go1.1rc2
+</span></span><span style=display:flex><span>   go1.1rc3
+</span></span><span style=display:flex><span>   :
+</span></span></code></pre></div><h3 id=安装-go-版本>安装 go 版本</h3><p>M1 Mac 我正在使用，但是当我执行以下命令时，出现错误</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ gvm install go1.16.15 -B
+</span></span><span style=display:flex><span>Installing go1.16.15 from binary <span style=color:#8f0075>source</span>
+</span></span><span style=display:flex><span>ERROR: Binary Go unavailable <span style=color:#5317ac>for</span> this platform
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ gvm install go1.17.5 -B 
+</span></span><span style=display:flex><span>Installing go1.17.5 from binary <span style=color:#8f0075>source</span>
+</span></span><span style=display:flex><span>ERROR: Binary Go unavailable <span style=color:#5317ac>for</span> this platform
+</span></span></code></pre></div><p>我在以下方面取得了成功：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ brew install <span style=color:#00538b>go</span>
+</span></span><span style=display:flex><span><span style=color:#00538b>==</span>&gt; Downloading https://ghcr.io/v2/homebrew/core/go/manifests/1.18
+</span></span><span style=display:flex><span><span style=color:#505050>######################################################################## 100.0%</span>
+</span></span><span style=display:flex><span>    :
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ gvm install go1.16.15   
+</span></span><span style=display:flex><span>Installing go1.16.15...
+</span></span><span style=display:flex><span> * Compiling...
+</span></span><span style=display:flex><span>go1.16.15 successfully installed!
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ gvm use go1.16.15 --default
+</span></span><span style=display:flex><span>Now using version go1.16.15
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ go version          
+</span></span><span style=display:flex><span>go version go1.16.15 darwin/arm64
+</span></span></code></pre></div><p>之后，即使我卸载了用brew安装的go，我也能够安装另一个版本的go。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ brew uninstall go          
+</span></span><span style=display:flex><span>Uninstalling /opt/homebrew/Cellar/go/1.18... <span style=color:#00538b>(</span>11,947 files, 595.3MB<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ gvm install go1.17.5   
+</span></span><span style=display:flex><span>Installing go1.17.5...
+</span></span><span style=display:flex><span> * Compiling...
+</span></span><span style=display:flex><span>go1.17.5 successfully installed!
+</span></span></code></pre></div><p>1.16.15 已安装 1.17.5 ，但为每个版本生成了一个文件夹，如下所示。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ ls ~/.gvm/gos 
+</span></span><span style=display:flex><span>go1.16.15       go1.17.5
+</span></span></code></pre></div><h3 id=切换go版本来使用>切换go版本来使用</h3><p>我目前正在go1.16.15 使用</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ gvm list
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>gvm gos <span style=color:#00538b>(</span>installed<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00538b>=</span>&gt; go1.16.15
+</span></span><span style=display:flex><span>   go1.17.5
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ <span style=color:#8f0075>echo</span> <span style=color:#00538b>$GOPATH</span>
+</span></span><span style=display:flex><span>/Users/user_name/.gvm/pkgsets/go1.16.15/global
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ <span style=color:#8f0075>echo</span> <span style=color:#00538b>$GOROOT</span>
+</span></span><span style=display:flex><span>/Users/user_name/.gvm/gos/go1.16.15
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ go version
+</span></span><span style=display:flex><span>go version go1.16.15 darwin/arm64
+</span></span><span style=display:flex><span>$
+</span></span><span style=display:flex><span>$ which go
+</span></span><span style=display:flex><span>/Users/user_name/.gvm/gos/go1.16.15/bin/go
+</span></span></code></pre></div><p><code>1.17.5</code> 我会尝试切换到</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>$ gvm use go1.17.5 --default 
+</span></span><span style=display:flex><span>Now using version go1.17.5
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ gvm list                  
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>gvm gos <span style=color:#00538b>(</span>installed<span style=color:#00538b>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   go1.16.15
+</span></span><span style=display:flex><span><span style=color:#00538b>=</span>&gt; go1.17.5
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ <span style=color:#8f0075>echo</span> <span style=color:#00538b>$GOPATH</span>
+</span></span><span style=display:flex><span>/Users/user_name/.gvm/pkgsets/go1.17.5/global
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ <span style=color:#8f0075>echo</span> <span style=color:#00538b>$GOROOT</span>
+</span></span><span style=display:flex><span>/Users/user_name/.gvm/gos/go1.17.5
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ go version
+</span></span><span style=display:flex><span>go version go1.17.5 darwin/arm64
+</span></span><span style=display:flex><span>$ 
+</span></span><span style=display:flex><span>$ which go
+</span></span><span style=display:flex><span>/Users/user_name/.gvm/gos/go1.17.5/bin/go
 </span></span></code></pre></div><h2 id=参考>参考</h2><p><a href=https://github.com/moovweb/gvm>https://github.com/moovweb/gvm</a></p></article></div></main></body></html>
