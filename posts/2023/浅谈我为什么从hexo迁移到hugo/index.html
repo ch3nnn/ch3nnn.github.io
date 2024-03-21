@@ -5,7 +5,8 @@
 二、安装 Hugo 在 macOS 上安装 Hugo 前置条件需要安装 brew。
 Homebrew 是一款适用于 macOS 和 Linux 的免费开源包管理器。
 安装 GO 和 Git 可以使用 brew 包管理工具 // 升级 brew brew update && brew upgrade // 安装 Git brew install git // 安装 Go brew install go 安装 Hugo brew 扩展版本： brew install hugo 三、Hugo 快速入门 执行以下命令"><title>浅谈我为什么从 HEXO 迁移到 HUGO
-</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-08-30 10:53:08 +0800 +0800">2023-08-30</time></p><h1>浅谈我为什么从 HEXO 迁移到 HUGO</h1><h2 id=一为什么选择hugo>一、为什么选择Hugo</h2><p>我一直在使用 HEXO 作为我的网站建设工具。最主要的原因在于容易理解，相对比较容易上手，并且有很多齐全的插件供你选择。</p><p>首先，第一点得提的就是 Hugo 打出的标语 &ndash; <code>The world’s fastest framework for building websites。</code> Hugo 依靠 Go 语言进行开发，号称世界上最快的构建网站工具。HUGO 具有快速建站的能力。与其他网站建设工具相比，HUGO 具有更快的启动时间和更快的页面加载速度。这对于需要快速响应的网站来说尤为重要。</p><p>正是依赖于 Hugo 快速生成的特点，调试方便成了 Hugo 的第二大特点。基本上我在使用 Markdown 语言进行页面编写处修改的内容可以实时地显示在网页上，而不用再次敲命令生成再预览。</p><p>第三点自己也是学习和使用 GO 语言，所以也会有所青睐。</p><h2 id=二安装-hugo>二、安装 Hugo</h2><p>在 macOS 上安装 Hugo 前置条件需要安装 <code>brew</code>。</p><p><a href=https://brew.sh/>Homebrew</a> 是一款适用于 macOS 和 Linux 的免费开源包管理器。</p><ol><li>安装 GO 和 Git
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-08-30 10:53:08 +0800 +0800">2023-08-30</time></p><h1>浅谈我为什么从 HEXO 迁移到 HUGO</h1><h2 id=一为什么选择hugo>一、为什么选择Hugo</h2><p>我一直在使用 HEXO 作为我的网站建设工具。最主要的原因在于容易理解，相对比较容易上手，并且有很多齐全的插件供你选择。</p><p>首先，第一点得提的就是 Hugo 打出的标语 &ndash; <code>The world’s fastest framework for building websites。</code> Hugo 依靠 Go 语言进行开发，号称世界上最快的构建网站工具。HUGO
+具有快速建站的能力。与其他网站建设工具相比，HUGO 具有更快的启动时间和更快的页面加载速度。这对于需要快速响应的网站来说尤为重要。</p><p>正是依赖于 Hugo 快速生成的特点，调试方便成了 Hugo 的第二大特点。基本上我在使用 Markdown 语言进行页面编写处修改的内容可以实时地显示在网页上，而不用再次敲命令生成再预览。</p><p>第三点自己也是学习和使用 GO 语言，所以也会有所青睐。</p><h2 id=二安装-hugo>二、安装 Hugo</h2><p>在 macOS 上安装 Hugo 前置条件需要安装 <code>brew</code>。</p><p><a href=https://brew.sh/>Homebrew</a> 是一款适用于 macOS 和 Linux 的免费开源包管理器。</p><ol><li>安装 GO 和 Git
 可以使用 <code>brew</code> 包管理工具<div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>// 升级 brew
 </span></span><span style=display:flex><span>brew update <span style=color:#00538b>&amp;&amp;</span> brew upgrade
 </span></span><span style=display:flex><span>
@@ -32,7 +33,8 @@ Homebrew 是一款适用于 macOS 和 Linux 的免费开源包管理器。
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#505050># 预览当前网站， --watch参数会让程序不断监听当前目录是否有更新然后实时加载。</span>
 </span></span><span style=display:flex><span>hugo server --watch
-</span></span></code></pre></div><h2 id=四使用-github-actions-自动发布-hugo-站点>四、使用 Github Actions 自动发布 Hugo 站点</h2><p>这里使用 *.github.io 仓库维护 build 后的文章仓库。 创建新仓库维护平时文章源代码仓库，因为要同时要维护两个仓库很麻烦，所以借助 Github Actions 自动发布文章。</p><p>首先在博客源文件目录下新建 <code>.github/workflows</code> 文件夹，然后再新建 <code>deploy.yml</code> 脚本。</p><ol><li><p>定义 Github Actions</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-yaml data-lang=yaml><span style=display:flex><span>name: <span style=color:#0000c0>GitHub Pages</span>
+</span></span></code></pre></div><h2 id=四使用-github-actions-自动发布-hugo-站点>四、使用 Github Actions 自动发布 Hugo 站点</h2><p>这里使用 *.github.io 仓库维护 build 后的文章仓库。 创建新仓库维护平时文章源代码仓库，因为要同时要维护两个仓库很麻烦，所以借助 Github Actions
+自动发布文章。</p><p>首先在博客源文件目录下新建 <code>.github/workflows</code> 文件夹，然后再新建 <code>deploy.yml</code> 脚本。</p><ol><li><p>定义 Github Actions</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-yaml data-lang=yaml><span style=display:flex><span>name: <span style=color:#0000c0>GitHub Pages</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>on:
 </span></span><span style=display:flex><span>  push:
@@ -98,7 +100,8 @@ Homebrew 是一款适用于 macOS 和 Linux 的免费开源包管理器。
 </span></span><span style=display:flex><span>|*o.o      +.+ .  |
 </span></span><span style=display:flex><span>|++.       .oo+   |
 </span></span><span style=display:flex><span>+----<span style=color:#00538b>[</span>SHA256<span style=color:#00538b>]</span>-----+
-</span></span></code></pre></div><p>为了能够将静态博客文件上传至<code>&lt;USERNAME>/&lt;USERNAME>.github.io</code>仓库，需要进行deploy key 的配置。首先在本地生成一对 SSH 密钥，然后将<strong>公钥</strong>配置到<strong>目标仓库</strong>，即在目标仓库的 settings 中添加 deploy key 的公钥。
+</span></span></code></pre></div><p>为了能够将静态博客文件上传至<code>&lt;USERNAME>/&lt;USERNAME>.github.io</code>仓库，需要进行deploy key 的配置。首先在本地生成一对 SSH 密钥，然后将<strong>公钥</strong>配置到
+<strong>目标仓库</strong>，即在目标仓库的 settings 中添加 deploy key 的公钥。
 <img src=https://s2.loli.net/2023/08/30/ZsbPgYVyXvQ2UDu.png alt>
 然后在博客源文件的仓库中配置 deploy key 的私钥。从而让 action 脚本可以调用。在仓库的settings中新增 repository secret，将 deploy key 的私钥添加进去。
 <img src=https://s2.loli.net/2023/08/30/l2iamRqFc4IGSfy.png alt></p></li></ol></article></div></main></body></html>
