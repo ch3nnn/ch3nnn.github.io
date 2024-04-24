@@ -1,0 +1,99 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。
+想想看，你有一个函数可以做 3 件事：
+按用户 ID 从数据库中获取用户详细信息。 调用外部服务，按用户 ID 获取用户最近的活动信息 访问日志服务，按用户 ID 获取用户上次登录的详细信息 func FetchUserData(userID string) error { g := errgroup.Group{} // 获取用户详细信息 userDetail, _ := fetchUserDetails(userID) // 获取用户活动 userAct, _ := fetchUserActivity(userID) // 获取用户登录详细信息 userLoginInfo, _ := fetchUserLoginDetails(userID) // ... } 所有这些任务都只需要用户 ID，而不使用其他任务的数据。
+您可以尝试使用 goroutines 来实现这一点，但您需要自己处理细节问题。让我们来回答这些问题：
+同步：如何确保一切完成？ 错误处理：如果一项任务出错，你该怎么办？或者三项任务中有两项不成功？ 取消：如果一个任务出现问题，如何停止所有其他正在运行的程序？ 限制：你是否考虑过限制同时运行多少个 goroutines？ 可重复使用：一旦找到解决方案，如何在类似情况下再次使用？ 1.什么是 errgroup？ errgroup 软件包可让您同时处理多项任务。
+通过它，可以轻松地以安全的方式一起运行，保持同步，处理错误，并控制何时停止 goroutines。下面是一个如何使用它的快速示例：
+func FetchUserData() error { g := errgroup.Group{} // 获取用户详细信息 g.Go(func() error { time."><title>Go Sync并发包之errgroup
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-04-24 10:44:21 +0800 +0800">2024-04-24</time></p><h1>Go Sync并发包之errgroup</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共341字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><aside><nav id=TableOfContents><ul><li><a href=#1什么是-errgroup>1.什么是 errgroup？</a></li><li><a href=#2setlimit限制程序运行次数>2.SetLimit：限制程序运行次数</a></li><li><a href=#3trygo添加快速程序的受控方法>3.TryGo：添加快速程序的受控方法</a></li><li><a href=#4withcontext处理取消>4.WithContext：处理取消</a></li></ul></nav></aside><p>你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。</p><p>想想看，你有一个函数可以做 3 件事：</p><ul><li>按用户 ID 从数据库中获取用户详细信息。</li><li>调用外部服务，按用户 ID 获取用户最近的活动信息</li><li>访问日志服务，按用户 ID 获取用户上次登录的详细信息</li></ul><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>FetchUserData</span>(userID <span style=color:#005a5f>string</span>) <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>    g <span style=color:#00538b>:=</span> errgroup.Group{}
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 获取用户详细信息
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    userDetail, _ <span style=color:#00538b>:=</span> <span style=color:#721045>fetchUserDetails</span>(userID)
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 获取用户活动
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    userAct, _ <span style=color:#00538b>:=</span> <span style=color:#721045>fetchUserActivity</span>(userID)
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 获取用户登录详细信息
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    userLoginInfo, _ <span style=color:#00538b>:=</span> <span style=color:#721045>fetchUserLoginDetails</span>(userID)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// ...
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span></code></pre></div><p>所有这些任务都只需要用户 ID，而不使用其他任务的数据。</p><p>您可以尝试使用 goroutines 来实现这一点，但您需要自己处理细节问题。让我们来回答这些问题：</p><ul><li><strong>同步</strong>：如何确保一切完成？</li><li><strong>错误处理</strong>：如果一项任务出错，你该怎么办？或者三项任务中有两项不成功？</li><li><strong>取消</strong>：如果一个任务出现问题，如何停止所有其他正在运行的程序？</li><li><strong>限制</strong>：你是否考虑过限制同时运行多少个 goroutines？</li><li><strong>可重复使用</strong>：一旦找到解决方案，如何在类似情况下再次使用？</li></ul><h2 id=1什么是-errgroup>1.什么是 errgroup？</h2><blockquote><p>errgroup 软件包可让您同时处理多项任务。</p></blockquote><p>通过它，可以轻松地以安全的方式一起运行，保持同步，处理错误，并控制何时停止 goroutines。下面是一个如何使用它的快速示例：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>FetchUserData</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>	g <span style=color:#00538b>:=</span> errgroup.Group{}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 获取用户详细信息
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>		time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>1</span> <span style=color:#00538b>*</span> time.Second)
+</span></span><span style=display:flex><span>		fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;Fetched user details...&#34;</span>)
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>	})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 获取用户活动
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>		time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>1</span> <span style=color:#00538b>*</span> time.Second)
+</span></span><span style=display:flex><span>		fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;Fetched user activity...&#34;</span>)
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>	})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 获取用户登录详细信息
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>		time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>2</span> <span style=color:#00538b>*</span> time.Second)
+</span></span><span style=display:flex><span>		fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;Fetched user login details...&#34;</span>)
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>	})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 等待所有goroutines完成并返回第一个错误 (如果有)
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>return</span> g.<span style=color:#721045>Wait</span>()
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>因此，errgroup 的工作就是运行这些任务，并通过 <code>g.Wait()</code> 等待任务结束，我们需要做的就是添加任务。
+<img src=https://s2.loli.net/2024/04/24/GMLih1vYBzDbWsO.png alt="什么是 errgroup？"></p><p>当你有很多任务时，比如 10 项、20 项甚至更多，这种方法就非常有用。</p><p>但有一点需要注意，如果不加以控制，同时运行过多的程序会占用资源。我们该如何处理呢？让我们在下一节中探讨。"</p><h2 id=2setlimit限制程序运行次数>2.SetLimit：限制程序运行次数</h2><p>这个软件包为我们提供了一种限制同时运行的 goroutines 数量的方法，让我们看看如何使用它：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>FetchUserData</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>    g <span style=color:#00538b>:=</span> errgroup.Group{}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 将限制设置为2
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    g.<span style=color:#721045>SetLimit</span>(<span style=color:#0000c0>2</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 获取用户详细信息
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>        time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>1</span> <span style=color:#00538b>*</span> time.Second)
+</span></span><span style=display:flex><span>        fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;Fetched user details...&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>    })
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 获取用户活动
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>        time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>1</span> <span style=color:#00538b>*</span> time.Second)
+</span></span><span style=display:flex><span>        fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;Fetched user activity...&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>    })
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 获取用户登录详细信息
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> {
+</span></span><span style=display:flex><span>        time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>2</span> <span style=color:#00538b>*</span> time.Second)
+</span></span><span style=display:flex><span>        fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;Fetched user login details...&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
+</span></span><span style=display:flex><span>    })
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 等待所有goroutines完成并返回第一个错误 (如果有)
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>return</span> g.<span style=color:#721045>Wait</span>()
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这样做可以确保只有 2 个程序同时运行。试试看，前两个任务会同时显示信息，而第三个任务会在启动 3 秒后显示信息。
+<img src=https://s2.loli.net/2024/04/24/LstnzGYyZCOFNIo.png alt=SetLimit：限制程序数目></p><blockquote><p>&ldquo;设置限值后可以更改吗？</p></blockquote><p>答案是肯定的，但要小心。</p><p>如果任何 goroutine 正在运行，试图更改限制将导致 <code>errgroup.SetLimit()</code> 异常。</p><p>现在，让我们再想一想，如果 errgroup 中已经有 50 个 goroutines，而你不想再添加更多的 goroutines，该怎么办？</p><h2 id=3trygo添加快速程序的受控方法>3.TryGo：添加快速程序的受控方法</h2><p>TryGo 与 Go 函数有相似之处，但它提供了一种细致入微的方法来处理 errgroup 中的 goroutine。具体来说，如果当前计数达到设定的限制，它就会阻止添加新的
+goroutine</p><p>TryGo 的签名有点与众不同：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// TryGo: 检查并添加 goroutine
+</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> (g <span style=color:#00538b>*</span>Group) <span style=color:#721045>TryGo</span>(fn <span style=color:#5317ac>func</span> () <span style=color:#005a5f>error</span>) <span style=color:#005a5f>bool</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#505050>// Go: 只需添加一个 goroutine
+</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> (g <span style=color:#00538b>*</span>Group) <span style=color:#721045>Go</span>(fn <span style=color:#5317ac>func</span> () <span style=color:#005a5f>error</span>)
+</span></span></code></pre></div><p>如果使用 TryGo，并成功将 goroutine 添加到 errgroup，它将通过返回 true 来传达成功。如果不成功，则返回 false。</p><p>但有趣的地方就在这里。</p><p>当一个 errgroup 已满时，errgroup.Go() 会阻塞直到一个 goroutine 结束，然后再添加一个新的，相反，errgroup.TryGo() 不会等待。如果 errgroup 已满，TryGo
+会立即返回 false。</p><h2 id=4withcontext处理取消>4.WithContext：处理取消</h2><p>如果其中一个程序出错，如何停止所有正在运行的程序，从而避免浪费资源？</p><p>WithContext 函数用于创建新的 errgroup 和 context ：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span>erg, ctx <span style=color:#00538b>:=</span> errgroup.<span style=color:#721045>WithContext</span>(context.<span style=color:#721045>Background</span>())
+</span></span></code></pre></div><p>该函数为您提供context，但不提供取消函数，因此您无法自行停止context。</p><blockquote><p>&ldquo;如果出现错误，errgroup 会为我停止所有程序吗？</p></blockquote><p>不，errgroup 会取消上下文，但不会停止 goroutines。其余的 goroutines 会继续运行，直到完成为止，除非你这样做：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
+</span></span><span style=display:flex><span>  g, ctx <span style=color:#00538b>:=</span> errgroup.<span style=color:#721045>WithContext</span>(context.<span style=color:#721045>Background</span>())
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> { <span style=color:#5317ac>return</span> <span style=color:#721045>fetchUserDetails</span>(ctx) })
+</span></span><span style=display:flex><span>  g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> { <span style=color:#5317ac>return</span> <span style=color:#721045>fetchUserActivity</span>(ctx) })
+</span></span><span style=display:flex><span>  g.<span style=color:#721045>Go</span>(<span style=color:#5317ac>func</span>() <span style=color:#005a5f>error</span> { <span style=color:#5317ac>return</span> <span style=color:#721045>fetchUserPaymentHistory</span>(ctx) })
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#505050>// Wait for tasks to finish and print the error
+</span></span></span><span style=display:flex><span><span style=color:#505050></span>  <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> g.<span style=color:#721045>Wait</span>(); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>    fmt.<span style=color:#721045>Printf</span>(<span style=color:#2544bb>&#34;Encountered an error: %v\n&#34;</span>, err)
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>让这些任务依赖于上下文非常重要。因此，当上下文取消时，所有 goroutines 也将停止。</p><p>接下来，我将谈谈 Errgroup 的功能：Errgroup Explained：了解其内部运作。</p><p>这种方法不仅可以减少额外的代码，而且还提供了一种处理错误和控制 goroutines 生命周期的有效方法。</p></article></div></main></body></html>
