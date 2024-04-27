@@ -1,0 +1,22 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='一、介绍 截至撰写本文时， Go 1.22已经发布几个月了。
+Go 1.22提出并实现的最终函数是cmp.Or。
+首先我们看一下代码：
+// Or returns the first of its arguments that is not equal to the zero value. // If no argument is non-zero, it returns the zero value. func Or[T comparable](vals ...T) T { var zero T for _, val := range vals { if val != zero { return val } } return zero } 它非常简短。它只是比较其参数并返回第一个不是 0 or nil or "" 或其类型的零值的参数。
+二、如何使用它? 主要用途cmp.'><title>Go 1.22的新功能 Cmp.Or
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-04-27 22:45:54 +0800 +0800">2024-04-27</time></p><h1>Go 1.22的新功能 Cmp.Or</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共99字</span></p><p class=post-meta>预计阅读约: 1 分钟</p><aside><nav id=TableOfContents><ul><li><a href=#一介绍>一、介绍</a></li><li><a href=#二如何使用它>二、如何使用它?</a></li></ul></nav></aside><h2 id=一介绍>一、介绍</h2><p><a href=https://go.dev/doc/go1.22>截至撰写本文时， Go 1.22</a>已经发布几个月了。</p><p>Go 1.22提出并实现的最终函数是<code>cmp.Or</code>。</p><p>首先我们看一下代码：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// Or returns the first of its arguments that is not equal to the zero value.
+</span></span></span><span style=display:flex><span><span style=color:#505050>// If no argument is non-zero, it returns the zero value.
+</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> Or[T comparable](vals <span style=color:#00538b>...</span>T) T {
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>var</span> zero T
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>for</span> _, val <span style=color:#00538b>:=</span> <span style=color:#5317ac>range</span> vals {
+</span></span><span style=display:flex><span>		<span style=color:#5317ac>if</span> val <span style=color:#00538b>!=</span> zero {
+</span></span><span style=display:flex><span>			<span style=color:#5317ac>return</span> val
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> zero
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><blockquote><p>它非常简短。它只是比较其参数并返回第一个不是 <code>0</code> or <code>nil</code> or <code>""</code> 或<strong>其类型的零值</strong>的参数。</p></blockquote><h2 id=二如何使用它>二、如何使用它?</h2><p>主要用途<code>cmp.Or</code>是获取数字并返回第一个非0数字。例如，一个 API 获取列表页中的 <code>page</code> 和 <code>pageSize</code>参数值, 给一些默认值。</p><p>它也适用于字符串和指针。</p><p>以下是我的真实代码库中的一些实际用途：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span>query.Event.<span style=color:#721045>WithContext</span>(l.ctx).
+</span></span><span style=display:flex><span>		<span style=color:#721045>Limit</span>(cmp.<span style=color:#721045>Or</span>(in.PageSize, <span style=color:#0000c0>20</span>)).
+</span></span><span style=display:flex><span>		<span style=color:#721045>Offset</span>((cmp.<span style=color:#721045>Or</span>(in.Page, <span style=color:#0000c0>1</span>) <span style=color:#00538b>-</span> <span style=color:#0000c0>1</span>) <span style=color:#00538b>*</span> cmp.<span style=color:#721045>Or</span>(in.PageSize, <span style=color:#0000c0>20</span>)).
+</span></span><span style=display:flex><span>		<span style=color:#721045>Order</span>(query.Event.ID.<span style=color:#721045>Desc</span>()).
+</span></span><span style=display:flex><span>		<span style=color:#721045>Scan</span>(<span style=color:#00538b>&amp;</span>events)
+</span></span></code></pre></div><p>上面例子就是 Page 和 PageSize 都为 0 时, 默认赋值默认值。</p></article></div></main></body></html>
