@@ -1,129 +1,570 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/</link><description>Recent content in 工具 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 28 Feb 2024 16:20:31 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>这是 Google Protocol Buffers 文档生成器插件 (protoc)。 该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。
-一、前言 毫无疑问, 目前后台开发接口协议应用最广泛的除了 HTTP 之外就是 gRPC 了, HTTP 接口有成熟的swagger工具可以生成界面美观和使用友好的文档，那么对于gRPC呢？
-所以通过 .proto 文件能否生成更易阅读的 HTML 接口文档？
-二、安装 go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest 三、使用 user.proto 文件 以user.proto为例, 如下内容:
-syntax = &amp;#34;proto3&amp;#34;; option go_package = &amp;#34;./pb&amp;#34;; package user; // ------------------------------------ // Messages // ------------------------------------ //--------------------------------用户-------------------------------- message SysUser { int64 id = 1; // ID string username = 2; // 用户名 string password = 3; // 密码 int64 create_at = 4; // 创建时间 int64 update_at = 5; // 修改时间 int64 delete_at = 6; // 删除时间 } message SysUserFilter { optional int64 id = 1; // ID optional string username = 2; // 用户名 optional string password = 3; // 密码 optional int64 create_at = 4; // 创建时间 optional int64 update_at = 5; // 修改时间 optional int64 delete_at = 6; // 删除时间 } message SelectSysUserListReq { int64 page = 1; // 页码 int64 page_size = 2; // 每页数量 optional SysUserFilter filter = 3; // SysUserFilter } message SelectSysUserListResp { int64 count = 1; // 总数 int64 page_count = 2; // 页码总数 repeated SysUser results = 3; // sys_user } // ------------------------------------ // Rpc Func // ------------------------------------ service User { //-----------------------用户----------------------- // 用户 列表 rpc SelectSysUserList(SelectSysUserListReq) returns (SelectSysUserListResp); } 1.</description></item><item><title>Crx搜搜 - 一个牛X的扩展商店</title><link>https://blog.ch3nnn.cn/posts/2023/crx%E6%90%9C%E6%90%9C-%E4%B8%80%E4%B8%AA%E7%89%9Bx%E7%9A%84%E6%89%A9%E5%B1%95%E5%95%86%E5%BA%97/</link><pubDate>Thu, 30 Mar 2023 10:08:23 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/crx%E6%90%9C%E6%90%9C-%E4%B8%80%E4%B8%AA%E7%89%9Bx%E7%9A%84%E6%89%A9%E5%B1%95%E5%95%86%E5%BA%97/</guid><description>由于 Chrome 扩展商店
-无法访问，很多浏览器的官方扩展商店无人维护，国内各种下载站套路太多，导致很难下载到所需要的浏览器扩展/插件。
-Crx搜搜(opens new window)利用独家技术，实时解析各大扩展商店最新版扩展下载地址，直接下载.crx或.xpi安装包。 现已支持以下扩展商店：
-扩展/应用商店 支持功能 Chrome 扩展商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Edge 扩展商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Firefox 扩展商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Microsoft 应用商店(opens new window) ✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索 Opera 扩展商店 ✔️ 解析 ✔️ 下载 ❌ 在线安装 ✔️ 离线安装 ❌ 查看详情 ❌ 搜索 📖 功能简介 下载的扩展兼容以下浏览器：</description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>uTools 是什么？ uTools = your tools（你的工具集）
-uTools 是一个极简、插件化的现代桌面软件，通过自由选配丰富的插件，打造得心应手的工具集合。
-通过快捷键（默认alt + space）就可以快速呼出这个搜索框。你可以往输入框内粘贴文本、图片、截图、文件、文件夹等等，能够处理此内容的插件也早已准备就绪，统一的设计风格和操作方式，助你高效的得到结果。
-uTools 能做什么？ 最简单的，uTools 可以作为一个程序快速启动器，支持英文、英文驼峰、中文拼音、拼音首字母来打开你的本地程序。除程序外， win10+ 和 MacOS 用户还可以快速搜索并打开「控制面板」内的细项。总之，你只要还记得一个大概的名字，直接输入基本都能找到。
-一切皆插件！ 启动已安装的程序仅仅是最基础的功能，uTools 最大的特点就是拥有强大的插件系统。
-现在已有 700+ 的插件供你选择，每个插件解决一个具体场景的问题，简洁美观、即用即走。
-输入插件应用市场进入插件管理，你就可以根据自己的需求挑选安装，组合成自己最称手的工具集合，为各种日常操作提供便利，不断产生的新插件，将为你带来无限可能。
-超级面板 可以通过鼠标右键/中键（可配置），快速打开 uTools 超级面板，uTools 会根据当前选择的内容（文本、截图、文件、文件夹）自动匹配已安装的插件供你选择。与平时使用右键类似的习惯，uTools 超级面板却能为你带来完全不一样的内容及体验。
-针对英文，还提供单词词典和整句翻译功能。</description></item><item><title>Github标星34K+Star，这款开源项目助你秒建Git服务！</title><link>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</link><pubDate>Tue, 06 Jul 2021 09:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</guid><description>以前使用Gitlab搭建过Git服务，如果服务器配置低的话启动和访问都会特别慢。最近发现了Gogs这个开源项目，安装方便，特别轻量级，推荐给大家！
-推荐语 一款极易搭建的自助Git服务，特别轻量级，推荐给大家！
-Gogs简介 Gogs是一款极易搭建的自助Git服务，使用Go语言开发，只要Go语言支持的平台它都支持，包括Linux、Mac OS X、Windows以及ARM平台。Gogs对系统硬件要求极低，你甚至可以在树莓派上搭建它。
-项目地址：https://github.com/gogs/gogs
-安装 Gogs在Docker环境下的安装非常简单，只需要两个命令即可，推荐使用该方式来进行安装。
-首先我们需要先下载Gogs的Docker镜像； 下载完成后使用`docker run`命令即可运行服务； docker run -p 10022:22 -p 10080:3000 --name=gogs \ -v /mydata/gogs:/data \ -d gogs/gogsCopy to clipboardErrorCopied 这里我们说下命令中值得注意的地方，10022对应的是Gogs的SSH服务端口，10080对应的使用Gogs的HTTP服务端口，我们还将容器的数据目录挂载到了宿主机的/mydata/gogs目录下，这样就算我们重新创建容器数据也不会丢失。 配置 安装完成后，我们第一次访问Gogs服务会显示一个设置页面，访问地址：http://192.168.5.19:10080/
-数据库设置，这里我们直接使用内置的SQLite3数据库即可，使用其他的需要自行搭建数据库；
-应用基本设置，主要修改域名、SSH端口号和应用URL即可。 使用 注册 配置好以后会直接跳转到登录界面，首先注册一个帐户； 注册完成后，登录即可进入控制面板页面。 创建仓库 直接使用我的仓库右侧的加号即可创建仓库，简单设置下仓库名称和可见性来完成创建； 创建成功后直接使用克隆地址即可克隆该仓库； 我们可以直接使用IDEA的Git检出功能； 检出完成后，加入我们的代码直接提交、推送，在Gogs里面就可以看到我们提交的代码了。 工单管理 这里的工单管理，有点类似Github上面的Issue的功能，我们可以通过创建工单按钮来创建； 输入我们的标题、内容和标签以后即可创建； 创建完成后显示效果如下。 添加用户 有时候管理员需要新建一些帐户来协作开发，此时我们只要点击头像-&amp;gt;管理面板-&amp;gt;用户管理即可打开用户管理界面； 然后点击创建新的帐户，输入相关信息即可完成创建。 管理协作者 创建完成后，我们可以在仓库页面的仓库设置中打开管理协作者功能； 之后通过输入协作者账户，点击增加新的协作者并设置好权限即可，这样协作者就可以访问并向该仓库提交代码了。 迁移外部仓库 Gogs还提供了从外部仓库迁移代码的功能，通过头像左侧的加号，然后选择迁移外部仓库即可； 这里以迁移Gitee上的mall项目为例，项目地址：http://gitee.com/macrozheng/mall 迁移成功后就可以在Gogs里面看到mall项目了！ Gogs VS Gitlab 之前有写过一篇《10分钟搭建自己的Git仓库》，使用的是Gitlab，下面对比下Gogs和Gitlab在安装使用过程中的优缺点，仅代表个人观点。
-比较方面 Gogs Gitlab Docker镜像大小 44MB 836MB 启动速度 很快，几秒 很慢，机器配置不好要10分钟 配置要求 很低，树莓派都可以 很高，吃内存，吃CPU 访问速度 够快 机器配置好也还可以 功能 功能较少 功能很丰富 转载: http://www.</description></item><item><title>PostmanCn:Postman中文版</title><link>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</link><pubDate>Mon, 21 Dec 2020 08:30:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</guid><description>最新版本：7.36.1
-更新时间：2020-12-18
-点击下载
-介绍 Postman中文版 汉化 持续更新中
-安装教程 Windows Postman-*-win64-中文版.zip 解压直接用
-app.zip 解压&amp;amp;&amp;amp;替换文件 应用程序目录/resources/app.asar
-Mac Postman官网下载&amp;amp;安装Postman Mac版
-下载 Postman-*-Mac-汉化版app.zip
-复制到 Postman安装目录 /&amp;hellip;/Postman.app/Contents/Resources/
-解压 替换 app目录即可
-Linux 解压 替换 app目录即可
-https://www.postman.com/downloads/这个是Postman官网的下载页面
-https://gitee.com/hlmd/PostmanCn/这个是这里的汉化的</description></item><item><title>MacOS开启外接显示器HiDP</title><link>https://blog.ch3nnn.cn/posts/2020/macos%E5%BC%80%E5%90%AF%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8hidp/</link><pubDate>Tue, 01 Dec 2020 03:05:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/macos%E5%BC%80%E5%90%AF%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8hidp/</guid><description>对以下系统和显示器有效：
-macOS 10.12 Sierra
-macOS 10.13 High Sierra
-macOS 10.14 Mojave
-macOS 10.15 Catalina
-Dell P2416D, DisplayPort, 1920x1080 HiDPI
-Dell P2418D, DisplayPort, 1920x1080 HiDPI
-Acer XB241YU, HDMI, 1920x1080 HiDPI
-0x1 准备工作： 1. 打开系统HiDPI (在终端运行） sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool YES 如果使用 4K 或更高分辨率的显示器，macOS 很可能原生支持 HiDPI，建议直接从5. 下载 RDM尝试选择 HiDPI 分辨率。如无法启用或没有合适的分辨率，再使用配置文件。
-0x2 获得显示器信息 获得显示器的 VendorID 和 ProductID （制造商ID 和 产品ID），在终端运行：
-ioreg -lw0 | grep IODisplayPrefsKey | grep -o &amp;#39;/[^/]\+&amp;#34;$&amp;#39; 输出大概是这样的：
-&amp;gt; ioreg -lw0 | grep IODisplayPrefsKey | grep -o &amp;#39;/[^/]\+&amp;#34;$&amp;#39; /AppleBacklightDisplay-610-a029&amp;#34; /AppleDisplay-10ac-a0c4&amp;#34; 这条指令的输出会有多个，注意识别你想要调整的显示器。第一条AppleBacklightDisplay-610-a029是MBP的内置显示屏。第二个是外接显示器。（当然，也可以合上 MBP 屏幕，这样只会输出正在使用的外接显示器）</description></item><item><title>Navicat Premium 15.0.22 中文语言包</title><link>https://blog.ch3nnn.cn/posts/2020/navicatpremium15.0.22%E4%B8%AD%E6%96%87%E8%AF%AD%E8%A8%80%E5%8C%85/</link><pubDate>Mon, 09 Nov 2020 10:57:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/navicatpremium15.0.22%E4%B8%AD%E6%96%87%E8%AF%AD%E8%A8%80%E5%8C%85/</guid><description>Navicat Premium是一个可多重连接的数据库管理工具，Navicat 的功能足以符合专业开发人员的所有需求，但是对数据库服务器的新手来说又相当容易学习。它可让你以单一程序同時连接到目前世面上所有版本的主流数据库并进行管理和操作，支持的数据库有： MySQL、SQL Server、SQLite、Oracle 及 PostgreSQL。让管理不同类型的数据库更加方便。
-汉化包 15.0.12 汉化 下载链接: https://pan.baidu.com/s/1SITpWMdXfBhYlis-YL14Tg 密码: vljg中文包 解压复制汉化文件夹放到/Applications/Navicat Premium.app/Contents/Resources 汉化完成
-PS:这个zh-Hans.lproj汉化文件是从Navicat Premium官方中文版提取 无毒无害 12.0.12 汉化 下载https://www.pipipan.com/fs/13114864-217250713中文包 复制汉化文件夹放到/Applications/Navicat Premium.app/Contents/Resources 汉化完成
-PS:这个zh-Hans.lproj汉化文件是从Navicat Premium 12.0.12官方中文版提取 无毒无害</description></item><item><title>「超级右键」Mac上最强的右键菜单工具，让你效率飞起！</title><link>https://blog.ch3nnn.cn/posts/2020/%E8%B6%85%E7%BA%A7%E5%8F%B3%E9%94%AEmac%E4%B8%8A%E6%9C%80%E5%BC%BA%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E5%B7%A5%E5%85%B7%E8%AE%A9%E4%BD%A0%E6%95%88%E7%8E%87%E9%A3%9E%E8%B5%B7/</link><pubDate>Mon, 26 Oct 2020 15:03:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/%E8%B6%85%E7%BA%A7%E5%8F%B3%E9%94%AEmac%E4%B8%8A%E6%9C%80%E5%BC%BA%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E5%B7%A5%E5%85%B7%E8%AE%A9%E4%BD%A0%E6%95%88%E7%8E%87%E9%A3%9E%E8%B5%B7/</guid><description>简介 我对该产品的评价只有六个字：实用、效率、快、得我心
-超级右键主要实现了： Mac电脑上右键的扩展，能够新建、发送/复制文件到某个位置、快速打开常用目录、自定义文件夹图标、拷贝路径、终端/iTerm/VSCode 里进入路径、显示隐藏文件、彻底删除文件、剪切粘贴文件、百度翻译、谷歌翻译、右键截图、标注、贴图等等。
-**「超级右键」**有一部分功能是借鉴Windows系统的，也有开发者自己新创的功能，总的来说功能完善，且使用快捷，是目前Mac上最强大的右键工具，绝对是Mac用户装机必备。
-功能 1.新建文件 **默认支持新建：**TXT/RTF/XML/Word/Excel/PPT/WPS文字/WPS表格/WPS演示/Pages/Numbers/Keynote/Ai/PSD/Markdown格式的文件。
-同时还支持
-用户自定义添加其他类型文件进行新建。 新建后自动打开文件 新建的时候启用弹窗，命名文件名和文件位置 将新建的文件类型添加到一级菜单目录 新建文件
-2.复制/发动文件到指定路径 这个功能可以说非常的实用，以前在Mac上要转移文件的位置，很多时候要先拷贝，然后一层层的打开路径，很费事，有了超级右键，一键发动到位，很方便。
-复制文件到
-3.常用目录 **「超级右键」**允许用户自定义常用目录，然后使用右键快速打开，非常方便。
-常用目录
-4.自定义文件夹图标 很多时候，你可能已经厌倦了千篇一律的蓝色文件，想给文件夹带去一点色彩，变得个性化，从视觉上好分辨一些，**「超级右键」**就能帮你轻松办到。
-自定义文件夹图标
-5.剪切、粘贴 Mac上本来是没有剪切功能的，从Windows转Mac的朋友们肯定觉得不习惯吧。**「超级右键」**为右键新增了剪切、粘贴功能，使用起来非常顺手。
-剪切、粘贴
-6.截图 Better 365将超级右键与其截图工具iShot进行了联动，可以使用右键调用进行截图，前提是你必须安装了iShot。
-右键截图
-截图
-7.贴图、标注 你还可以直接选中本地已存在的图片，将其贴图，并标记
-贴图标注
-贴图标注
-8.拷贝当前路径 **「超级右键」**可以让你非常方便的拷贝路径，省去手码路径的麻烦。
-拷贝当前路径
-9、终端、iTerm、VSCode、Sublime Text里打开 如果你需要在终端、等工具里打开文件、路径等，**「超级右键」**也将助你快人一步。
-终端、iTerm、VScode等打开 10.显示/隐藏文件 你可以快速地隐藏你电脑上的文件，保护隐私，只有你知道如何显示
-显示/隐藏文件
-11.彻底删除 彻底删除允许我们不经过废纸篓，直接删掉文件。
-12.百度翻译、谷歌翻译、转化为二维码 请输入图片标题
-听我说了这么多，不去下载安装体验一把，还在等什么呢？在App Store搜索“超级右键”就可以免费下载啦，快让你快人一步吧！
-请输入图片标题</description></item><item><title>Zeal——好用的离线API文档大全</title><link>https://blog.ch3nnn.cn/posts/2020/zeal%E5%A5%BD%E7%94%A8%E7%9A%84%E7%A6%BB%E7%BA%BFapi%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/</link><pubDate>Mon, 14 Sep 2020 04:39:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/zeal%E5%A5%BD%E7%94%A8%E7%9A%84%E7%A6%BB%E7%BA%BFapi%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/</guid><description>Zeal是一款离线文档浏览器，其灵感来自 OS X平台上的 Dash，目前支持 Window 和 Liunx。基于 QT5。
-支持呼出热键。只要按下组合箭 ALT+Space 即可在任何地方显示面板，不用时可以用热键隐藏的系统托盘。
-可同时搜索多个文档
-不依赖网络
-GPL 协议开放源码
-Dash 中的文档都可以在 Zeal 中使用。
-安装：
-WIndows 自带二进制安装包
-Linux 需要安装 QT( &amp;gt;= 5) 和 bsdtar。
-软件截图：</description></item><item><title>简洁的 Mac 图床客户端 uPic</title><link>https://blog.ch3nnn.cn/posts/2020/%E7%AE%80%E6%B4%81%E7%9A%84mac%E5%9B%BE%E5%BA%8A%E5%AE%A2%E6%88%B7%E7%AB%AFupic/</link><pubDate>Sun, 28 Jun 2020 14:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/%E7%AE%80%E6%B4%81%E7%9A%84mac%E5%9B%BE%E5%BA%8A%E5%AE%A2%E6%88%B7%E7%AB%AFupic/</guid><description>☁️ 简洁的 Mac 图床客户端 uPic 📑 简介 uPic(upload Picture) 是一款 Mac 端的图床(文件)上传客户端
-可将图片、各种文件上传到配置好的指定提供商的对象存储中。
-然后快速获取可供互联网访问的文件 URL
-**💡 特点：**无论是本地文件、或者屏幕截图都可自动上传，菜单栏显示实时上传进度。上传完成后文件链接自动复制到剪切板，让你无论是在写博客、灌水聊天都能快速插入图片。
-连接格式可以是普通 URL、HTML 或者 Markdown，仍由你掌控。
-🔋 支持图床：smms、又拍云 USS、七牛云 KODO、阿里云 OSS、腾讯云 COS、微博、Github、Gitee、Amazon S3、自定义上传接口、…
-🚀 如何安装 下载安装 1.Homebrew: brew cask install upic 2.手动 从Github release下载。
-如果访问 Github 下载困难的，可以从Gitee release下载。
-检查 Finder 扩展权限 1.打开 uPic
-2.打开系统偏好设置-扩展-访达扩展确保uPicFinderExtension是勾选状态
-🕹 使用方式 功能 描述 预览 🖥 选择文件上传 从Finder选择文件上传。可设置全局快捷键 ⌨️ 复制文件上传 上传已拷贝到剪切板的文件。可设置全局快捷键 📸 截图上传 直接拉框截图上传。可设置全局快捷键 🖱 拖拽本地文件上传 拖拽文件到状态栏上传 🖱 拖拽浏览器图片上传 从浏览器拖拽图片到状态栏上传 📂 Finder 中右键上传 右击文件上传 ⌨️ 命令行上传 通过执行命令调用 uPic 上传文件 🧰 更多功能 1.</description></item><item><title>使用 Floccus + 坚果云无梯子跨平台同步 Chrome 浏览器书签</title><link>https://blog.ch3nnn.cn/posts/2020/%E4%BD%BF%E7%94%A8floccus+%E5%9D%9A%E6%9E%9C%E4%BA%91%E6%97%A0%E6%A2%AF%E5%AD%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B9%A6%E7%AD%BE/</link><pubDate>Fri, 17 Apr 2020 03:23:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/%E4%BD%BF%E7%94%A8floccus+%E5%9D%9A%E6%9E%9C%E4%BA%91%E6%97%A0%E6%A2%AF%E5%AD%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B9%A6%E7%AD%BE/</guid><description>​
-采用的方案是 Chrome / Cent Browser / Firefox / yandex 等 + Floccus + 坚果云（WebDav）实现书签的跨平台多终端同步的。理论上，只要支持Floccus扩展的浏览器，都能实现。
-首先给出 FloccusGitHub的地址：https://github.com/marcelklehr/floccus
-Floccus 插件的地址：https://chrome.google.com/webstore/detail/fnaicdffflnofjppbagibeoednhnbjhg
-安装好并配置完毕:
-开始 一、坚果云上的配置
-坚果云注册一个免费版个人账号（每日流量限制：上传1G，下载3G，够用了），注册成功登录后，点击右上角的用户名下拉菜单。
-注册:https://www.jianguoyun.com/
-需要先注册应用
-这里需要在我的书签添加自定义名称 在插件服务器地址中需要用到
-二、浏览器上的配置
-添加账户
-位置1中填入 坚果云服务器地址，即：https://dav.jianguoyun.com/dav/自定义书签名称
-注意地址后面还有在坚果云添加的书签名称 例如https://dav.jianguoyun.com/dav/bookmarks
-位置2中填入你在坚果云中的注册的用户名，
-位置3中填入在坚果云中为第三方应用生产的应用管理密码。
-将界面拖下来一点，看到有个“本地文件夹”配置，点击“选择文件夹”，出来的列表中，点击 “书签栏” 右边的“选取”按钮
-一般就选择根路径这样书签所有收藏网址都能同步
-修改自动同步时间间隔的，默认15分钟，这里我觉得没必要改，或者你觉得要同步间隔有必要调整，也可以修改一下。
-设置完毕后，拉倒最底部，点击“保存”。
-然后点击“同步”手动启动同步一次。 一般就能够成功把本地的“书签栏”目录中的浏览器同步保存到坚果云中的 我的文件 目录下的 bookmarks.xbel文件中了。
-参考学习：
-Floccus – 跨平台浏览器「书签同步」插件
-WebDAV是什么？网盘的WebDAV有什么用？
-yandex的Floccus插件安装教程</description></item><item><title>使用UnblockNeteaseMusic播放网易云音乐客户端无版权歌曲</title><link>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</link><pubDate>Sun, 18 Feb 2018 03:56:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</guid><description>说明：UnblockNeteaseMusic是一款可以给你解除网易云音乐海外限制并解锁变灰(无版权)歌曲的工具，让你可以听取客户端任何的歌曲，而不受到限制，此前该类似工具挺多的，不过貌似都不维护或者失效了，这里提到的项目更新很频繁，支持Windows、MacOS、安卓、IOS等设备，所以就分享一下使用方法。
-截图 特性 使用网易云旧链/QQ/虾米/百度/酷狗/酷我/咕咪/JOOX音源替换变灰歌曲链接(默认仅启用前四)。 为请求增加X-Real-IP参数解锁海外限制，支持指定网易云服务器IP，支持设置上游HTTP/HTTPS代理。 完整的流量代理功能(HTTP/HTTPS)，可直接作为系统代理(同时支持PAC)。 安装 Github地址：https://github.com/nondanee/UnblockNeteaseMusic
-1、安装Nodejs
-#Debian/Ubuntu系统 curl -sL https://deb.nodesource.com/setup_10.x | bash - apt install -y nodejs git #CentOS系统 curl -sL https://rpm.nodesource.com/setup_10.x | bash - yum install nodejs git -y 2、运行UnblockNeteaseMusic
-git clone https://github.com/nondanee/UnblockNeteaseMusic.git cd UnblockNeteaseMusic node app.js 运行端口默认为8080，需要想修改可以编辑app.js文件的config.port对应的数值，或者使用命令：
-#这里默认修改4567，自行调整 node app.js -p 4567 这里还可以加一个-s参数限制代理范围防止被滥用，也就是仅放行网易云音乐所属域名的请求，不过使用起来的话就受限了，仅支持PAC或Hosts。
-node app.js -s 3、开机自启
-这里使用Systemd进程守护，只适用于CentOS 7、Debian 8+、Ubuntu 16+等。
-#修改下ExecStartPre源码路径即可，然后一起复制到SSH运行 cat &amp;gt; /etc/systemd/system/UnblockNeteaseMusic.service &amp;lt;&amp;lt;EOF [Unit] Description=UnblockNeteaseMusic After=network.target Wants=network.target [Service] Type=simple PIDFile=/var/run/UnblockNeteaseMusic.pid WorkingDirectory=/root/UnblockNeteaseMusic ExecStart=$(command -v node) app.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/</link><description>Recent content in 工具 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 28 Feb 2024 16:20:31 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>&lt;blockquote>
+&lt;p>这是 Google Protocol Buffers 文档生成器插件 (protoc)。
+该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="一前言">一、前言&lt;/h2>
+&lt;p>毫无疑问, 目前后台开发接口协议应用最广泛的除了 HTTP 之外就是 gRPC 了, HTTP 接口有成熟的&lt;code>swagger&lt;/code>工具可以生成界面美观和使用友好的文档，那么对于gRPC呢？&lt;/p>
+&lt;p>所以通过 .proto 文件能否生成更易阅读的 HTML 接口文档？&lt;/p>
+&lt;h2 id="二安装">二、安装&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="三使用">三、使用&lt;/h2>
+&lt;h3 id="userproto-文件">user.proto 文件&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>以&lt;code>user.proto&lt;/code>为例, 如下内容:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="display:flex;">&lt;span>syntax &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;proto3&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">option&lt;/span> go_package &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;./pb&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> user;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Messages
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">//--------------------------------用户--------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SysUser {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#005a5f">int64&lt;/span> id &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// ID
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> username &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 用户名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> password &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// 密码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> create_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">4&lt;/span>; &lt;span style="color:#505050">// 创建时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> update_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; &lt;span style="color:#505050">// 修改时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> delete_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">6&lt;/span>; &lt;span style="color:#505050">// 删除时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SysUserFilter {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> id &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// ID
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> username &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 用户名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> password &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// 密码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> create_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">4&lt;/span>; &lt;span style="color:#505050">// 创建时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> update_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; &lt;span style="color:#505050">// 修改时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> delete_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">6&lt;/span>; &lt;span style="color:#505050">// 删除时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SelectSysUserListReq {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#005a5f">int64&lt;/span> page &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// 页码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> page_size &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 每页数量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> SysUserFilter filter &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// SysUserFilter
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SelectSysUserListResp {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#005a5f">int64&lt;/span> count &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// 总数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> page_count &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 页码总数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">repeated&lt;/span> SysUser results &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// sys_user
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Rpc Func
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">service&lt;/span> User {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//-----------------------用户-----------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 用户 列表
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">rpc&lt;/span> SelectSysUserList(SelectSysUserListReq) &lt;span style="color:#5317ac">returns&lt;/span> (SelectSysUserListResp);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h3 id="1-生成-markdown-文档">1. 生成 markdown 文档&lt;/h3>
+&lt;ol>
+&lt;li>命令:
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>protoc --doc_out&lt;span style="color:#00538b">=&lt;/span>. --doc_opt&lt;span style="color:#00538b">=&lt;/span>markdown,index.md pb/*.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>效果:
+&lt;img src="https://s2.loli.net/2024/02/28/TwXqVdFvJyNZnfp.png" alt="20240228172356.png">&lt;/li>
+&lt;/ol>
+&lt;h3 id="2-生成-html-文档">2. 生成 html 文档&lt;/h3>
+&lt;ol>
+&lt;li>命令:
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>protoc --doc_out&lt;span style="color:#00538b">=&lt;/span>. --doc_opt&lt;span style="color:#00538b">=&lt;/span>html,index.html pb/*.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>效果:
+&lt;img src="https://s2.loli.net/2024/02/28/Jv67NT9cpYdCjre.png" alt="">&lt;/li>
+&lt;/ol>
+&lt;h2 id="四自定义模板">四、自定义模板&lt;/h2>
+&lt;p>如果想使用自己的模板, 只需使用模板文件的路径而不是类型。&lt;/p></description></item><item><title>Crx搜搜 - 一个牛X的扩展商店</title><link>https://blog.ch3nnn.cn/posts/2023/crx%E6%90%9C%E6%90%9C-%E4%B8%80%E4%B8%AA%E7%89%9Bx%E7%9A%84%E6%89%A9%E5%B1%95%E5%95%86%E5%BA%97/</link><pubDate>Thu, 30 Mar 2023 10:08:23 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/crx%E6%90%9C%E6%90%9C-%E4%B8%80%E4%B8%AA%E7%89%9Bx%E7%9A%84%E6%89%A9%E5%B1%95%E5%95%86%E5%BA%97/</guid><description>&lt;p>由于 Chrome 扩展商店&lt;/p>
+&lt;p>无法访问，很多浏览器的官方扩展商店无人维护，国内各种下载站套路太多，导致很难下载到所需要的浏览器扩展/插件。&lt;/p>
+&lt;p>&lt;strong>&lt;a href="https://www.crxsoso.com/">Crx搜搜(opens new window)&lt;/a>利用独家技术，实时解析各大扩展商店最新版扩展下载地址，直接下载&lt;code>.crx&lt;/code>或&lt;code>.xpi&lt;/code>安装包。&lt;/strong>
+现已支持以下扩展商店：&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>扩展/应用商店&lt;/th>
+ &lt;th>支持功能&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a href="https://www.crxsoso.com/webstore/category/extensions">Chrome 扩展商店(opens new window)&lt;/a>&lt;/td>
+ &lt;td>✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a href="https://www.crxsoso.com/addon/category/Edge-Extensions">Edge 扩展商店(opens new window)&lt;/a>&lt;/td>
+ &lt;td>✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a href="https://www.crxsoso.com/firefox/category/extensions">Firefox 扩展商店(opens new window)&lt;/a>&lt;/td>
+ &lt;td>✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a href="https://www.crxsoso.com/store/category/apps">Microsoft 应用商店(opens new window)&lt;/a>&lt;/td>
+ &lt;td>✔️ 解析 ✔️ 下载 ✔️ 在线安装 ✔️ 离线安装 ✔️ 查看详情 ✔️ 搜索&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>Opera 扩展商店&lt;/td>
+ &lt;td>✔️ 解析 ✔️ 下载 ❌ 在线安装 ✔️ 离线安装 ❌ 查看详情 ❌ 搜索&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h2 id="-功能简介">📖 功能简介&lt;/h2>
+&lt;p>下载的扩展兼容以下浏览器：&lt;/p></description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>&lt;h2 id="utoolspnghttpsresu-toolscnwebsiteutoolspng">&lt;img src="https://res.u-tools.cn/website/utools.png" alt="utools.png">&lt;/h2>
+&lt;h2 id="utools-是什么">uTools 是什么？&lt;/h2>
+&lt;blockquote>
+&lt;p>uTools = your tools（你的工具集）&lt;/p>
+&lt;/blockquote>
+&lt;p>uTools 是一个极简、插件化的现代桌面软件，通过自由选配丰富的插件，打造得心应手的工具集合。&lt;/p>
+&lt;p>通过快捷键（默认&lt;code>alt + space&lt;/code>）就可以快速呼出这个搜索框。你可以往输入框内粘贴文本、图片、截图、文件、文件夹等等，能够处理此内容的插件也早已准备就绪，统一的设计风格和操作方式，助你高效的得到结果。&lt;/p>
+&lt;h2 id="utools-能做什么">uTools 能做什么？&lt;/h2>
+&lt;p>最简单的，uTools 可以作为一个程序快速启动器，支持英文、英文驼峰、中文拼音、拼音首字母来打开你的本地程序。除程序外， win10+ 和 MacOS 用户还可以快速搜索并打开「控制面板」内的细项。总之，你只要还记得一个大概的名字，直接输入基本都能找到。&lt;/p>
+&lt;h2 id="一切皆插件">一切皆插件！&lt;/h2>
+&lt;p>启动已安装的程序仅仅是最基础的功能，uTools 最大的特点就是拥有强大的插件系统。&lt;/p>
+&lt;p>现在已有 700+ 的插件供你选择，每个插件解决一个具体场景的问题，简洁美观、即用即走。&lt;/p>
+&lt;p>输入&lt;code>插件应用市场&lt;/code>进入插件管理，你就可以根据自己的需求挑选安装，组合成自己最称手的工具集合，为各种日常操作提供便利，不断产生的新插件，将为你带来无限可能。&lt;/p>
+&lt;p>&lt;img src="https://res.u-tools.cn/website/plugin1.png" alt="plugin">&lt;/p>
+&lt;h2 id="超级面板">超级面板&lt;/h2>
+&lt;p>可以通过鼠标右键/中键（可配置），快速打开 uTools 超级面板，uTools 会根据当前选择的内容（文本、截图、文件、文件夹）自动匹配已安装的插件供你选择。与平时使用右键类似的习惯，uTools 超级面板却能为你带来完全不一样的内容及体验。&lt;/p>
+&lt;blockquote>
+&lt;p>针对英文，还提供单词词典和整句翻译功能。&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://res.u-tools.cn/website/translate.jpg" alt="superPanel">&lt;/p></description></item><item><title>Github标星34K+Star，这款开源项目助你秒建Git服务！</title><link>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</link><pubDate>Tue, 06 Jul 2021 09:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</guid><description>&lt;blockquote>
+&lt;p>以前使用Gitlab搭建过Git服务，如果服务器配置低的话启动和访问都会特别慢。最近发现了Gogs这个开源项目，安装方便，特别轻量级，推荐给大家！&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="推荐语httpwwwmacrozhengcomreferencegogs_startide68ea8e88d90e8afad">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%8e%a8%e8%8d%90%e8%af%ad">推荐语&lt;/a>&lt;/h2>
+&lt;p>一款极易搭建的自助Git服务，特别轻量级，推荐给大家！&lt;/p>
+&lt;h2 id="gogs简介httpwwwmacrozhengcomreferencegogs_startidgogse7ae80e4bb8b">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=gogs%e7%ae%80%e4%bb%8b">Gogs简介&lt;/a>&lt;/h2>
+&lt;p>Gogs是一款极易搭建的自助Git服务，使用Go语言开发，只要Go语言支持的平台它都支持，包括Linux、Mac OS X、Windows以及ARM平台。Gogs对系统硬件要求极低，你甚至可以在树莓派上搭建它。&lt;/p>
+&lt;p>项目地址：&lt;a href="https://github.com/gogs/gogs">https://github.com/gogs/gogs&lt;/a>&lt;/p>
+&lt;h2 id="安装httpwwwmacrozhengcomreferencegogs_startide5ae89e8a385">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%ae%89%e8%a3%85">安装&lt;/a>&lt;/h2>
+&lt;blockquote>
+&lt;p>Gogs在Docker环境下的安装非常简单，只需要两个命令即可，推荐使用该方式来进行安装。&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>首先我们需要先下载Gogs的Docker镜像；&lt;/li>
+&lt;/ul>
+&lt;pre tabindex="0">&lt;code>下载完成后使用`docker run`命令即可运行服务；
+&lt;/code>&lt;/pre>&lt;pre tabindex="0">&lt;code>docker run -p 10022:22 -p 10080:3000 --name=gogs \
+-v /mydata/gogs:/data \
+-d gogs/gogsCopy to clipboardErrorCopied
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>这里我们说下命令中值得注意的地方，&lt;code>10022&lt;/code>对应的是Gogs的SSH服务端口，&lt;code>10080&lt;/code>对应的使用Gogs的HTTP服务端口，我们还将容器的数据目录挂载到了宿主机的&lt;code>/mydata/gogs&lt;/code>目录下，这样就算我们重新创建容器数据也不会丢失。&lt;/li>
+&lt;/ul>
+&lt;h2 id="配置httpwwwmacrozhengcomreferencegogs_startide9858de7bdae">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e9%85%8d%e7%bd%ae">配置&lt;/a>&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>安装完成后，我们第一次访问Gogs服务会显示一个设置页面，访问地址：&lt;a href="http://192.168.5.19:10080/">http://192.168.5.19:10080/&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>数据库设置，这里我们直接使用内置的&lt;code>SQLite3&lt;/code>数据库即可，使用其他的需要自行搭建数据库；&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/353398c25df244cfb5c273e05b4c8717.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_01.png" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_01.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>应用基本设置，主要修改域名、SSH端口号和应用URL即可。&lt;/li>
+&lt;li>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/c1c4936ed1184085a60c7b1c567bb7b4.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_02.png" alt="">&lt;/p>
+&lt;h2 id="使用httpwwwmacrozhengcomreferencegogs_startide4bdbfe794a8">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e4%bd%bf%e7%94%a8">使用&lt;/a>&lt;/h2>
+&lt;h3 id="注册httpwwwmacrozhengcomreferencegogs_startide6b3a8e5868c">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b3%a8%e5%86%8c">注册&lt;/a>&lt;/h3>
+&lt;ul>
+&lt;li>配置好以后会直接跳转到登录界面，首先注册一个帐户；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/8c04efbec38f4ba0b160201de9fe2e6b.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_03.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>注册完成后，登录即可进入控制面板页面。&lt;/li>
+&lt;li>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/98c5b485a2244a6cb9b24fd433ff92e2.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_04.png" alt="">&lt;/p>
+&lt;h3 id="创建仓库httpwwwmacrozhengcomreferencegogs_startide5889be5bbbae4bb93e5ba93">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%88%9b%e5%bb%ba%e4%bb%93%e5%ba%93">创建仓库&lt;/a>&lt;/h3>
+&lt;ul>
+&lt;li>直接使用我的仓库右侧的加号即可创建仓库，简单设置下仓库名称和可见性来完成创建；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_05.png" alt="">&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/64ad3cc9a46649568192393fe36e6625.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
+&lt;ul>
+&lt;li>创建成功后直接使用克隆地址即可克隆该仓库；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_06.png" alt="">&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/653c0aea561a4910b9e5821c8052d98d.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
+&lt;ul>
+&lt;li>我们可以直接使用IDEA的Git检出功能；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/79b6c325222847abb4914354c4d09c06.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_07.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>检出完成后，加入我们的代码直接提交、推送，在Gogs里面就可以看到我们提交的代码了。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_08.png" alt="">&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/2cb90e1a6d674b74b9be06db5970ec55.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
+&lt;h3 id="工单管理httpwwwmacrozhengcomreferencegogs_startide5b7a5e58d95e7aea1e79086">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%b7%a5%e5%8d%95%e7%ae%a1%e7%90%86">工单管理&lt;/a>&lt;/h3>
+&lt;ul>
+&lt;li>这里的工单管理，有点类似Github上面的Issue的功能，我们可以通过&lt;code>创建工单&lt;/code>按钮来创建；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/94e6d362a1d74ec484c6c1bece80003e.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
+&lt;ul>
+&lt;li>输入我们的标题、内容和标签以后即可创建；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_10.png" alt="">&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/f96232baa1c3418ababa67a405a4acb8.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
+&lt;ul>
+&lt;li>创建完成后显示效果如下。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/de43c3f2c8c044909b9359f31080f8e0.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_11.png" alt="">&lt;/p>
+&lt;h3 id="添加用户httpwwwmacrozhengcomreferencegogs_startide6b7bbe58aa0e794a8e688b7">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b7%bb%e5%8a%a0%e7%94%a8%e6%88%b7">添加用户&lt;/a>&lt;/h3>
+&lt;ul>
+&lt;li>有时候管理员需要新建一些帐户来协作开发，此时我们只要点击&lt;code>头像-&amp;gt;管理面板-&amp;gt;用户管理&lt;/code>即可打开用户管理界面；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_12.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>然后点击&lt;code>创建新的帐户&lt;/code>，输入相关信息即可完成创建。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_13.png" alt="">&lt;/p>
+&lt;h3 id="管理协作者httpwwwmacrozhengcomreferencegogs_startide7aea1e79086e58d8fe4bd9ce88085">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e7%ae%a1%e7%90%86%e5%8d%8f%e4%bd%9c%e8%80%85">管理协作者&lt;/a>&lt;/h3>
+&lt;ul>
+&lt;li>创建完成后，我们可以在仓库页面的&lt;code>仓库设置&lt;/code>中打开&lt;code>管理协作者&lt;/code>功能；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_14.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>之后通过输入协作者账户，点击&lt;code>增加新的协作者&lt;/code>并设置好权限即可，这样协作者就可以访问并向该仓库提交代码了。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_15.png" alt="">&lt;/p>
+&lt;h3 id="迁移外部仓库httpwwwmacrozhengcomreferencegogs_startide8bf81e7a7bbe5a496e983a8e4bb93e5ba93">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e8%bf%81%e7%a7%bb%e5%a4%96%e9%83%a8%e4%bb%93%e5%ba%93">迁移外部仓库&lt;/a>&lt;/h3>
+&lt;ul>
+&lt;li>Gogs还提供了从外部仓库迁移代码的功能，通过头像左侧的加号，然后选择&lt;code>迁移外部仓库&lt;/code>即可；&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_16.png" alt="">&lt;/p></description></item><item><title>PostmanCn:Postman中文版</title><link>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</link><pubDate>Mon, 21 Dec 2020 08:30:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</guid><description>&lt;p>最新版本：7.36.1&lt;/p>
+&lt;p>更新时间：2020-12-18&lt;/p>
+&lt;p>&lt;a href="https://gitee.com/hlmd/PostmanCn/releases">点击下载&lt;/a>&lt;/p>
+&lt;h2 id="介绍">介绍&lt;/h2>
+&lt;p>&lt;img src="https://s2.loli.net/2023/03/10/qshiEJkpWYAZBjO.png" alt="">&lt;/p>
+&lt;p>Postman中文版 汉化 持续更新中&lt;/p>
+&lt;h2 id="安装教程">安装教程&lt;/h2>
+&lt;h3 id="windows">Windows&lt;/h3>
+&lt;p>Postman-*-win64-中文版.zip 解压直接用&lt;/p>
+&lt;p>app.zip 解压&amp;amp;&amp;amp;替换文件 应用程序目录/resources/app.asar&lt;/p>
+&lt;h3 id="mac">Mac&lt;/h3>
+&lt;p>&lt;a href="https://www.postman.com/downloads/">Postman官网&lt;/a>下载&amp;amp;安装Postman Mac版&lt;/p>
+&lt;p>&lt;a href="https://gitee.com/hlmd/PostmanCn/releases">下载 Postman-*-Mac-汉化版&lt;/a>app.zip&lt;/p>
+&lt;p>复制到 Postman安装目录 /&amp;hellip;/Postman.app/Contents/Resources/&lt;/p>
+&lt;p>解压 替换 app目录即可&lt;/p>
+&lt;h3 id="linux">Linux&lt;/h3>
+&lt;p>解压 替换 app目录即可&lt;/p>
+&lt;p>&lt;a href="https://www.postman.com/downloads/">https://www.postman.com/downloads/&lt;/a>这个是Postman官网的下载页面&lt;/p>
+&lt;p>&lt;a href="https://gitee.com/hlmd/PostmanCn/">https://gitee.com/hlmd/PostmanCn/&lt;/a>这个是这里的汉化的&lt;/p></description></item><item><title>MacOS开启外接显示器HiDP</title><link>https://blog.ch3nnn.cn/posts/2020/macos%E5%BC%80%E5%90%AF%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8hidp/</link><pubDate>Tue, 01 Dec 2020 03:05:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/macos%E5%BC%80%E5%90%AF%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8hidp/</guid><description>&lt;p>&lt;strong>对以下系统和显示器有效：&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>macOS 10.12 Sierra&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>macOS 10.13 High Sierra&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>macOS 10.14 Mojave&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>macOS 10.15 Catalina&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Dell P2416D, DisplayPort, 1920x1080 HiDPI&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Dell P2418D, DisplayPort, 1920x1080 HiDPI&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Acer XB241YU, HDMI, 1920x1080 HiDPI&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x1-准备工作">0x1 准备工作：&lt;/h2>
+&lt;h3 id="1-打开系统hidpi-在终端运行">1. 打开系统HiDPI (在终端运行）&lt;/h3>
+&lt;pre tabindex="0">&lt;code>sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool YES
+&lt;/code>&lt;/pre>&lt;p>如果使用 4K 或更高分辨率的显示器，macOS 很可能原生支持 HiDPI，建议直接从&lt;a href="https://wacky.one/blog/macos-hi-dpi/#rdm">5. 下载 RDM&lt;/a>尝试选择 HiDPI 分辨率。如无法启用或没有合适的分辨率，再使用配置文件。&lt;/p>
+&lt;h2 id="0x2-获得显示器信息">0x2 获得显示器信息&lt;/h2>
+&lt;p>获得显示器的 VendorID 和 ProductID （制造商ID 和 产品ID），在终端运行：&lt;/p>
+&lt;pre tabindex="0">&lt;code>ioreg -lw0 | grep IODisplayPrefsKey | grep -o &amp;#39;/[^/]\+&amp;#34;$&amp;#39;
+&lt;/code>&lt;/pre>&lt;p>输出大概是这样的：&lt;/p>
+&lt;pre tabindex="0">&lt;code>&amp;gt; ioreg -lw0 | grep IODisplayPrefsKey | grep -o &amp;#39;/[^/]\+&amp;#34;$&amp;#39;
+/AppleBacklightDisplay-610-a029&amp;#34;
+/AppleDisplay-10ac-a0c4&amp;#34;
+&lt;/code>&lt;/pre>&lt;p>这条指令的输出会有多个，注意识别你想要调整的显示器。第一条&lt;code>AppleBacklightDisplay-610-a029&lt;/code>是MBP的内置显示屏。第二个是外接显示器。（当然，也可以合上 MBP 屏幕，这样只会输出正在使用的外接显示器）&lt;/p></description></item><item><title>Navicat Premium 15.0.22 中文语言包</title><link>https://blog.ch3nnn.cn/posts/2020/navicatpremium15.0.22%E4%B8%AD%E6%96%87%E8%AF%AD%E8%A8%80%E5%8C%85/</link><pubDate>Mon, 09 Nov 2020 10:57:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/navicatpremium15.0.22%E4%B8%AD%E6%96%87%E8%AF%AD%E8%A8%80%E5%8C%85/</guid><description>&lt;p>Navicat Premium是一个可多重连接的数据库管理工具，Navicat 的功能足以符合专业开发人员的所有需求，但是对数据库服务器的新手来说又相当容易学习。它可让你以单一程序同時连接到目前世面上所有版本的主流数据库并进行管理和操作，支持的数据库有： MySQL、SQL Server、SQLite、Oracle 及 PostgreSQL。让管理不同类型的数据库更加方便。&lt;/p>
+&lt;h2 id="汉化包">汉化包&lt;/h2>
+&lt;ul>
+&lt;li>15.0.12 汉化&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>下载&lt;a href="https://t00y.com/file/13114864-433055695">链接: https://pan.baidu.com/s/1SITpWMdXfBhYlis-YL14Tg 密码: vljg&lt;/a>中文包&lt;/li>
+&lt;li>解压复制&lt;code>汉化文件夹&lt;/code>放到&lt;code>/Applications/Navicat Premium.app/Contents/Resources&lt;/code>&lt;/li>
+&lt;li>汉化完成&lt;br>
+PS:这个&lt;code>zh-Hans.lproj&lt;/code>汉化文件是从&lt;code>Navicat Premium&lt;/code>官方中文版提取 无毒无害&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>12.0.12 汉化&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>下载&lt;a href="https://www.pipipan.com/fs/13114864-217250713">https://www.pipipan.com/fs/13114864-217250713&lt;/a>中文包&lt;/li>
+&lt;li>复制&lt;code>汉化文件夹&lt;/code>放到&lt;code>/Applications/Navicat Premium.app/Contents/Resources&lt;/code>&lt;/li>
+&lt;li>汉化完成&lt;br>
+PS:这个&lt;code>zh-Hans.lproj&lt;/code>汉化文件是从&lt;code>Navicat Premium 12.0.12&lt;/code>官方中文版提取 无毒无害&lt;/li>
+&lt;/ol></description></item><item><title>「超级右键」Mac上最强的右键菜单工具，让你效率飞起！</title><link>https://blog.ch3nnn.cn/posts/2020/%E8%B6%85%E7%BA%A7%E5%8F%B3%E9%94%AEmac%E4%B8%8A%E6%9C%80%E5%BC%BA%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E5%B7%A5%E5%85%B7%E8%AE%A9%E4%BD%A0%E6%95%88%E7%8E%87%E9%A3%9E%E8%B5%B7/</link><pubDate>Mon, 26 Oct 2020 15:03:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/%E8%B6%85%E7%BA%A7%E5%8F%B3%E9%94%AEmac%E4%B8%8A%E6%9C%80%E5%BC%BA%E7%9A%84%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E5%B7%A5%E5%85%B7%E8%AE%A9%E4%BD%A0%E6%95%88%E7%8E%87%E9%A3%9E%E8%B5%B7/</guid><description>&lt;h2 id="简介">简介&lt;/h2>
+&lt;p>我对该产品的评价只有六个字：&lt;strong>实用、效率、快、得我心&lt;/strong>&lt;/p>
+&lt;h4 id="超级右键主要实现了">超级右键主要实现了：&lt;/h4>
+&lt;p>Mac电脑上右键的扩展，能够新建、发送/复制文件到某个位置、快速打开常用目录、自定义文件夹图标、拷贝路径、终端/iTerm/VSCode 里进入路径、显示隐藏文件、彻底删除文件、剪切粘贴文件、百度翻译、谷歌翻译、右键截图、标注、贴图等等。&lt;/p>
+&lt;p>**「超级右键」**有一部分功能是借鉴Windows系统的，也有开发者自己新创的功能，总的来说功能完善，且使用快捷，是目前Mac上最强大的右键工具，绝对是Mac用户装机必备。&lt;/p>
+&lt;h2 id="功能">功能&lt;/h2>
+&lt;hr>
+&lt;h3 id="1新建文件">1.新建文件&lt;/h3>
+&lt;p>**默认支持新建：**TXT/RTF/XML/Word/Excel/PPT/WPS文字/WPS表格/WPS演示/Pages/Numbers/Keynote/Ai/PSD/Markdown格式的文件。&lt;/p>
+&lt;p>&lt;strong>同时还支持&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>用户自定义添加其他类型文件进行新建。&lt;/li>
+&lt;li>新建后自动打开文件&lt;/li>
+&lt;li>新建的时候启用弹窗，命名文件名和文件位置&lt;/li>
+&lt;li>将新建的文件类型添加到一级菜单目录&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/c4a86da3f4e1a3a6b582032497529ad2.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>新建文件&lt;/p>
+&lt;hr>
+&lt;h3 id="2复制发动文件到指定路径">2.复制/发动文件到指定路径&lt;/h3>
+&lt;p>这个功能可以说非常的实用，以前在Mac上要转移文件的位置，很多时候要先拷贝，然后一层层的打开路径，很费事，有了超级右键，一键发动到位，很方便。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/b6424ddf26f55836647bd01d207a756e.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>复制文件到&lt;/p>
+&lt;hr>
+&lt;h3 id="3常用目录">3.常用目录&lt;/h3>
+&lt;p>**「超级右键」**允许用户自定义常用目录，然后使用右键快速打开，非常方便。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/2d3a377f21a42d3e4f087eb5aeaccaeb.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>常用目录&lt;/p>
+&lt;hr>
+&lt;h3 id="4自定义文件夹图标">4.自定义文件夹图标&lt;/h3>
+&lt;p>很多时候，你可能已经厌倦了千篇一律的蓝色文件，想给文件夹带去一点色彩，变得个性化，从视觉上好分辨一些，**「超级右键」**就能帮你轻松办到。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/b49808c80aa6988d240ed8635e0c12a3.gif" alt="">&lt;/p>
+&lt;p>自定义文件夹图标&lt;/p>
+&lt;hr>
+&lt;h3 id="5剪切粘贴">5.剪切、粘贴&lt;/h3>
+&lt;p>Mac上本来是没有剪切功能的，从Windows转Mac的朋友们肯定觉得不习惯吧。**「超级右键」**为右键新增了剪切、粘贴功能，使用起来非常顺手。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/937b6aeeffbb757361eb4610a3a33ba9.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>剪切、粘贴&lt;/p>
+&lt;hr>
+&lt;h3 id="6截图">6.截图&lt;/h3>
+&lt;p>Better 365将超级右键与其截图工具&lt;strong>iShot&lt;/strong>进行了联动，可以使用右键调用进行截图，前提是你必须安装了iShot。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/e6ca133487d8435e77fdc2a4a4d8477f.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>右键截图&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/10e9728d46f3f131f74015a8b7c49b37.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>截图&lt;/p>
+&lt;hr>
+&lt;h3 id="7贴图标注">7.贴图、标注&lt;/h3>
+&lt;p>你还可以直接选中本地已存在的图片，将其贴图，并标记&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/17cdc770ce8d115fd1a3180645757bbf.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>贴图标注&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/92e81f3e1f53cf6595ba3000c24b9387.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>贴图标注&lt;/p>
+&lt;h3 id="8拷贝当前路径">8.拷贝当前路径&lt;/h3>
+&lt;p>**「超级右键」**可以让你非常方便的拷贝路径，省去手码路径的麻烦。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/aecadcae439b106828c1103bec249ffb.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>拷贝当前路径&lt;/p>
+&lt;hr>
+&lt;h3 id="9终端itermvscodesublime-text里打开">9、终端、iTerm、VSCode、Sublime Text里打开&lt;/h3>
+&lt;p>如果你需要在终端、等工具里打开文件、路径等，**「超级右键」**也将助你快人一步。&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/479c1a31c4e5dc723ee409477c21f598.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;h3 id="终端itermvscode等打开">终端、iTerm、VScode等打开&lt;/h3>
+&lt;hr>
+&lt;h3 id="10显示隐藏文件">10.显示/隐藏文件&lt;/h3>
+&lt;p>你可以快速地隐藏你电脑上的文件，保护隐私，只有你知道如何显示&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/24/d1b2e32aa76d6ca56eb4bb423c020571.gif" alt="">&lt;/p>
+&lt;p>显示/隐藏文件&lt;/p>
+&lt;hr>
+&lt;h3 id="11彻底删除">11.彻底删除&lt;/h3>
+&lt;p>彻底删除允许我们不经过废纸篓，直接删掉文件。&lt;/p>
+&lt;hr>
+&lt;h3 id="12百度翻译谷歌翻译转化为二维码">12.百度翻译、谷歌翻译、转化为二维码&lt;/h3>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/25/50e1177750f41680f5b2169297178e37.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>请输入图片标题&lt;/p>
+&lt;p>听我说了这么多，不去下载安装体验一把，还在等什么呢？在App Store搜索“超级右键”就可以免费下载啦，快让你快人一步吧！&lt;/p>
+&lt;p>&lt;img src="https://cdn.sspai.com/2020/02/25/6ce9c92234c9e054e2083cfc29ae608e.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="">&lt;/p>
+&lt;p>请输入图片标题&lt;/p></description></item><item><title>Zeal——好用的离线API文档大全</title><link>https://blog.ch3nnn.cn/posts/2020/zeal%E5%A5%BD%E7%94%A8%E7%9A%84%E7%A6%BB%E7%BA%BFapi%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/</link><pubDate>Mon, 14 Sep 2020 04:39:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/zeal%E5%A5%BD%E7%94%A8%E7%9A%84%E7%A6%BB%E7%BA%BFapi%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/</guid><description>&lt;p>Zeal是一款离线文档浏览器，其灵感来自 OS X平台上的 Dash，目前支持 Window 和 Liunx。基于 QT5。&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>支持呼出热键。只要按下组合箭 ALT+Space 即可在任何地方显示面板，不用时可以用热键隐藏的系统托盘。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>可同时搜索多个文档&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>不依赖网络&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>GPL 协议开放源码&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Dash 中的文档都可以在 Zeal 中使用。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>安装：&lt;/strong>&lt;/p>
+&lt;p>WIndows 自带二进制安装包&lt;/p>
+&lt;p>Linux 需要安装 QT( &amp;gt;= 5) 和 bsdtar。&lt;/p>
+&lt;p>&lt;strong>软件截图：&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="http://static.oschina.net/uploads/space/2014/0115/132355_IQHW_184649.png" alt="">&lt;/p>
+&lt;p>&lt;img src="http://static.oschina.net/uploads/space/2014/0115/132411_qXTS_184649.png" alt="">&lt;/p></description></item><item><title>简洁的 Mac 图床客户端 uPic</title><link>https://blog.ch3nnn.cn/posts/2020/%E7%AE%80%E6%B4%81%E7%9A%84mac%E5%9B%BE%E5%BA%8A%E5%AE%A2%E6%88%B7%E7%AB%AFupic/</link><pubDate>Sun, 28 Jun 2020 14:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/%E7%AE%80%E6%B4%81%E7%9A%84mac%E5%9B%BE%E5%BA%8A%E5%AE%A2%E6%88%B7%E7%AB%AFupic/</guid><description>&lt;p>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic/logo.png">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic/logo.png" alt="uPic">&lt;/a>&lt;/p>
+&lt;h1 id="-简洁的-mac-图床客户端-upic">☁️ 简洁的 Mac 图床客户端 uPic&lt;/h1>
+&lt;h2 id="-简介">📑 简介&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>uPic(upload Picture) 是一款 Mac 端的图床(文件)上传客户端&lt;/strong>&lt;br>
+可将图片、各种文件上传到配置好的指定提供商的对象存储中。&lt;br>
+然后快速获取可供互联网访问的文件 URL&lt;/p>
+&lt;/blockquote>
+&lt;p>**💡 特点：**无论是本地文件、或者屏幕截图都可自动上传，菜单栏显示实时上传进度。上传完成后文件链接自动复制到剪切板，让你无论是在写博客、灌水聊天都能快速插入图片。&lt;br>
+连接格式可以是普通 URL、HTML 或者 Markdown，仍由你掌控。&lt;/p>
+&lt;p>&lt;strong>🔋 支持图床：&lt;/strong>&lt;a href="https://sm.ms/">smms&lt;/a>、&lt;a href="https://www.upyun.com/products/file-storage">又拍云 USS&lt;/a>、&lt;a href="https://www.qiniu.com/products/kodo">七牛云 KODO&lt;/a>、&lt;a href="https://www.aliyun.com/product/oss/">阿里云 OSS&lt;/a>、&lt;a href="https://cloud.tencent.com/product/cos">腾讯云 COS&lt;/a>、&lt;a href="https://weibo.com/">微博&lt;/a>、&lt;a href="https://github.com/settings/tokens">Github&lt;/a>、&lt;a href="https://gitee.com/profile/personal_access_tokens">Gitee&lt;/a>、&lt;a href="https://aws.amazon.com/cn/s3/">Amazon S3&lt;/a>、&lt;a href="https://blog.svend.cc/upic/tutorials/custom">自定义上传接口&lt;/a>、…&lt;/p>
+&lt;h2 id="-如何安装">🚀 如何安装&lt;/h2>
+&lt;h3 id="下载安装">下载安装&lt;/h3>
+&lt;h4 id="1homebrew">1.Homebrew:&lt;/h4>
+&lt;pre tabindex="0">&lt;code>brew cask install upic
+&lt;/code>&lt;/pre>&lt;h4 id="2手动">2.手动&lt;/h4>
+&lt;p>从&lt;a href="https://github.com/gee1k/uPic/releases">Github release&lt;/a>下载。&lt;br>
+&lt;strong>如果访问 Github 下载困难的，可以从&lt;a href="https://gitee.com/gee1k/uPic/releases">Gitee release&lt;/a>下载。&lt;/strong>&lt;/p>
+&lt;h3 id="检查-finder-扩展权限">检查 Finder 扩展权限&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>1.打开 uPic&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>2.打开&lt;code>系统偏好设置&lt;/code>-&lt;code>扩展&lt;/code>-&lt;code>访达扩展&lt;/code>确保&lt;code>uPicFinderExtension&lt;/code>是勾选状态&lt;/p>
+&lt;p>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/finder-extension.png">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/finder-extension.png" alt="">&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="-使用方式">🕹 使用方式&lt;/h2>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>功能&lt;/th>
+ &lt;th>描述&lt;/th>
+ &lt;th>预览&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;strong>🖥 选择文件上传&lt;/strong>&lt;/td>
+ &lt;td>从&lt;code>Finder&lt;/code>选择文件上传。&lt;code>可设置全局快捷键&lt;/code>&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/selectFile.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/selectFile.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>⌨️ 复制文件上传&lt;/strong>&lt;/td>
+ &lt;td>上传已拷贝到剪切板的文件。&lt;code>可设置全局快捷键&lt;/code>&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/pasteboard.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/pasteboard.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>📸 截图上传&lt;/strong>&lt;/td>
+ &lt;td>直接拉框截图上传。&lt;code>可设置全局快捷键&lt;/code>&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/screenshot.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/screenshot.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>🖱 拖拽本地文件上传&lt;/strong>&lt;/td>
+ &lt;td>拖拽文件到状态栏上传&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/dragFile.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/dragFile.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>🖱 拖拽浏览器图片上传&lt;/strong>&lt;/td>
+ &lt;td>从浏览器拖拽图片到状态栏上传&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/dragFromBrowser.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/dragFromBrowser.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>📂 Finder 中右键上传&lt;/strong>&lt;/td>
+ &lt;td>右击文件上传&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/contextmenu.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/contextmenu.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>⌨️ 命令行上传&lt;/strong>&lt;/td>
+ &lt;td>通过执行命令调用 uPic 上传文件&lt;/td>
+ &lt;td>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/cli.gif">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/cli.gif" alt="">&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h2 id="-更多功能">🧰 更多功能&lt;/h2>
+&lt;h3 id="1全局快捷键">1.全局快捷键&lt;/h3>
+&lt;p>&lt;a href="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/shortcuts.png">&lt;img src="https://cdn.jsdelivr.net/gh/gee1k/oss@master/screenshot/uPic-cn/shortcuts.png" alt="">&lt;/a>&lt;/p></description></item><item><title>使用 Floccus + 坚果云无梯子跨平台同步 Chrome 浏览器书签</title><link>https://blog.ch3nnn.cn/posts/2020/%E4%BD%BF%E7%94%A8floccus+%E5%9D%9A%E6%9E%9C%E4%BA%91%E6%97%A0%E6%A2%AF%E5%AD%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B9%A6%E7%AD%BE/</link><pubDate>Fri, 17 Apr 2020 03:23:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/%E4%BD%BF%E7%94%A8floccus+%E5%9D%9A%E6%9E%9C%E4%BA%91%E6%97%A0%E6%A2%AF%E5%AD%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%90%8C%E6%AD%A5chrome%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B9%A6%E7%AD%BE/</guid><description>&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417111855319.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">​&lt;/p>
+&lt;p>采用的方案是 Chrome / Cent Browser / Firefox / yandex 等 + Floccus + 坚果云（WebDav）实现书签的跨平台多终端同步的。理论上，只要支持Floccus扩展的浏览器，都能实现。&lt;/p>
+&lt;p>首先给出 FloccusGitHub的地址：&lt;a href="https://github.com/marcelklehr/floccus">https://github.com/marcelklehr/floccus&lt;/a>&lt;/p>
+&lt;p>Floccus 插件的地址：&lt;a href="https://chrome.google.com/webstore/detail/fnaicdffflnofjppbagibeoednhnbjhg">https://chrome.google.com/webstore/detail/fnaicdffflnofjppbagibeoednhnbjhg&lt;/a>&lt;/p>
+&lt;p>安装好并配置完毕:&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417110449371.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;h3 id="开始">开始&lt;/h3>
+&lt;p>一、坚果云上的配置&lt;/p>
+&lt;p>坚果云注册一个免费版个人账号（每日流量限制：上传1G，下载3G，够用了），注册成功登录后，点击右上角的用户名下拉菜单。&lt;/p>
+&lt;p>注册:&lt;a href="https://www.jianguoyun.com/">https://www.jianguoyun.com/&lt;/a>&lt;/p>
+&lt;p>需要先注册应用&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417110739961.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>这里需要在我的书签添加自定义名称 在插件服务器地址中需要用到&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417111208573.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>二、浏览器上的配置&lt;/p>
+&lt;p>添加账户&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417110859623.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417110925524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417111042580.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>位置1中填入 坚果云服务器地址，即：&lt;a href="https://dav.jianguoyun.com/dav">https://dav.jianguoyun.com/dav/自定义书签名称&lt;/a>&lt;/p>
+&lt;p>注意地址后面还有在坚果云添加的书签名称 例如&lt;a href="https://dav.jianguoyun.com/dav/bookmarks">https://dav.jianguoyun.com/dav/bookmarks&lt;/a>&lt;/p>
+&lt;p>位置2中填入你在坚果云中的注册的用户名，&lt;/p>
+&lt;p>位置3中填入在坚果云中为第三方应用生产的应用管理密码。&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417111416545.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>将界面拖下来一点，看到有个“本地文件夹”配置，点击“选择文件夹”，出来的列表中，点击 “书签栏” 右边的“选取”按钮&lt;/p>
+&lt;p>一般就选择根路径这样书签所有收藏网址都能同步&lt;/p>
+&lt;p>修改自动同步时间间隔的，默认15分钟，这里我觉得没必要改，或者你觉得要同步间隔有必要调整，也可以修改一下。&lt;/p>
+&lt;p>设置完毕后，拉倒最底部，点击“保存”。&lt;/p>
+&lt;p>然后点击“同步”手动启动同步一次。 一般就能够成功把本地的“书签栏”目录中的浏览器同步保存到坚果云中的 我的文件 目录下的 bookmarks.xbel文件中了。&lt;/p>
+&lt;p>&lt;img src="https://img-blog.csdnimg.cn/20200417111604772.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzA2NDE4NQ==,size_16,color_FFFFFF,t_70" alt="">&lt;/p>
+&lt;p>参考学习：&lt;/p>
+&lt;p>&lt;a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.appinn.com%2Ffloccus">Floccus – 跨平台浏览器「书签同步」插件&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://links.jianshu.com/go?to=http%3A%2F%2Fwww.jianguoyun.com%2Fs%2Fcontent%2F3991.html">WebDAV是什么？网盘的WebDAV有什么用？&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.cccitu.com%2F982.html">yandex的Floccus插件安装教程&lt;/a>&lt;/p></description></item><item><title>使用UnblockNeteaseMusic播放网易云音乐客户端无版权歌曲</title><link>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</link><pubDate>Sun, 18 Feb 2018 03:56:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</guid><description>&lt;p>&lt;strong>说明：&lt;/strong>&lt;code>UnblockNeteaseMusic&lt;/code>是一款可以给你解除网易云音乐海外限制并解锁变灰(无版权)歌曲的工具，让你可以听取客户端任何的歌曲，而不受到限制，此前该类似工具挺多的，不过貌似都不维护或者失效了，这里提到的项目更新很频繁，支持&lt;code>Windows&lt;/code>、&lt;code>MacOS&lt;/code>、安卓、&lt;code>IOS&lt;/code>等设备，所以就分享一下使用方法。&lt;/p>
+&lt;h2 id="截图">截图&lt;/h2>
+&lt;p>&lt;img src="https://s2.loli.net/2023/03/10/qhxZAHFeOT7uLf9.png" alt="">&lt;/p>
+&lt;p>&lt;img src="https://s2.loli.net/2023/03/10/YXCdq6igRQnsrU7.png" alt="">&lt;/p>
+&lt;h2 id="特性">特性&lt;/h2>
+&lt;ul>
+&lt;li>使用网易云旧链/&lt;code>QQ&lt;/code>/虾米/百度/酷狗/酷我/咕咪/&lt;code>JOOX&lt;/code>音源替换变灰歌曲链接(默认仅启用前四)。&lt;/li>
+&lt;li>为请求增加&lt;code>X-Real-IP&lt;/code>参数解锁海外限制，支持指定网易云服务器&lt;code>IP&lt;/code>，支持设置上游&lt;code>HTTP&lt;/code>/&lt;code>HTTPS&lt;/code>代理。&lt;/li>
+&lt;li>完整的流量代理功能(&lt;code>HTTP&lt;/code>/&lt;code>HTTPS&lt;/code>)，可直接作为系统代理(同时支持&lt;code>PAC&lt;/code>)。&lt;/li>
+&lt;/ul>
+&lt;h2 id="安装">安装&lt;/h2>
+&lt;p>&lt;strong>Github地址：&lt;/strong>&lt;a href="https://github.com/nondanee/UnblockNeteaseMusic">https://github.com/nondanee/UnblockNeteaseMusic&lt;/a>&lt;/p>
+&lt;p>&lt;strong>1、安装Nodejs&lt;/strong>&lt;/p>
+&lt;pre tabindex="0">&lt;code>#Debian/Ubuntu系统
+curl -sL https://deb.nodesource.com/setup_10.x | bash -
+apt install -y nodejs git 
+
+#CentOS系统
+curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+yum install nodejs git -y
+&lt;/code>&lt;/pre>&lt;p>&lt;strong>2、运行UnblockNeteaseMusic&lt;/strong>&lt;/p>
+&lt;pre tabindex="0">&lt;code>git clone https://github.com/nondanee/UnblockNeteaseMusic.git
+cd UnblockNeteaseMusic
+node app.js
+&lt;/code>&lt;/pre>&lt;p>运行端口默认为&lt;code>8080&lt;/code>，需要想修改可以编辑&lt;code>app.js&lt;/code>文件的&lt;code>config.port&lt;/code>对应的数值，或者使用命令：&lt;/p>
+&lt;pre tabindex="0">&lt;code>#这里默认修改4567，自行调整
+node app.js -p 4567
+&lt;/code>&lt;/pre>&lt;p>这里还可以加一个&lt;code>-s&lt;/code>参数限制代理范围防止被滥用，也就是仅放行网易云音乐所属域名的请求，不过使用起来的话就受限了，仅支持&lt;code>PAC&lt;/code>或&lt;code>Hosts&lt;/code>。&lt;/p>
+&lt;pre tabindex="0">&lt;code>node app.js -s
+&lt;/code>&lt;/pre>&lt;p>&lt;strong>3、开机自启&lt;/strong>&lt;br>
+这里使用&lt;code>Systemd&lt;/code>进程守护，只适用于&lt;code>CentOS 7&lt;/code>、&lt;code>Debian 8+&lt;/code>、&lt;code>Ubuntu 16+&lt;/code>等。&lt;/p>
+&lt;pre tabindex="0">&lt;code>#修改下ExecStartPre源码路径即可，然后一起复制到SSH运行
+cat &amp;gt; /etc/systemd/system/UnblockNeteaseMusic.service &amp;lt;&amp;lt;EOF
+[Unit]
+Description=UnblockNeteaseMusic
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+PIDFile=/var/run/UnblockNeteaseMusic.pid
+WorkingDirectory=/root/UnblockNeteaseMusic
+ExecStart=$(command -v node) app.js -p 4567
+RestartPreventExitStatus=23
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+&lt;/code>&lt;/pre>&lt;p>启动并开机自启：&lt;/p></description></item></channel></rss>

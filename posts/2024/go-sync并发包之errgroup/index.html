@@ -1,10 +1,65 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？  你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。
 想想看，你有一个函数可以做 3 件事：
-按用户 ID 从数据库中获取用户详细信息。 调用外部服务，按用户 ID 获取用户最近的活动信息 访问日志服务，按用户 ID 获取用户上次登录的详细信息 func FetchUserData(userID string) error { g := errgroup.Group{} // 获取用户详细信息 userDetail, _ := fetchUserDetails(userID) // 获取用户活动 userAct, _ := fetchUserActivity(userID) // 获取用户登录详细信息 userLoginInfo, _ := fetchUserLoginDetails(userID) // ... } 所有这些任务都只需要用户 ID，而不使用其他任务的数据。
+
+按用户 ID 从数据库中获取用户详细信息。
+调用外部服务，按用户 ID 获取用户最近的活动信息
+访问日志服务，按用户 ID 获取用户上次登录的详细信息
+
+func FetchUserData(userID string) error {
+    g := errgroup.Group{}
+    
+	// 获取用户详细信息
+    userDetail, _ := fetchUserDetails(userID)
+	// 获取用户活动
+    userAct, _ := fetchUserActivity(userID)
+    // 获取用户登录详细信息
+    userLoginInfo, _ := fetchUserLoginDetails(userID)
+
+    // ...
+}
+所有这些任务都只需要用户 ID，而不使用其他任务的数据。
 您可以尝试使用 goroutines 来实现这一点，但您需要自己处理细节问题。让我们来回答这些问题：
-同步：如何确保一切完成？ 错误处理：如果一项任务出错，你该怎么办？或者三项任务中有两项不成功？ 取消：如果一个任务出现问题，如何停止所有其他正在运行的程序？ 限制：你是否考虑过限制同时运行多少个 goroutines？ 可重复使用：一旦找到解决方案，如何在类似情况下再次使用？ 1.什么是 errgroup？ errgroup 软件包可让您同时处理多项任务。
+
+同步：如何确保一切完成？
+错误处理：如果一项任务出错，你该怎么办？或者三项任务中有两项不成功？
+取消：如果一个任务出现问题，如何停止所有其他正在运行的程序？
+限制：你是否考虑过限制同时运行多少个 goroutines？
+可重复使用：一旦找到解决方案，如何在类似情况下再次使用？
+
+1.什么是 errgroup？
+
+errgroup 软件包可让您同时处理多项任务。
+
 通过它，可以轻松地以安全的方式一起运行，保持同步，处理错误，并控制何时停止 goroutines。下面是一个如何使用它的快速示例：
-func FetchUserData() error { g := errgroup.Group{} // 获取用户详细信息 g.Go(func() error { time."><title>Go Sync并发包之errgroup
+func FetchUserData() error {
+	g := errgroup.Group{}
+
+	// 获取用户详细信息
+	g.Go(func() error {
+		time.Sleep(1 * time.Second)
+		fmt.Println("Fetched user details...")
+		return nil
+	})
+
+    // 获取用户活动
+    g.Go(func() error {
+		time.Sleep(1 * time.Second)
+		fmt.Println("Fetched user activity...")
+		return nil
+	})
+
+	// 获取用户登录详细信息
+	g.Go(func() error {
+		time.Sleep(2 * time.Second)
+		fmt.Println("Fetched user login details...")
+		return nil
+	})
+
+	// 等待所有goroutines完成并返回第一个错误 (如果有)
+	return g.Wait()
+}
+因此，errgroup 的工作就是运行这些任务，并通过 g.Wait() 等待任务结束，我们需要做的就是添加任务。
+'><title>Go Sync并发包之errgroup
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-04-24 10:44:21 +0800 +0800">2024-04-24</time></p><h1>Go Sync并发包之errgroup</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共341字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><aside><nav id=TableOfContents><ul><li><a href=#1什么是-errgroup>1.什么是 errgroup？</a></li><li><a href=#2setlimit限制程序运行次数>2.SetLimit：限制程序运行次数</a></li><li><a href=#3trygo添加快速程序的受控方法>3.TryGo：添加快速程序的受控方法</a></li><li><a href=#4withcontext处理取消>4.WithContext：处理取消</a></li></ul></nav></aside><p>你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。</p><p>想想看，你有一个函数可以做 3 件事：</p><ul><li>按用户 ID 从数据库中获取用户详细信息。</li><li>调用外部服务，按用户 ID 获取用户最近的活动信息</li><li>访问日志服务，按用户 ID 获取用户上次登录的详细信息</li></ul><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>FetchUserData</span>(userID <span style=color:#005a5f>string</span>) <span style=color:#005a5f>error</span> {
 </span></span><span style=display:flex><span>    g <span style=color:#00538b>:=</span> errgroup.Group{}
 </span></span><span style=display:flex><span>    

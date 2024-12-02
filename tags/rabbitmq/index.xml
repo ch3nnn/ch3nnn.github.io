@@ -1,61 +1,235 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RabbitMQ on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/rabbitmq/</link><description>Recent content in RabbitMQ on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 12 Oct 2019 05:56:00 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/rabbitmq/index.xml" rel="self" type="application/rss+xml"/><item><title>RabbitMq系列之六：为什么需要主题交换机？</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%85%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%BB%E9%A2%98%E4%BA%A4%E6%8D%A2%E6%9C%BA/</link><pubDate>Sat, 12 Oct 2019 05:56:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%85%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%BB%E9%A2%98%E4%BA%A4%E6%8D%A2%E6%9C%BA/</guid><description>为什么需要主题交换机？ （使用Python 客户端 —— pika 0.9.8）
-上一篇教程里，我们改进了我们的日志系统。我们使用直连交换机替代了扇型交换机，从只能盲目的广播消息改进为有可能选择性的接收日志。
-尽管直连交换机能够改善我们的系统，但是它也有它的限制 —— 没办法基于多个标准执行路由操作。
-在我们的日志系统中，我们不只希望订阅基于严重程度的日志，同时还希望订阅基于发送来源的日志。Unix 工具 syslog 就是同时基于严重程度 -severity (info/warn/crit&amp;hellip;) 和 设备 -facility (auth/cron/kern&amp;hellip;) 来路由日志的。
-如果这样的话，将会给予我们非常大的灵活性，我们既可以监听来源于 “cron” 的严重程度为 “critical errors” 的日志，也可以监听来源于 “kern” 的所有日志。
-为了实现这个目的，接下来我们学习如何使用另一种更复杂的交换机 —— 主题交换机。
-主题交换机 发送到主题交换机（topic exchange）的消息不可以携带随意什么样子的路由键（routing_key），它的路由键必须是一个由.分隔开的词语列表。这些单词随便是什么都可以，但是最好是跟携带它们的消息有关系的词汇。以下是几个推荐的例子：&amp;ldquo;stock.usd.nyse&amp;rdquo;, &amp;ldquo;nyse.vmw&amp;rdquo;, &amp;ldquo;quick.orange.rabbit&amp;rdquo;。词语的个数可以随意，但是不要超过 255 字节。
-绑定键也必须拥有同样的格式。主题交换机背后的逻辑跟直连交换机很相似 —— 一个携带着特定路由键的消息会被主题交换机投递给绑定键与之想匹配的队列。但是它的绑定键和路由键有两个特殊应用方式：
-(星号) 用来表示一个单词. (井号) 用来表示任意数量（零个或多个）单词。 下边用图说明：
-这个例子里，我们发送的所有消息都是用来描述小动物的。发送的消息所携带的路由键是由三个单词所组成的，这三个单词被两个.分割开。路由键里的第一个单词描述的是动物的手脚的利索程度，第二个单词是动物的颜色，第三个是动物的种类。所以它看起来是这样的： ..。
-我们创建了三个绑定：Q1 的绑定键为 .orange.，Q2 的绑定键为 ..rabbit 和 lazy.# 。
-这三个绑定键被可以总结为：
-Q1 对所有的桔黄色动物都感兴趣。 Q2 则是对所有的兔子和所有懒惰的动物感兴趣。 一个携带有 quick.orange.rabbit 的消息将会被分别投递给这两个队列。携带着 lazy.orange.elephant 的消息同样也会给两个队列都投递过去。另一方面携带有 quick.orange.fox 的消息会投递给第一个队列，携带有 lazy.brown.fox 的消息会投递给第二个队列。携带有 lazy.</description></item><item><title>RabbitMq系列之五：远程过程调用（RPC）</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%94%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8rpc/</link><pubDate>Sat, 12 Oct 2019 05:55:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%94%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8rpc/</guid><description>远程过程调用（RPC） （Python客户端 —— 使用 pika 0.9.8）
-在第二篇教程中我们介绍了如何使用工作队列（work queue）在多个工作者（woker）中间分发耗时的任务。
-可是如果我们需要将一个函数运行在远程计算机上并且等待从那儿获取结果时，该怎么办呢？这就是另外的故事了。这种模式通常被称为远程过程调用（Remote Procedure Call）或者 RPC。
-这篇教程中，我们会使用 RabbitMQ 来构建一个 RPC 系统：包含一个客户端和一个 RPC 服务器。现在的情况是，我们没有一个值得被分发的足够耗时的任务，所以接下来，我们会创建一个模拟RPC服务来返回斐波那契数列。
-客户端接口 为了展示 RPC 服务如何使用，我们创建了一个简单的客户端类。它会暴露出一个名为 “call” 的方法用来发送一个 RPC 请求，并且在收到回应前保持阻塞。
-fibonacci_rpc = FibonacciRpcClient() result = fibonacci_rpc.call(4) print &amp;#34;fib(4) is %r&amp;#34; % (result,) 关于 RPC 的注意事项 尽管 RPC 在计算领域是一个常用模式，但它也经常被诟病。当一个问题被抛出的时候，程序员往往意识不到这到底是由本地调用还是由较慢的 RPC 调用引起的。同样的困惑还来自于系统的不可预测性和给调试工作带来的不必要的复杂性。跟软件精简不同的是，滥用 RPC 会导致不可维护的面条代码.
-考虑到这一点，牢记以下建议：
-确保能够明确的搞清楚哪个函数是本地调用的，哪个函数是远程调用的。给你的系统编写文档。保持各个组件间的依赖明确。处理错误案例。明了客户端改如何处理 RPC 服务器的宕机和长时间无响应情况。
-当对避免使用 RPC 有疑问的时候。如果可以的话，你应该尽量使用异步管道来代替RPC 类的阻塞。结果被异步地推送到下一个计算场景。
-回调队列 一般来说通过 RabbitMQ 来实现 RPC 是很容易的。一个客户端发送请求信息，服务器端将其应用到一个回复信息中。为了接收到回复信息，客户端需要在发送请求的时候同时发送一个回调队列（callback queue）的地址。我们试试看：
-result = channel.queue_declare(exclusive=True) callback_queue = result.method.queue channel.</description></item><item><title>RabbitMq系列之四：路由Routing</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9B%9B%E8%B7%AF%E7%94%B1routing/</link><pubDate>Sat, 12 Oct 2019 05:54:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9B%9B%E8%B7%AF%E7%94%B1routing/</guid><description>路由(Routing) （使用pika 0.9.5 Python客户端）
-在前面的教程中，我们实现了一个简单的日志系统。可以把日志消息广播给多个接收者。
-本篇教程中我们打算新增一个功能 —— 使得它能够只订阅消息的一个字集。例如，我们只需要把严重的错误日志信息写入日志文件（存储到磁盘），但同时仍然把所有的日志信息输出到控制台中
-绑定（Bindings） 前面的例子，我们已经创建过绑定（bindings），代码如下：
-channel.queue_bind(exchange=exchange_name, queue=queue_name) 绑定（binding）是指交换机（exchange）和队列（queue）的关系。可以简单理解为：这个队列（queue）对这个交换机（exchange）的消息感兴趣。
-绑定的时候可以带上一个额外的 routing_key 参数。为了避免与basic_publish的参数混淆，我们把它叫做绑定键（binding key）。以下是如何创建一个带绑定键的绑定。
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=&amp;#39;black&amp;#39;) 绑定键的意义取决于交换机（exchange）的类型。我们之前使用过的扇型交换机（fanout exchanges）会忽略这个值。
-直连交换机（Direct exchange） 我们的日志系统广播所有的消息给所有的消费者（consumers）。我们打算扩展它，使其基于日志的严重程度进行消息过滤。例如我们也许只是希望将比较严重的错误（error）日志写入磁盘，以免在警告（warning）或者信息（info）日志上浪费磁盘空间。
-我们使用的扇型交换机（fanout exchange）没有足够的灵活性 —— 它能做的仅仅是广播。
-我们将会使用直连交换机（direct exchange）来代替。路由的算法很简单 —— 交换机将会对绑定键（binding key）和路由键（routing key）进行精确匹配，从而确定消息该分发到哪个队列。
-下图能够很好的描述这个场景：
-在这个场景中，我们可以看到直连交换机 X 和两个队列进行了绑定。第一个队列使用 orange 作为绑定键，第二个队列有两个绑定，一个使用 black 作为绑定键，另外一个使用 green。
-这样以来，当路由键为 orange 的消息发布到交换机，就会被路由到队列 Q1。路由键为 black 或者 green 的消息就会路由到 Q2。其他的所有消息都将会被丢弃。
-多个绑定（Multiple bindings） 多个队列使用相同的绑定键是合法的。这个例子中，我们可以添加一个 X 和 Q1 之间的绑定，使用 black 绑定键。这样一来，直连交换机就和扇型交换机的行为一样，会将消息广播到所有匹配的队列。带有 black 路由键的消息会同时发送到 Q1 和 Q2。
-发送日志 我们将会发送消息到一个直连交换机，把日志级别作为路由键。这样接收日志的脚本就可以根据严重级别来选择它想要处理的日志。我们先看看发送日志。
-我们需要创建一个交换机（exchange）：</description></item><item><title>RabbitMq系列之三：发布订阅</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/</link><pubDate>Sat, 12 Oct 2019 05:52:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/</guid><description>发布／订阅 （使用pika 0.9.5 Python客户端）
-在上篇教程中，我们搭建了一个工作队列，每个任务只分发给一个工作者（worker）。在本篇教程中，我们要做的跟之前完全不一样 —— 分发一个消息给多个消费者（consumers）。这种模式被称为“发布／订阅”。
-为了描述这种模式，我们将会构建一个简单的日志系统。它包括两个程序——第一个程序负责发送日志消息，第二个程序负责获取消息并输出内容。
-在我们的这个日志系统中，所有正在运行的接收方程序都会接受消息。我们用其中一个接收者（receiver）把日志写入硬盘中，另外一个接受者（receiver）把日志输出到屏幕上。
-最终，日志消息被广播给所有的接受者（receivers）。
-交换机（Exchanges） 前面的教程中，我们发送消息到队列并从中取出消息。现在是时候介绍 RabbitMQ 中完整的消息模型了。
-让我们简单的概括一下之前的教程：
-发布者（producer）是发布消息的应用程序。 队列（queue）用于消息存储的缓冲。 消费者（consumer）是接收消息的应用程序。 RabbitMQ 消息模型的核心理念是：发布者（producer）不会直接发送任何消息给队列。事实上，发布者（producer）甚至不知道消息是否已经被投递到队列。
-发布者（producer）只需要把消息发送给一个交换机（exchange）。交换机非常简单，它一边从发布者方接收消息，一边把消息推送到队列。交换机必须知道如何处理它接收到的消息，是应该推送到指定的队列还是是多个队列，或者是直接忽略消息。这些规则是通过交换机类型（exchange type）来定义的。
-有几个可供选择的交换机类型：直连交换机（direct）, 主题交换机（topic）, （头交换机）headers和 扇型交换机（fanout）。我们在这里主要说明最后一个 —— 扇型交换机（fanout）。先创建一个 fanout 类型的交换机，命名为 logs：
-channel.exchange_declare(exchange=&amp;#39;logs&amp;#39;, type=&amp;#39;fanout&amp;#39;) 扇型交换机（fanout）很简单，你可能从名字上就能猜测出来，它把消息发送给它所知道的所有队列。这正是我们的日志系统所需要的。
-交换器列表 rabbitmqctl 能够列出服务器上所有的交换器：
-$ sudo rabbitmqctl list_exchanges Listing exchanges ... logs fanout amq.direct direct amq.topic topic amq.fanout fanout amq.headers headers ...done. 这个列表中有一些叫做 amq.* 的交换器。这些都是默认创建的，不过这时候你还不需要使用他们。
-匿名的交换器 前面的教程中我们对交换机一无所知，但仍然能够发送消息到队列中。因为我们使用了命名为空字符串 (&amp;quot;&amp;quot;) 默认的交换机。
-回想我们之前是如何发布一则消息：
-channel.basic_publish(exchange=&amp;#39;&amp;#39;, routing_key=&amp;#39;hello&amp;#39;, body=message) exchange 参数就是交换机的名称。空字符串代表默认或者匿名交换机：消息将会根据指定的 routing_key 分发到指定的队列。</description></item><item><title>RabbitMq系列之二：工作队列</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</link><pubDate>Sat, 12 Oct 2019 05:50:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</guid><description>工作队列 （使用pika 0.9.5 Python客户端）
-在第一篇教程中，我们已经写了一个从已知队列中发送和获取消息的程序。在这篇教程中，我们将创建一个工作队列（Work Queue），它会发送一些耗时的任务给多个工作者（Worker）。
-工作队列（又称：任务队列——Task Queues）是为了避免等待一些占用大量资源、时间的操作。当我们把任务（Task）当作消息发送到队列中，一个运行在后台的工作者（worker）进程就会取出任务然后处理。当你运行多个工作者（workers），任务就会在它们之间共享。
-这个概念在网络应用中是非常有用的，它可以在短暂的 HTTP 请求中处理一些复杂的任务。
-准备 之前的教程中，我们发送了一个包含 “Hello World!” 的字符串消息。现在，我们将发送一些字符串，把这些字符串当作复杂的任务。我们没有真实的例子，例如图片缩放、pdf 文件转换。所以使用 time.sleep() 函数来模拟这种情况。我们在字符串中加上点号（.）来表示任务的复杂程度，一个点（.）将会耗时1秒钟。比如 &amp;ldquo;Hello&amp;hellip;&amp;rdquo; 就会耗时3秒钟。
-我们对之前教程的 send.py 做些简单的调整，以便可以发送随意的消息。这个程序会按照计划发送任务到我们的工作队列中。我们把它命名为 new_task.py：
-import sys message = &amp;#39; &amp;#39;.join(sys.argv[1:]) or &amp;#34;Hello World!&amp;#34; channel.basic_publish(exchange=&amp;#39;&amp;#39;, routing_key=&amp;#39;hello&amp;#39;, body=message) print &amp;#34; [x] Sent %r&amp;#34; % (message,) 我们的旧脚本（receive.py）同样需要做一些改动：它需要为消息体中每一个点号（.）模拟1秒钟的操作。它会从队列中获取消息并执行，我们把它命名为 worker.py：
-import time def callback(ch, method, properties, body): print &amp;#34; [x] Received %r&amp;#34; % (body,) time.sleep( body.count(&amp;#39;.&amp;#39;) ) print &amp;#34; [x] Done&amp;#34; 循环调度 使用工作队列的一个好处就是它能够并行的处理队列。如果堆积了很多任务，我们只需要添加更多的工作者（workers）就可以了，扩展很简单。
-首先，我们先同时运行两个 worker.</description></item><item><title>RabbitMq系列之一：介绍</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</link><pubDate>Sat, 12 Oct 2019 05:49:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</guid><description/></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RabbitMQ on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/rabbitmq/</link><description>Recent content in RabbitMQ on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 12 Oct 2019 05:56:00 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/rabbitmq/index.xml" rel="self" type="application/rss+xml"/><item><title>RabbitMq系列之六：为什么需要主题交换机？</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%85%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%BB%E9%A2%98%E4%BA%A4%E6%8D%A2%E6%9C%BA/</link><pubDate>Sat, 12 Oct 2019 05:56:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%85%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%BB%E9%A2%98%E4%BA%A4%E6%8D%A2%E6%9C%BA/</guid><description>&lt;h1 id="为什么需要主题交换机">为什么需要主题交换机？&lt;/h1>
+&lt;p>&lt;strong>（使用Python 客户端 —— pika 0.9.8）&lt;/strong>&lt;/p>
+&lt;p>上一篇教程里，我们改进了我们的日志系统。我们使用直连交换机替代了扇型交换机，从只能盲目的广播消息改进为有可能选择性的接收日志。&lt;/p>
+&lt;p>尽管直连交换机能够改善我们的系统，但是它也有它的限制 —— 没办法基于多个标准执行路由操作。&lt;/p>
+&lt;p>在我们的日志系统中，我们不只希望订阅基于严重程度的日志，同时还希望订阅基于发送来源的日志。Unix 工具 &lt;a href="http://en.wikipedia.org/wiki/Syslog">syslog&lt;/a> 就是同时基于严重程度 -severity (info/warn/crit&amp;hellip;) 和 设备 -facility (auth/cron/kern&amp;hellip;) 来路由日志的。&lt;/p>
+&lt;p>如果这样的话，将会给予我们非常大的灵活性，我们既可以监听来源于 “cron” 的严重程度为 “critical errors” 的日志，也可以监听来源于 “kern” 的所有日志。&lt;/p>
+&lt;p>为了实现这个目的，接下来我们学习如何使用另一种更复杂的交换机 —— 主题交换机。&lt;/p>
+&lt;h2 id="主题交换机">主题交换机&lt;/h2>
+&lt;p>发送到主题交换机（topic exchange）的消息不可以携带随意什么样子的路由键（routing_key），它的路由键必须是一个由.分隔开的词语列表。这些单词随便是什么都可以，但是最好是跟携带它们的消息有关系的词汇。以下是几个推荐的例子：&amp;ldquo;stock.usd.nyse&amp;rdquo;, &amp;ldquo;nyse.vmw&amp;rdquo;, &amp;ldquo;quick.orange.rabbit&amp;rdquo;。词语的个数可以随意，但是不要超过 255 字节。&lt;/p>
+&lt;p>绑定键也必须拥有同样的格式。主题交换机背后的逻辑跟直连交换机很相似 —— 一个携带着特定路由键的消息会被主题交换机投递给绑定键与之想匹配的队列。但是它的绑定键和路由键有两个特殊应用方式：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;ul>
+&lt;li>(星号) 用来表示一个单词.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;h1 id="井号-用来表示任意数量零个或多个单词">(井号) 用来表示任意数量（零个或多个）单词。&lt;/h1>
+&lt;/li>
+&lt;/ul>
+&lt;p>下边用图说明：&lt;/p>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/15.png" alt="">&lt;/p>
+&lt;p>这个例子里，我们发送的所有消息都是用来描述小动物的。发送的消息所携带的路由键是由三个单词所组成的，这三个单词被两个.分割开。路由键里的第一个单词描述的是动物的手脚的利索程度，第二个单词是动物的颜色，第三个是动物的种类。所以它看起来是这样的： ..。&lt;/p>
+&lt;p>我们创建了三个绑定：Q1 的绑定键为 &lt;em>.orange.&lt;/em>，Q2 的绑定键为 &lt;em>.&lt;/em>.rabbit 和 lazy.# 。&lt;/p>
+&lt;p>这三个绑定键被可以总结为：&lt;/p>
+&lt;ul>
+&lt;li>Q1 对所有的桔黄色动物都感兴趣。&lt;/li>
+&lt;li>Q2 则是对所有的兔子和所有懒惰的动物感兴趣。&lt;/li>
+&lt;/ul>
+&lt;p>一个携带有 quick.orange.rabbit 的消息将会被分别投递给这两个队列。携带着 lazy.orange.elephant 的消息同样也会给两个队列都投递过去。另一方面携带有 quick.orange.fox 的消息会投递给第一个队列，携带有 lazy.brown.fox 的消息会投递给第二个队列。携带有 lazy.pink.rabbit 的消息只会被投递给第二个队列一次，即使它同时匹配第二个队列的两个绑定。携带着 quick.brown.fox 的消息不会投递给任何一个队列。&lt;/p></description></item><item><title>RabbitMq系列之五：远程过程调用（RPC）</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%94%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8rpc/</link><pubDate>Sat, 12 Oct 2019 05:55:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%94%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8rpc/</guid><description>&lt;h1 id="远程过程调用rpc">远程过程调用（RPC）&lt;/h1>
+&lt;p>&lt;strong>（Python客户端 —— 使用 pika 0.9.8）&lt;/strong>&lt;/p>
+&lt;p>在第二篇教程中我们介绍了如何使用工作队列（work queue）在多个工作者（woker）中间分发耗时的任务。&lt;/p>
+&lt;p>可是如果我们需要将一个函数运行在远程计算机上并且等待从那儿获取结果时，该怎么办呢？这就是另外的故事了。这种模式通常被称为远程过程调用（Remote Procedure Call）或者 RPC。&lt;/p>
+&lt;p>这篇教程中，我们会使用 RabbitMQ 来构建一个 RPC 系统：包含一个客户端和一个 RPC 服务器。现在的情况是，我们没有一个值得被分发的足够耗时的任务，所以接下来，我们会创建一个模拟RPC服务来返回斐波那契数列。&lt;/p>
+&lt;h2 id="客户端接口">客户端接口&lt;/h2>
+&lt;p>为了展示 RPC 服务如何使用，我们创建了一个简单的客户端类。它会暴露出一个名为 “call” 的方法用来发送一个 RPC 请求，并且在收到回应前保持阻塞。&lt;/p>
+&lt;pre tabindex="0">&lt;code>fibonacci_rpc = FibonacciRpcClient()
+result = fibonacci_rpc.call(4)
+print &amp;#34;fib(4) is %r&amp;#34; % (result,) 
+&lt;/code>&lt;/pre>&lt;h3 id="关于-rpc-的注意事项">关于 RPC 的注意事项&lt;/h3>
+&lt;p>尽管 RPC 在计算领域是一个常用模式，但它也经常被诟病。当一个问题被抛出的时候，程序员往往意识不到这到底是由本地调用还是由较慢的 RPC 调用引起的。同样的困惑还来自于系统的不可预测性和给调试工作带来的不必要的复杂性。跟软件精简不同的是，滥用 RPC 会导致不可维护的&lt;a href="http://zh.wikipedia.org/wiki/%E9%9D%A2%E6%9D%A1%E5%BC%8F%E4%BB%A3%E7%A0%81">面条代码&lt;/a>.&lt;/p>
+&lt;p>考虑到这一点，牢记以下建议：&lt;/p>
+&lt;p>确保能够明确的搞清楚哪个函数是本地调用的，哪个函数是远程调用的。给你的系统编写文档。保持各个组件间的依赖明确。处理错误案例。明了客户端改如何处理 RPC 服务器的宕机和长时间无响应情况。&lt;/p>
+&lt;p>当对避免使用 RPC 有疑问的时候。如果可以的话，你应该尽量使用异步管道来代替RPC 类的阻塞。结果被异步地推送到下一个计算场景。&lt;/p>
+&lt;h2 id="回调队列">回调队列&lt;/h2>
+&lt;p>一般来说通过 RabbitMQ 来实现 RPC 是很容易的。一个客户端发送请求信息，服务器端将其应用到一个回复信息中。为了接收到回复信息，客户端需要在发送请求的时候同时发送一个回调队列（callback queue）的地址。我们试试看：&lt;/p>
+&lt;pre tabindex="0">&lt;code>result = channel.queue_declare(exclusive=True)
+callback_queue = result.method.queue
+
+channel.basic_publish(exchange=&amp;#39;&amp;#39;,
+ routing_key=&amp;#39;rpc_queue&amp;#39;,
+ properties=pika.BasicProperties(
+ reply_to = callback_queue,
+ ),
+ body=request)
+
+# ... and some code to read a response message from the callback_queue ... 
+&lt;/code>&lt;/pre>&lt;h3 id="消息属性">消息属性&lt;/h3>
+&lt;p>AMQP 协议给消息预定义了一系列的14个属性。大多数属性很少会用到，除了以下几个：&lt;/p></description></item><item><title>RabbitMq系列之四：路由Routing</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9B%9B%E8%B7%AF%E7%94%B1routing/</link><pubDate>Sat, 12 Oct 2019 05:54:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9B%9B%E8%B7%AF%E7%94%B1routing/</guid><description>&lt;h1 id="路由routing">路由(Routing)&lt;/h1>
+&lt;p>&lt;strong>（使用pika 0.9.5 Python客户端）&lt;/strong>&lt;/p>
+&lt;p>在前面的教程中，我们实现了一个简单的日志系统。可以把日志消息广播给多个接收者。&lt;/p>
+&lt;p>本篇教程中我们打算新增一个功能 —— 使得它能够只订阅消息的一个字集。例如，我们只需要把严重的错误日志信息写入日志文件（存储到磁盘），但同时仍然把所有的日志信息输出到控制台中&lt;/p>
+&lt;h2 id="绑定bindings">绑定（Bindings）&lt;/h2>
+&lt;p>前面的例子，我们已经创建过绑定（bindings），代码如下：&lt;/p>
+&lt;pre tabindex="0">&lt;code>channel.queue_bind(exchange=exchange_name,
+ queue=queue_name) 
+&lt;/code>&lt;/pre>&lt;p>绑定（binding）是指交换机（exchange）和队列（queue）的关系。可以简单理解为：这个队列（queue）对这个交换机（exchange）的消息感兴趣。&lt;/p>
+&lt;p>绑定的时候可以带上一个额外的 routing_key 参数。为了避免与basic_publish的参数混淆，我们把它叫做绑定键（binding key）。以下是如何创建一个带绑定键的绑定。&lt;/p>
+&lt;pre tabindex="0">&lt;code>channel.queue_bind(exchange=exchange_name,
+ queue=queue_name,
+ routing_key=&amp;#39;black&amp;#39;) 
+&lt;/code>&lt;/pre>&lt;p>绑定键的意义取决于交换机（exchange）的类型。我们之前使用过的扇型交换机（fanout exchanges）会忽略这个值。&lt;/p>
+&lt;h2 id="直连交换机direct-exchange">直连交换机（Direct exchange）&lt;/h2>
+&lt;p>我们的日志系统广播所有的消息给所有的消费者（consumers）。我们打算扩展它，使其基于日志的严重程度进行消息过滤。例如我们也许只是希望将比较严重的错误（error）日志写入磁盘，以免在警告（warning）或者信息（info）日志上浪费磁盘空间。&lt;/p>
+&lt;p>我们使用的扇型交换机（fanout exchange）没有足够的灵活性 —— 它能做的仅仅是广播。&lt;/p>
+&lt;p>我们将会使用直连交换机（direct exchange）来代替。路由的算法很简单 —— 交换机将会对绑定键（binding key）和路由键（routing key）进行精确匹配，从而确定消息该分发到哪个队列。&lt;/p>
+&lt;p>下图能够很好的描述这个场景：&lt;/p>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/12.png" alt="">&lt;/p>
+&lt;p>在这个场景中，我们可以看到直连交换机 X 和两个队列进行了绑定。第一个队列使用 orange 作为绑定键，第二个队列有两个绑定，一个使用 black 作为绑定键，另外一个使用 green。&lt;/p>
+&lt;p>这样以来，当路由键为 orange 的消息发布到交换机，就会被路由到队列 Q1。路由键为 black 或者 green 的消息就会路由到 Q2。其他的所有消息都将会被丢弃。&lt;/p>
+&lt;h2 id="多个绑定multiple-bindings">多个绑定（Multiple bindings）&lt;/h2>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/13.png" alt="">&lt;/p>
+&lt;p>多个队列使用相同的绑定键是合法的。这个例子中，我们可以添加一个 X 和 Q1 之间的绑定，使用 black 绑定键。这样一来，直连交换机就和扇型交换机的行为一样，会将消息广播到所有匹配的队列。带有 black 路由键的消息会同时发送到 Q1 和 Q2。&lt;/p>
+&lt;h2 id="发送日志">发送日志&lt;/h2>
+&lt;p>我们将会发送消息到一个直连交换机，把日志级别作为路由键。这样接收日志的脚本就可以根据严重级别来选择它想要处理的日志。我们先看看发送日志。&lt;/p>
+&lt;p>我们需要创建一个交换机（exchange）：&lt;/p></description></item><item><title>RabbitMq系列之三：发布订阅</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/</link><pubDate>Sat, 12 Oct 2019 05:52:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/</guid><description>&lt;h1 id="发布订阅">发布／订阅&lt;/h1>
+&lt;p>&lt;strong>（使用pika 0.9.5 Python客户端）&lt;/strong>&lt;/p>
+&lt;p>在上篇教程中，我们搭建了一个工作队列，每个任务只分发给一个工作者（worker）。在本篇教程中，我们要做的跟之前完全不一样 —— 分发一个消息给多个消费者（consumers）。这种模式被称为“发布／订阅”。&lt;/p>
+&lt;p>为了描述这种模式，我们将会构建一个简单的日志系统。它包括两个程序——第一个程序负责发送日志消息，第二个程序负责获取消息并输出内容。&lt;/p>
+&lt;p>在我们的这个日志系统中，所有正在运行的接收方程序都会接受消息。我们用其中一个接收者（receiver）把日志写入硬盘中，另外一个接受者（receiver）把日志输出到屏幕上。&lt;/p>
+&lt;p>最终，日志消息被广播给所有的接受者（receivers）。&lt;/p>
+&lt;h2 id="交换机exchanges">交换机（Exchanges）&lt;/h2>
+&lt;p>前面的教程中，我们发送消息到队列并从中取出消息。现在是时候介绍 RabbitMQ 中完整的消息模型了。&lt;/p>
+&lt;p>让我们简单的概括一下之前的教程：&lt;/p>
+&lt;ul>
+&lt;li>发布者（producer）是发布消息的应用程序。&lt;/li>
+&lt;li>队列（queue）用于消息存储的缓冲。&lt;/li>
+&lt;li>消费者（consumer）是接收消息的应用程序。&lt;/li>
+&lt;/ul>
+&lt;p>RabbitMQ 消息模型的核心理念是：发布者（producer）不会直接发送任何消息给队列。事实上，发布者（producer）甚至不知道消息是否已经被投递到队列。&lt;/p>
+&lt;p>发布者（producer）只需要把消息发送给一个交换机（exchange）。交换机非常简单，它一边从发布者方接收消息，一边把消息推送到队列。交换机必须知道如何处理它接收到的消息，是应该推送到指定的队列还是是多个队列，或者是直接忽略消息。这些规则是通过交换机类型（exchange type）来定义的。&lt;/p>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/9.png" alt="">&lt;/p>
+&lt;p>有几个可供选择的交换机类型：直连交换机（direct）, 主题交换机（topic）, （头交换机）headers和 扇型交换机（fanout）。我们在这里主要说明最后一个 —— 扇型交换机（fanout）。先创建一个 fanout 类型的交换机，命名为 logs：&lt;/p>
+&lt;pre tabindex="0">&lt;code>channel.exchange_declare(exchange=&amp;#39;logs&amp;#39;,
+ type=&amp;#39;fanout&amp;#39;) 
+&lt;/code>&lt;/pre>&lt;p>扇型交换机（fanout）很简单，你可能从名字上就能猜测出来，它把消息发送给它所知道的所有队列。这正是我们的日志系统所需要的。&lt;/p>
+&lt;h2 id="交换器列表">交换器列表&lt;/h2>
+&lt;p>rabbitmqctl 能够列出服务器上所有的交换器：&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ sudo rabbitmqctl list_exchanges
+Listing exchanges ...
+logs fanout
+amq.direct direct
+amq.topic topic
+amq.fanout fanout
+amq.headers headers
+...done. 
+&lt;/code>&lt;/pre>&lt;p>这个列表中有一些叫做 amq.* 的交换器。这些都是默认创建的，不过这时候你还不需要使用他们。&lt;/p>
+&lt;h2 id="匿名的交换器">匿名的交换器&lt;/h2>
+&lt;p>前面的教程中我们对交换机一无所知，但仍然能够发送消息到队列中。因为我们使用了命名为空字符串 (&amp;quot;&amp;quot;) 默认的交换机。&lt;/p>
+&lt;p>回想我们之前是如何发布一则消息：&lt;/p>
+&lt;pre tabindex="0">&lt;code>channel.basic_publish(exchange=&amp;#39;&amp;#39;,
+ routing_key=&amp;#39;hello&amp;#39;,
+ body=message) 
+&lt;/code>&lt;/pre>&lt;p>exchange 参数就是交换机的名称。空字符串代表默认或者匿名交换机：消息将会根据指定的 routing_key 分发到指定的队列。&lt;/p>
+&lt;p>现在，我们就可以发送消息到一个具名交换机了：&lt;/p>
+&lt;pre tabindex="0">&lt;code>channel.basic_publish(exchange=&amp;#39;logs&amp;#39;,
+ routing_key=&amp;#39;&amp;#39;,
+ body=message) 
+&lt;/code>&lt;/pre>&lt;h2 id="临时队列">临时队列&lt;/h2>
+&lt;p>你还记得之前我们使用的队列名吗（ hello 和 task_queue）？给一个队列命名是很重要的——我们需要把工作者（workers）指向正确的队列。如果你打算在发布者（producers）和消费者（consumers）之间共享同队列的话，给队列命名是十分重要的。&lt;/p></description></item><item><title>RabbitMq系列之二：工作队列</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</link><pubDate>Sat, 12 Oct 2019 05:50:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</guid><description>&lt;h1 id="工作队列">工作队列&lt;/h1>
+&lt;p>&lt;strong>（使用pika 0.9.5 Python客户端）&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/7.png" alt="">&lt;/p>
+&lt;p>在第一篇教程中，我们已经写了一个从已知队列中发送和获取消息的程序。在这篇教程中，我们将创建一个工作队列（Work Queue），它会发送一些耗时的任务给多个工作者（Worker）。&lt;/p>
+&lt;p>工作队列（又称：任务队列——Task Queues）是为了避免等待一些占用大量资源、时间的操作。当我们把任务（Task）当作消息发送到队列中，一个运行在后台的工作者（worker）进程就会取出任务然后处理。当你运行多个工作者（workers），任务就会在它们之间共享。&lt;/p>
+&lt;p>这个概念在网络应用中是非常有用的，它可以在短暂的 HTTP 请求中处理一些复杂的任务。&lt;/p>
+&lt;h2 id="准备">准备&lt;/h2>
+&lt;p>之前的教程中，我们发送了一个包含 “Hello World!” 的字符串消息。现在，我们将发送一些字符串，把这些字符串当作复杂的任务。我们没有真实的例子，例如图片缩放、pdf 文件转换。所以使用 time.sleep() 函数来模拟这种情况。我们在字符串中加上点号（.）来表示任务的复杂程度，一个点（.）将会耗时1秒钟。比如 &amp;ldquo;Hello&amp;hellip;&amp;rdquo; 就会耗时3秒钟。&lt;/p>
+&lt;p>我们对之前教程的 send.py 做些简单的调整，以便可以发送随意的消息。这个程序会按照计划发送任务到我们的工作队列中。我们把它命名为 new_task.py：&lt;/p>
+&lt;pre tabindex="0">&lt;code>import sys
+
+message = &amp;#39; &amp;#39;.join(sys.argv[1:]) or &amp;#34;Hello World!&amp;#34;
+channel.basic_publish(exchange=&amp;#39;&amp;#39;,
+ routing_key=&amp;#39;hello&amp;#39;,
+ body=message)
+print &amp;#34; [x] Sent %r&amp;#34; % (message,) 
+&lt;/code>&lt;/pre>&lt;p>我们的旧脚本（receive.py）同样需要做一些改动：它需要为消息体中每一个点号（.）模拟1秒钟的操作。它会从队列中获取消息并执行，我们把它命名为 worker.py：&lt;/p>
+&lt;pre tabindex="0">&lt;code>import time
+
+def callback(ch, method, properties, body):
+ print &amp;#34; [x] Received %r&amp;#34; % (body,)
+ time.sleep( body.count(&amp;#39;.&amp;#39;) )
+ print &amp;#34; [x] Done&amp;#34; 
+&lt;/code>&lt;/pre>&lt;h2 id="循环调度">循环调度&lt;/h2>
+&lt;p>使用工作队列的一个好处就是它能够并行的处理队列。如果堆积了很多任务，我们只需要添加更多的工作者（workers）就可以了，扩展很简单。&lt;/p>
+&lt;p>首先，我们先同时运行两个 worker.py 脚本，它们都会从队列中获取消息，到底是不是这样呢？我们看看。&lt;/p></description></item><item><title>RabbitMq系列之一：介绍</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</link><pubDate>Sat, 12 Oct 2019 05:49:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted --></description></item></channel></rss>

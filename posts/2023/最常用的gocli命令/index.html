@@ -2,14 +2,24 @@
 Go version
 开始 Go 项目前，我们应该确保开发机上已经安装好了 Go 编译器。这可以通过 https://go.dev/doc/install 进行下载安装。
 通过执行以下命令可以查看安装的 Go 版本信息。
-$ go version go version go1.18 darwin/amd64 Go env
+$ go version
+go version go1.18 darwin/amd64
+Go env
 如果我们可能想查看一些 Go 相关的环境变量，例如 GOROOT 或者 GOPATH。你可以执行这个命令。
-$ go env 当你想对某个环境变量进行更改，例如修改 Go 代理，你可以这样做。
-$ go env -w GOPROXY=https://goproxy.io,direct go mod
+$ go env
+当你想对某个环境变量进行更改，例如修改 Go 代理，你可以这样做。
+$ go env -w GOPROXY=https://goproxy.io,direct
+go mod
 在你开始建立第一个 Go 程序时，在项目根目录下，你应该运行这样的命令。
-$ go mod init <your project name> 例如
-$ go mod init demo/firstProject 此时，项目根目录将增加 go.mod 文件，它的内容如下
-$ cat go.mod module demo/firstProject go 1."><title>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握
+$ go mod init <your project name>
+例如
+$ go mod init demo/firstProject
+此时，项目根目录将增加 go.mod 文件，它的内容如下
+$ cat go.mod 
+module demo/firstProject
+
+go 1.18
+如果你有其他语言的经验，那么 go.mod 类似于 Python 中的 requirements.txt，Java 中的 pom.xml，它用于管理项目的依赖包。"><title>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2023-01-02 10:28:19 +0000 UTC">2023-01-02</time></p><h1>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共197字</span></p><p class=post-meta>预计阅读约: 1 分钟</p><p>本文将介绍一些最基本的 Go 命令行命令。如果你刚接触 Go 语言，那你有必要记住它们，因为这些命令是 Go 开发者日常工作中所必备的。</p><p><strong>Go version</strong></p><p>开始 Go 项目前，我们应该确保开发机上已经安装好了 Go 编译器。这可以通过 <a href=https://go.dev/doc/install>https://go.dev/doc/install</a> 进行下载安装。</p><p>通过执行以下命令可以查看安装的 Go 版本信息。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span>$ <span style=color:#5317ac>go</span> version
 </span></span><span style=display:flex><span><span style=color:#5317ac>go</span> version go1<span style=color:#0000c0>.18</span> darwin<span style=color:#00538b>/</span>amd64
 </span></span></code></pre></div><p><strong>Go env</strong></p><p>如果我们可能想查看一些 Go 相关的环境变量，例如 GOROOT 或者 GOPATH。你可以执行这个命令。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span>$ <span style=color:#5317ac>go</span> env

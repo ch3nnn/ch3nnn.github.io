@@ -1,4 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Abouts on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/about/</link><description>Recent content in Abouts on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Mon, 29 Aug 2022 14:04:30 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/about/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>https://blog.ch3nnn.cn/about/about/</link><pubDate>Mon, 29 Aug 2022 14:04:30 +0800</pubDate><guid>https://blog.ch3nnn.cn/about/about/</guid><description>关于作者 我叫陈通, 来自南方的某个小城市. 现坐标：杭州.
-对自己的技术栈认为: 擅长增删改查、代码搬运、面向搜索引擎编程.
-👀 正在学习 Golang ⭐️ Github https://github.com/ch3nnn 📗 Blog 平时想起来就写点 [Ch3nnnnn个人博客] 📖 CSDN [CSDN博客] 💬 微信公众号: 暹罗猫十七 联系方式 终端执行以下命令:
-echo &amp;#39;H4sIAHY712MC/+VWy0oDMRTd5ysuzL4ggouudOEHqAuXUsZAC85Uii5c6lrwF/QHuhIFC/ozU4p/ISLM3HMfSRQ3YqBlMpOcnJx7cm8CZdp+M5md0fvNsls9jUNqZD2N7 ehq1i5iu7u1sz2q500IOfjjWE8nF7R+XXZvD+u753F2Bp0cXZ7HRbPX5oeGgqUPDqmen0bqXm43q8fN/XWaQqh+uf0ZQCXF56uvH/ur+k+kpyhAtgqx6TCcD4MZlQnIyPU95F8B zeHD9wD5a7a3HwAyOopmEaDUkMNhSADC0zAfZfaQjbLTOKBWsciHXFEO0CsKW/Q1NL1hGpsxliEytoyK8A6LhtaFvw5CMRlV2wM6zo4PtT+8LTv8NMMKcIfxWi5c3jW20NpyPGrs A9oMCIhgpLgnjC0zeVB0XEn7wAMEnSRZkolSLmCcFJmn0DZWljBlDo5HdY62kgFJ66Y1tPp2K6p6MlkgrmadzYfWyTFrihllp+qh0fkCnuaJmqKPnhkfecDTVW8gI9OXPHPFVQ9d KKNjZKqQzgE6K4MkyaC4VU/fQNSNxDnL/+V++AGgTu5uRQwAAA==&amp;#39; | base64 --decode | gzip -d</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Abouts on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/about/</link><description>Recent content in Abouts on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Mon, 29 Aug 2022 14:04:30 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/about/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>https://blog.ch3nnn.cn/about/about/</link><pubDate>Mon, 29 Aug 2022 14:04:30 +0800</pubDate><guid>https://blog.ch3nnn.cn/about/about/</guid><description>&lt;h3 id="关于作者">关于作者&lt;/h3>
+&lt;p>我叫陈通, 来自南方的某个小城市.
+现坐标：杭州.&lt;br>
+对自己的技术栈认为: 擅长增删改查、代码搬运、面向搜索引擎编程.&lt;/p>
+&lt;ul>
+&lt;li>👀 正在学习 Golang&lt;/li>
+&lt;li>⭐️ Github &lt;a href="https://github.com/ch3nnn">https://github.com/ch3nnn&lt;/a>&lt;/li>
+&lt;li>📗 Blog 平时想起来就写点 &lt;a href="https://ch3nnn.cn/">[Ch3nnnnn个人博客]&lt;/a>&lt;/li>
+&lt;li>📖 CSDN &lt;a href="https://ch3nnn.blog.csdn.net">[CSDN博客]&lt;/a>&lt;/li>
+&lt;li>💬 微信公众号: 暹罗猫十七&lt;/li>
+&lt;/ul>
+&lt;h3 id="联系方式">联系方式&lt;/h3>
+&lt;p>终端执行以下命令:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#8f0075">echo&lt;/span> &lt;span style="color:#2544bb">&amp;#39;H4sIAHY712MC/+VWy0oDMRTd5ysuzL4ggouudOEHqAuXUsZAC85Uii5c6lrwF/QHuhIFC/ozU4p/ISLM3HMfSRQ3YqBlMpOcnJx7cm8CZdp+M5md0fvNsls9jUNqZD2N7
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#2544bb">ehq1i5iu7u1sz2q500IOfjjWE8nF7R+XXZvD+u753F2Bp0cXZ7HRbPX5oeGgqUPDqmen0bqXm43q8fN/XWaQqh+uf0ZQCXF56uvH/ur+k+kpyhAtgqx6TCcD4MZlQnIyPU95F8B
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#2544bb">zeHD9wD5a7a3HwAyOopmEaDUkMNhSADC0zAfZfaQjbLTOKBWsciHXFEO0CsKW/Q1NL1hGpsxliEytoyK8A6LhtaFvw5CMRlV2wM6zo4PtT+8LTv8NMMKcIfxWi5c3jW20NpyPGrs
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#2544bb">A9oMCIhgpLgnjC0zeVB0XEn7wAMEnSRZkolSLmCcFJmn0DZWljBlDo5HdY62kgFJ66Y1tPp2K6p6MlkgrmadzYfWyTFrihllp+qh0fkCnuaJmqKPnhkfecDTVW8gI9OXPHPFVQ9d
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#2544bb">KKNjZKqQzgE6K4MkyaC4VU/fQNSNxDnL/+V++AGgTu5uRQwAAA==&amp;#39;&lt;/span> | base64 --decode | gzip -d
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item></channel></rss>

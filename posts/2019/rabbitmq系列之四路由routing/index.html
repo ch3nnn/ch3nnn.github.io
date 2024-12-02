@@ -1,18 +1,30 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="路由(Routing) （使用pika 0.9.5 Python客户端）
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="路由(Routing)
+（使用pika 0.9.5 Python客户端）
 在前面的教程中，我们实现了一个简单的日志系统。可以把日志消息广播给多个接收者。
 本篇教程中我们打算新增一个功能 —— 使得它能够只订阅消息的一个字集。例如，我们只需要把严重的错误日志信息写入日志文件（存储到磁盘），但同时仍然把所有的日志信息输出到控制台中
-绑定（Bindings） 前面的例子，我们已经创建过绑定（bindings），代码如下：
-channel.queue_bind(exchange=exchange_name, queue=queue_name) 绑定（binding）是指交换机（exchange）和队列（queue）的关系。可以简单理解为：这个队列（queue）对这个交换机（exchange）的消息感兴趣。
+绑定（Bindings）
+前面的例子，我们已经创建过绑定（bindings），代码如下：
+channel.queue_bind(exchange=exchange_name,
+                   queue=queue_name)  
+绑定（binding）是指交换机（exchange）和队列（queue）的关系。可以简单理解为：这个队列（queue）对这个交换机（exchange）的消息感兴趣。
 绑定的时候可以带上一个额外的 routing_key 参数。为了避免与basic_publish的参数混淆，我们把它叫做绑定键（binding key）。以下是如何创建一个带绑定键的绑定。
-channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='black') 绑定键的意义取决于交换机（exchange）的类型。我们之前使用过的扇型交换机（fanout exchanges）会忽略这个值。
-直连交换机（Direct exchange） 我们的日志系统广播所有的消息给所有的消费者（consumers）。我们打算扩展它，使其基于日志的严重程度进行消息过滤。例如我们也许只是希望将比较严重的错误（error）日志写入磁盘，以免在警告（warning）或者信息（info）日志上浪费磁盘空间。
+channel.queue_bind(exchange=exchange_name,
+                   queue=queue_name,
+                   routing_key='black')  
+绑定键的意义取决于交换机（exchange）的类型。我们之前使用过的扇型交换机（fanout exchanges）会忽略这个值。
+直连交换机（Direct exchange）
+我们的日志系统广播所有的消息给所有的消费者（consumers）。我们打算扩展它，使其基于日志的严重程度进行消息过滤。例如我们也许只是希望将比较严重的错误（error）日志写入磁盘，以免在警告（warning）或者信息（info）日志上浪费磁盘空间。
 我们使用的扇型交换机（fanout exchange）没有足够的灵活性 —— 它能做的仅仅是广播。
 我们将会使用直连交换机（direct exchange）来代替。路由的算法很简单 —— 交换机将会对绑定键（binding key）和路由键（routing key）进行精确匹配，从而确定消息该分发到哪个队列。
 下图能够很好的描述这个场景：
+
 在这个场景中，我们可以看到直连交换机 X 和两个队列进行了绑定。第一个队列使用 orange 作为绑定键，第二个队列有两个绑定，一个使用 black 作为绑定键，另外一个使用 green。
 这样以来，当路由键为 orange 的消息发布到交换机，就会被路由到队列 Q1。路由键为 black 或者 green 的消息就会路由到 Q2。其他的所有消息都将会被丢弃。
-多个绑定（Multiple bindings） 多个队列使用相同的绑定键是合法的。这个例子中，我们可以添加一个 X 和 Q1 之间的绑定，使用 black 绑定键。这样一来，直连交换机就和扇型交换机的行为一样，会将消息广播到所有匹配的队列。带有 black 路由键的消息会同时发送到 Q1 和 Q2。
-发送日志 我们将会发送消息到一个直连交换机，把日志级别作为路由键。这样接收日志的脚本就可以根据严重级别来选择它想要处理的日志。我们先看看发送日志。
+多个绑定（Multiple bindings）
+
+多个队列使用相同的绑定键是合法的。这个例子中，我们可以添加一个 X 和 Q1 之间的绑定，使用 black 绑定键。这样一来，直连交换机就和扇型交换机的行为一样，会将消息广播到所有匹配的队列。带有 black 路由键的消息会同时发送到 Q1 和 Q2。
+发送日志
+我们将会发送消息到一个直连交换机，把日志级别作为路由键。这样接收日志的脚本就可以根据严重级别来选择它想要处理的日志。我们先看看发送日志。
 我们需要创建一个交换机（exchange）："><title>RabbitMq系列之四：路由Routing
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2019-10-12 05:54:00 +0800 +0800">2019-10-12</time></p><h1>RabbitMq系列之四：路由Routing</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共267字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><h1 id=路由routing>路由(Routing)</h1><p><strong>（使用pika 0.9.5 Python客户端）</strong></p><p>在前面的教程中，我们实现了一个简单的日志系统。可以把日志消息广播给多个接收者。</p><p>本篇教程中我们打算新增一个功能 —— 使得它能够只订阅消息的一个字集。例如，我们只需要把严重的错误日志信息写入日志文件（存储到磁盘），但同时仍然把所有的日志信息输出到控制台中</p><h2 id=绑定bindings>绑定（Bindings）</h2><p>前面的例子，我们已经创建过绑定（bindings），代码如下：</p><pre tabindex=0><code>channel.queue_bind(exchange=exchange_name,
                    queue=queue_name)  

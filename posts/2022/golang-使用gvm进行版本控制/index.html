@@ -1,10 +1,26 @@
 <!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='当你想为每个项目切换 go 版本时，gvm (Go Version Manager) 很方便。
 这里，我将介绍“如何在Mac上安装gvm”和“如何使用gvm”
-使用准备 仅适用于 Mac 的准备工作 按照MacOSX 要求中的说明执行以下命令。
-xcode-select --install brew update brew install mercurial gvm安装 我使用 zsh 作为我的 shell。
-$ echo $SHELL /bin/zsh 对于 zsh，您可以这样安装：
-$ zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm No existing Go versions detected Installed GVM v1.0.22 Please restart your terminal session or to get started right away run `source /Users/user_name/.gvm/scripts/gvm` ~/.zshrc 以下行被添加到最后一行
-[[ -s "/Users/user_name/.'><title>Golang-使用gvm进行版本控制
+使用准备
+仅适用于 Mac 的准备工作
+按照MacOSX 要求中的说明执行以下命令。
+xcode-select --install
+brew update
+brew install mercurial
+gvm安装
+我使用 zsh 作为我的 shell。
+$ echo $SHELL
+/bin/zsh
+对于 zsh，您可以这样安装：
+$ zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm
+No existing Go versions detected
+Installed GVM v1.0.22
+
+Please restart your terminal session or to get started right away run
+ `source /Users/user_name/.gvm/scripts/gvm`
+~/.zshrc 以下行被添加到最后一行
+[[ -s "/Users/user_name/.gvm/scripts/gvm" ]] && source "/Users/user_name/.gvm/scripts/gvm"
+重新启动终端 gvm 即可使用'><title>Golang-使用gvm进行版本控制
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2022-08-14 18:00:01 +0000 UTC">2022-08-14</time></p><h1>Golang-使用gvm进行版本控制</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共406字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><p>当你想为每个项目切换 go 版本时，gvm (Go Version Manager) 很方便。</p><p>这里，我将介绍“如何在Mac上安装gvm”和“如何使用gvm”</p><h2 id=使用准备>使用准备</h2><h3 id=仅适用于-mac-的准备工作>仅适用于 Mac 的准备工作</h3><p>按照MacOSX 要求中的说明执行以下命令。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>xcode-select --install
 </span></span><span style=display:flex><span>brew update
 </span></span><span style=display:flex><span>brew install mercurial

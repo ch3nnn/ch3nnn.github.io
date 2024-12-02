@@ -1,9 +1,108 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='Sharding 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通 SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问
-一、功能特点 非侵入式设计， 加载插件，指定配置，既可实现分表。 轻快， 非基于网络层的中间件，像 Go 一样快 支持多种数据库。 PostgreSQL 已通过测试，MySQL 和 SQLite 也在路上。 多种主键生成方式支持（Snowflake, PostgreSQL Sequence, 以及自定义支持）Snowflake 支持从主键中确定分表键。 二、示例代码 注意: 依然保持原来的方式使用 db 来查询数据库。 你只需要注意在 CURD 动作的时候，明确知道 Sharding Key 对应的分表，查询条件带 Sharding Key，以确保 Sharding 能理解数据需要对应到哪一个子表
-Mysql Gorm Sharding 中内置了 MySQL 序列主键实现，只需配置PrimaryKeyGenerator: sharding.PKMySQLSequence即可使用。
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='
+Sharding 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通
+SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问
+
+一、功能特点
+
+非侵入式设计， 加载插件，指定配置，既可实现分表。
+轻快， 非基于网络层的中间件，像 Go 一样快
+支持多种数据库。 PostgreSQL 已通过测试，MySQL 和 SQLite 也在路上。
+多种主键生成方式支持（Snowflake, PostgreSQL Sequence, 以及自定义支持）Snowflake 支持从主键中确定分表键。
+
+二、示例代码
+注意: 依然保持原来的方式使用 db 来查询数据库。 你只需要注意在 CURD 动作的时候，明确知道 Sharding Key 对应的分表，查询条件带 Sharding Key，以确保
+Sharding 能理解数据需要对应到哪一个子表
+
+
+Mysql
+Gorm Sharding 中内置了 MySQL 序列主键实现，只需配置PrimaryKeyGenerator: sharding.PKMySQLSequence即可使用。
 您不需要手动创建序列，当 MySQL 序列不存在时，Gorm Sharding 会检查并创建。
 这个序列名后面跟着gorm_sharding_${table_name}_id_seq，例如orders表，序列名就是gorm_sharding_orders_id_seq。
-/** * @Author: chentong * @Date: 2024/08/27 00:09 */ package main import ( "fmt" "testing" "gorm.'><title>Gorm 分表中间件(Sharding)
+/**
+ * @Author: chentong
+ * @Date: 2024/08/27 00:09
+ */
+
+package main
+
+import (
+    "fmt"
+    "testing"
+
+    "gorm.io/driver/mysql"
+    "gorm.io/gorm"
+    "gorm.io/sharding"
+)
+
+type Order struct {
+    ID        int64 `gorm:"primarykey"`
+    UserID    int64
+    ProductID int64
+}
+
+func TestSharding_Mysql(t *testing.T) {
+    dsn := "root:123456@tcp(localhost:3306)/dev?parseTime=True&amp;timeout=5s"
+    db, err := gorm.Open(mysql.Open(dsn))
+    if err != nil {
+        panic(err)
+    }
+
+    for i := 0; i < 2; i += 1 {
+        table := fmt.Sprintf("orders_%d", i)
+        db.Exec(`DROP TABLE IF EXISTS ` + table)
+        db.Exec("CREATE TABLE " + table + " ( `id` bigint(20) NOT NULL AUTO_INCREMENT, `user_id` int(11) DEFAULT NULL,  `product_id` int(11) DEFAULT NULL,  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;")
+    }
+
+    db.Use(sharding.Register(
+        sharding.Config{
+            ShardingKey:         "user_id",                // 分片key
+            NumberOfShards:      2,                        // 分片数量
+            PrimaryKeyGenerator: sharding.PKMySQLSequence, // 主键生成器, 这里使用 mysql
+        },
+        []string{"orders"}, // 需要分片 tables 
+    ))
+
+    // this record will insert to orders_02
+    err = db.Create(&amp;Order{UserID: 2}).Error
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    // this record will insert to orders_03
+    err = db.Exec("INSERT INTO orders(user_id) VALUES(?)", int64(3)).Error
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    // this will throw ErrMissingShardingKey error
+    err = db.Exec("INSERT INTO orders(product_id) VALUES(1)").Error
+    fmt.Println(err)
+
+    // this will redirect query to orders_02
+    var orders []Order
+    err = db.Model(&amp;Order{}).Where("user_id", int64(2)).Find(&amp;orders).Error
+    if err != nil {
+        fmt.Println(err)
+    }
+    fmt.Printf("%#v\n", orders)
+
+    // Raw SQL also supported
+    db.Raw("SELECT * FROM orders WHERE user_id = ?", int64(3)).Scan(&amp;orders)
+    fmt.Printf("%#v\n", orders)
+
+    // this will throw ErrMissingShardingKey error
+    err = db.Model(&amp;Order{}).Where("product_id", "1").Find(&amp;orders).Error
+    fmt.Println(err)
+
+    // Update and Delete are similar to create and query
+    err = db.Exec("UPDATE orders SET product_id = ? WHERE user_id = ?", 2, int64(3)).Error
+    fmt.Println(err) // nil
+    err = db.Exec("DELETE FROM orders WHERE product_id = 3").Error
+    fmt.Println(err) // ErrMissingShardingKey
+
+    }
+
+'><title>Gorm 分表中间件(Sharding)
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-08-27 00:51:35 +0800 +0800">2024-08-27</time></p><h1>Gorm 分表中间件(Sharding)</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共321字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><blockquote><p><a href=https://github.com/go-gorm/sharding>Sharding</a> 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通
 SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问</p></blockquote><h2 id=一功能特点>一、功能特点</h2><ul><li>非侵入式设计， 加载插件，指定配置，既可实现分表。</li><li>轻快， 非基于网络层的中间件，像 Go 一样快</li><li>支持多种数据库。 PostgreSQL 已通过测试，MySQL 和 SQLite 也在路上。</li><li>多种主键生成方式支持（Snowflake, PostgreSQL Sequence, 以及自定义支持）Snowflake 支持从主键中确定分表键。</li></ul><h2 id=二示例代码>二、示例代码</h2><p>注意: 依然保持原来的方式使用 db 来查询数据库。 你只需要注意在 CURD 动作的时候，明确知道 <strong>Sharding Key</strong> 对应的分表，<strong>查询条件带 Sharding Key，以确保
 Sharding 能理解数据需要对应到哪一个子表</strong></p><ul><li><h3 id=mysql>Mysql</h3><p>Gorm Sharding 中内置了 MySQL 序列主键实现，只需配置PrimaryKeyGenerator: sharding.PKMySQLSequence即可使用。</p><p>您不需要手动创建序列，当 MySQL 序列不存在时，Gorm Sharding 会检查并创建。</p><p>这个序列名后面跟着gorm_sharding_${table_name}_id_seq，例如orders表，序列名就是gorm_sharding_orders_id_seq。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>/**

@@ -1,150 +1,1116 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Go on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/go/</link><description>Recent content in Go on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 27 Aug 2024 00:51:35 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/go/index.xml" rel="self" type="application/rss+xml"/><item><title>Gorm 分表中间件(Sharding)</title><link>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</link><pubDate>Tue, 27 Aug 2024 00:51:35 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</guid><description>Sharding 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通 SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问
-一、功能特点 非侵入式设计， 加载插件，指定配置，既可实现分表。 轻快， 非基于网络层的中间件，像 Go 一样快 支持多种数据库。 PostgreSQL 已通过测试，MySQL 和 SQLite 也在路上。 多种主键生成方式支持（Snowflake, PostgreSQL Sequence, 以及自定义支持）Snowflake 支持从主键中确定分表键。 二、示例代码 注意: 依然保持原来的方式使用 db 来查询数据库。 你只需要注意在 CURD 动作的时候，明确知道 Sharding Key 对应的分表，查询条件带 Sharding Key，以确保 Sharding 能理解数据需要对应到哪一个子表
-Mysql Gorm Sharding 中内置了 MySQL 序列主键实现，只需配置PrimaryKeyGenerator: sharding.PKMySQLSequence即可使用。
-您不需要手动创建序列，当 MySQL 序列不存在时，Gorm Sharding 会检查并创建。
-这个序列名后面跟着gorm_sharding_${table_name}_id_seq，例如orders表，序列名就是gorm_sharding_orders_id_seq。
-/** * @Author: chentong * @Date: 2024/08/27 00:09 */ package main import ( &amp;#34;fmt&amp;#34; &amp;#34;testing&amp;#34; &amp;#34;gorm.</description></item><item><title>Go 1.22的新功能 Cmp.Or</title><link>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</link><pubDate>Sat, 27 Apr 2024 22:45:54 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</guid><description>一、介绍 截至撰写本文时， Go 1.22已经发布几个月了。
-Go 1.22提出并实现的最终函数是cmp.Or。
-首先我们看一下代码：
-// Or returns the first of its arguments that is not equal to the zero value. // If no argument is non-zero, it returns the zero value. func Or[T comparable](vals ...T) T { var zero T for _, val := range vals { if val != zero { return val } } return zero } 它非常简短。它只是比较其参数并返回第一个不是 0 or nil or &amp;quot;&amp;quot; 或其类型的零值的参数。
-二、如何使用它? 主要用途cmp.</description></item><item><title>Go Sync并发包之errgroup</title><link>https://blog.ch3nnn.cn/posts/2024/go-sync%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B9%8Berrgroup/</link><pubDate>Wed, 24 Apr 2024 10:44:21 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-sync%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B9%8Berrgroup/</guid><description>你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。
-想想看，你有一个函数可以做 3 件事：
-按用户 ID 从数据库中获取用户详细信息。 调用外部服务，按用户 ID 获取用户最近的活动信息 访问日志服务，按用户 ID 获取用户上次登录的详细信息 func FetchUserData(userID string) error { g := errgroup.Group{} // 获取用户详细信息 userDetail, _ := fetchUserDetails(userID) // 获取用户活动 userAct, _ := fetchUserActivity(userID) // 获取用户登录详细信息 userLoginInfo, _ := fetchUserLoginDetails(userID) // ... } 所有这些任务都只需要用户 ID，而不使用其他任务的数据。
-您可以尝试使用 goroutines 来实现这一点，但您需要自己处理细节问题。让我们来回答这些问题：
-同步：如何确保一切完成？ 错误处理：如果一项任务出错，你该怎么办？或者三项任务中有两项不成功？ 取消：如果一个任务出现问题，如何停止所有其他正在运行的程序？ 限制：你是否考虑过限制同时运行多少个 goroutines？ 可重复使用：一旦找到解决方案，如何在类似情况下再次使用？ 1.什么是 errgroup？ errgroup 软件包可让您同时处理多项任务。
-通过它，可以轻松地以安全的方式一起运行，保持同步，处理错误，并控制何时停止 goroutines。下面是一个如何使用它的快速示例：
-func FetchUserData() error { g := errgroup.Group{} // 获取用户详细信息 g.Go(func() error { time.</description></item><item><title>使用 go-elasticsearch v8 请求示例</title><link>https://blog.ch3nnn.cn/posts/2024/%E4%BD%BF%E7%94%A8go-elasticsearch-v8%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B/</link><pubDate>Tue, 19 Mar 2024 23:07:33 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E4%BD%BF%E7%94%A8go-elasticsearch-v8%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B/</guid><description>一、简介 你可以通过参考Go 官方文档找到简单的示例，所以我认为先看看这个是个好主意。
-连接客户端有两种方式
-至于两者的特点，TypedClient 有类型，更容易编写，但文档较少。另外，批量索引不支持TypedClient。由于普通客户端都是基于json的，所以我觉得从文档转换到代码还是比较容易的。
-我的建议基本上是使用 TypedClient！ 虽然文档很稀疏，但它是基于规律性的类型化的，所以你越习惯它（特别是当涉及到有很多变化的东西时，比如查询），从 json 转换为类型化代码就越容易。
-func main() { // client es, err := elasticsearch.NewClient(elasticsearch.Config{ Addresses: []string{&amp;#34;http://localhost:9200&amp;#34;}, }) if err != nil { log.Fatalf(&amp;#34;Error creating the client: %s&amp;#34;, err) } // typed client es, err := elasticsearch.NewTypedClient(elasticsearch.Config{ Addresses: []string{&amp;#34;http://localhost:9200&amp;#34;}, }) if err != nil { log.Fatalf(&amp;#34;Error creating the client: %s&amp;#34;, err) } } 二、Index Create/Delete 关于索引创建，Go官方文档中有一个示例，所以我简单介绍一下。
-func main() { es, err := elasticsearch.NewTypedClient(elasticsearch.Config{ Addresses: []string{&amp;#34;http://localhost:9200&amp;#34;}, }) if err !</description></item><item><title>Golang 接口:nil接口为什么不等于nil?</title><link>https://blog.ch3nnn.cn/posts/2024/golang-%E6%8E%A5%E5%8F%A3nil%E6%8E%A5%E5%8F%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%AD%89%E4%BA%8Enil/</link><pubDate>Mon, 11 Mar 2024 10:48:24 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/golang-%E6%8E%A5%E5%8F%A3nil%E6%8E%A5%E5%8F%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%AD%89%E4%BA%8Enil/</guid><description>一、Go 接口的地位 Go 语言核心团队的技术负责人 Russ Cox 也曾说过这样一句话：“如果要从 Go 语言中挑选出一个特性放入其他语言，我会选择接口”，这句话足以说明接口这一语法特性在这位 Go 语言大神心目中的地位。
-为什么接口在 Go 中有这么高的地位呢？这是因为接口是 Go 这门静态语言中唯一“动静兼备”的语法特性。而且，接口“动静兼备”的特性给 Go 带来了强大的表达能力，但同时也给 Go 语言初学者带来了不少困惑。要想真正解决这些困惑，我们必须深入到 Go 运行时层面，看看 Go 语言在运行时是如何表示接口类型的。
-接下来，我们先来看看接口的静态与动态特性，看看“动静皆备”的含义。
-二、接口的静态特性与动态特性 2.1 接口的静态特性与动态特性介绍 接口的静态特性体现在接口类型变量具有静态类型。
-比如 var err error 中变量 err 的静态类型为 error。拥有静态类型，那就意味着编译器会在编译阶段对所有接口类型变量的赋值操作进行类型检查，编译器会检查右值的类型是否实现了该接口方法集合中的所有方法。如果不满足，就会报错：
-var err error = 1 // cannot use 1 (type int) as type error in assignment: int does not implement error (missing Error method) 而接口的动态特性，就体现在接口类型变量在运行时还存储了右值的真实类型信息，这个右值的真实类型被称为接口类型变量的动态类型。例如，下面示例代码：
-var err error err = errors.New(&amp;#34;error1&amp;#34;) fmt.Printf(&amp;#34;%T\n&amp;#34;, err) // *errors.</description></item><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>这是 Google Protocol Buffers 文档生成器插件 (protoc)。 该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。
-一、前言 毫无疑问, 目前后台开发接口协议应用最广泛的除了 HTTP 之外就是 gRPC 了, HTTP 接口有成熟的swagger工具可以生成界面美观和使用友好的文档，那么对于gRPC呢？
-所以通过 .proto 文件能否生成更易阅读的 HTML 接口文档？
-二、安装 go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest 三、使用 user.proto 文件 以user.proto为例, 如下内容:
-syntax = &amp;#34;proto3&amp;#34;; option go_package = &amp;#34;./pb&amp;#34;; package user; // ------------------------------------ // Messages // ------------------------------------ //--------------------------------用户-------------------------------- message SysUser { int64 id = 1; // ID string username = 2; // 用户名 string password = 3; // 密码 int64 create_at = 4; // 创建时间 int64 update_at = 5; // 修改时间 int64 delete_at = 6; // 删除时间 } message SysUserFilter { optional int64 id = 1; // ID optional string username = 2; // 用户名 optional string password = 3; // 密码 optional int64 create_at = 4; // 创建时间 optional int64 update_at = 5; // 修改时间 optional int64 delete_at = 6; // 删除时间 } message SelectSysUserListReq { int64 page = 1; // 页码 int64 page_size = 2; // 每页数量 optional SysUserFilter filter = 3; // SysUserFilter } message SelectSysUserListResp { int64 count = 1; // 总数 int64 page_count = 2; // 页码总数 repeated SysUser results = 3; // sys_user } // ------------------------------------ // Rpc Func // ------------------------------------ service User { //-----------------------用户----------------------- // 用户 列表 rpc SelectSysUserList(SelectSysUserListReq) returns (SelectSysUserListResp); } 1.</description></item><item><title>Golang 更严格的代码格式化工具 gofumpt</title><link>https://blog.ch3nnn.cn/posts/2024/golang-%E6%9B%B4%E4%B8%A5%E6%A0%BC%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%B7%A5%E5%85%B7gofumpt/</link><pubDate>Mon, 19 Feb 2024 19:56:22 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/golang-%E6%9B%B4%E4%B8%A5%E6%A0%BC%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%B7%A5%E5%85%B7gofumpt/</guid><description>一、前言 gofmt 是 golang 自带的代码自动格式化工具，是保证 Go 代码风格一致的大杀器。我们这次要推荐的 gofumpt 在 gofmt 的基础上添加了一系列更加严格的格式化规则，并保证了对 gofmt 的兼容。
-二、gofumpt 简介 gofumpt(https://github.com/mvdan/gofumpt) fork 自 gofmt，支持与 gofmt 几乎相同的命令行参数，因此可以作为 gofmt 的直接替代品使用。gofumpt 是 gofmt 的&amp;quot;超集&amp;quot;，经过 gofumpt 格式化的代码也符合 gofmt 的要求，其本身所扩展的格式化规则也可能在后续被集成进 gofmt。
-gofumpt 有以下特点:
-更多的格式化规则(参见 https://github.com/mvdan/gofumpt#Added-rules) 默认跳过对 vendor 的格式化 不对自动生成的代码应用扩展规则 不支持 -r 参数 三、安装、使用命令 安装命令:
-go install mvdan.cc/gofumpt@latest 执行命令:
-gofumpt -l -w . 四、使用举例 赋值运算符后面没有空行
-func foo() { foo := &amp;#34;bar&amp;#34; } 改为 gofumpt 格式化后：
-func foo() { foo := &amp;#34;bar&amp;#34; } 函数体周围没有空行</description></item><item><title>在 Go 使用 embed 当中嵌入父目录中的文件</title><link>https://blog.ch3nnn.cn/posts/2023/%E5%9C%A8go%E4%BD%BF%E7%94%A8embed%E5%BD%93%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%88%B6%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</link><pubDate>Sat, 07 Oct 2023 09:48:41 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E5%9C%A8go%E4%BD%BF%E7%94%A8embed%E5%BD%93%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%88%B6%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</guid><description>自 Go 1.16 版本开始，Go 提供了将二进制文件打包进入到 Binary 文件当中的机制:`//go:embed。不过，我看到的示例大多数都是嵌入当前文件夹下的子文件夹的示例。并没有嵌入父一级文件夹的示例。
-为什么会需要嵌入父目录中的文件？ 这是因为不同的项目的构建规则不同。一些小型项目可能只有一个 main.go 或同级目录下几个其他的 go source 文件即可，但对于更大型的项目，合理的项目拆分是有助于帮助提升项目的可维护性的。
-以我为例，我的目录结构如下：biz 目录下是我的核心逻辑，也是我日常写代码的地方；conf 则放置了各种配置，比如各种 API Key，ral 则是网络访问层，比如我比较喜欢用 gin 来做底层的网络访问层；script 放置了开发所需要的各种脚本文件；static 则放置了前端所需要的 JS / CSS 文件。在开发一些偏内容向的页面时，我会习惯使用 Server Side Render，所以我在 biz 目录下还有一个 template 目录。而主要的逻辑则放在 handler。
-├── biz │ ├── dal │ ├── handler │ ├── logic │ ├── service │ └── template ├── conf ├── ral │ └── gin ├── script └── static └── public 在日常开发时，一个非常常见的操作是在 handler 里处理基本的逻辑，并将 template 中的模板渲染出来，并返回给用户，这个时候就需要在 handler 里使用上一级目录的文件了。</description></item><item><title>Golang-语言源码级调试器 Delve</title><link>https://blog.ch3nnn.cn/posts/2023/golang-%E8%AF%AD%E8%A8%80%E6%BA%90%E7%A0%81%E7%BA%A7%E8%B0%83%E8%AF%95%E5%99%A8-delve/</link><pubDate>Fri, 11 Aug 2023 15:43:40 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/golang-%E8%AF%AD%E8%A8%80%E6%BA%90%E7%A0%81%E7%BA%A7%E8%B0%83%E8%AF%95%E5%99%A8-delve/</guid><description>前言 Go 目前的调试器有如下几种：
-GDB 最早期的调试工具，现在用的很少。 LLDB macOS 系统推荐的标准调试工具，单 Go 的一些专有特性支持的比较少。 Delve 专门为 Go 语言打造的调试工具，使用最为广泛。 本篇简单说明如何使用 Delve 工具来调试 Go 程序，使用的 delve 版本为 1.20.1。
-delve 的汉语意思是：钻研、探索；用这个来命名一个debug工具还是非常的形象。
-安装 已知以下说明适用于 Linux、macOS、Windows 和 FreeBSD。
-克隆 git 存储库并构建：
-$ git clone https://github.com/go-delve/delve $ cd delve $ go install github.com/go-delve/delve/cmd/dlv 或者，在 Go 版本 1.16 或更高版本上：
-Install the latest release: $ go install github.com/go-delve/delve/cmd/dlv@latest
-Install at tree head: $ go install github.com/go-delve/delve/cmd/dlv@master
-安装在一个特定的版本或:
-$ go install github.com/go-delve/delve/cmd/dlv@v1.7.3 $ go install github.</description></item><item><title>Filebeat轻量型日志采集器-自定义processors处理器</title><link>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/</link><pubDate>Thu, 23 Feb 2023 18:14:25 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/</guid><description>引入对beat的依赖 go get github.com/elastic/beats/v7
-定义在filebeat中的配置文件 filebeat通常以配置文件的方式加载插件。让定义一下自定义配置。
-filebeat.inputs: - type: log paths: - example/example.log processors: # 自定义处理器插件 - parse_text: file_has_suffix: example.log output.console: pretty: true go文件中的配置 package actions type config struct { FileHasSuffix string `config:&amp;#34;file_has_suffix&amp;#34; validate:&amp;#34;required&amp;#34;` } 初始化加载插件 func init() { processors.RegisterPlugin(&amp;#34;parse_text&amp;#34;, checks.ConfigChecked(NewParseText, checks.RequireFields(&amp;#34;file_has_suffix&amp;#34;)), ) } Run接口 处理 filebeat 读取到的每行日志数据message, 这里我们就可以自定义一些处理解析逻辑, 下面逻辑是将日志数据按,切分,重新组装到event.Fields字段里.
-func (p parseText) Run(event *beat.Event) (*beat.Event, error) { if !p.isParseFile(event) { return event, nil } message, err := p.getMessage(event) if err !</description></item><item><title>Facebook 开源 Golang 实体框架 Ent</title><link>https://blog.ch3nnn.cn/posts/2023/facebook-ent%E5%BC%80%E6%BA%90%E5%AE%9E%E4%BD%93%E6%A1%86%E6%9E%B6/</link><pubDate>Mon, 16 Jan 2023 17:29:45 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/facebook-ent%E5%BC%80%E6%BA%90%E5%AE%9E%E4%BD%93%E6%A1%86%E6%9E%B6/</guid><description>ent是一个简单而又功能强大的Go语言实体框架，ent易于构建和维护应用程序与大数据模型。
-图就是代码 - 将任何数据库表建模为Go对象。 轻松地遍历任何图形 - 可以轻松地运行查询、聚合和遍历任何图形结构。 静态类型和显式API - 使用代码生成静态类型和显式API，查询数据更加便捷。 多存储驱动程序 - 支持MySQL, PostgreSQL, SQLite 和 Gremlin。 可扩展 - 简单地扩展和使用Go模板自定义。 安装 go install entgo.io/ent/cmd/ent@latest 快速开始 go mod init &amp;lt;project&amp;gt; 创建你的第一个项目 进入你项目的根目录，然后运行：
-go run -mod=mod entgo.io/ent/cmd/ent init User 以上的命令会在&amp;lt;project&amp;gt;/ent/schema/目录下产生User的数据模式（数据模式是数据库系统设计中的专业术语，若对该部分有任何理解问题，请查阅数据库系统的相关书籍）：
-package schema import &amp;#34;entgo.io/ent&amp;#34; // User在User实体中组合了ent默认的数据库模式定义 type User struct { ent.Schema } // User的字段 func (User) Fields() []ent.Field { return nil } // User的边 func (User) Edges() []ent.Edge { return nil } 为User 模式添加两个字段：</description></item><item><title>Filebeat轻量型日志采集器及output插件开发</title><link>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/</link><pubDate>Mon, 09 Jan 2023 16:36:01 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/</guid><description>无论您是从安全设备、云、容器、主机还是 OT 进行数据收集，Filebeat 都将为您提供一种轻量型方法，用于转发和汇总日志与文件，让简单的事情不再繁杂。
-介绍 Filebeat 是使用 Golang 实现的轻量型日志采集器。本质上是一个 agent ，可以安装在各个节点上，根据配置读取对应位置的日志，并上报到相应的地方去。
-概要 Filebeat 并不依赖于 ElasticSearch，可以单独存在。我们可以单独使用Filebeat进行日志的上报和搜集。filebeat 内置了常用的 Output 组件, 例如 kafka、ElasticSearch、redis 等，出于调试考虑，也可以输出到 console 和 file 。我们可以利用现有的 Output 组件，将日志进行上报。
-整体工作原理 Filebeat 由两个主要组件组成：harvester 和 prospector。
-harvester (采集器) 的主要职责是读取单个文件的内容。读取每个文件，并将内容发送到 the output。 每个文件启动一个 harvester，harvester 负责打开和关闭文件，这意味着在运行时文件描述符保持打开状态。如果文件在读取时被删除或重命名，Filebeat 将继续读取文件。 prospector (查找器) 的主要职责是管理 harvester 并找到所有要读取的文件来源。如果输入类型为日志，则查找器将查找路径匹配的所有文件，并为每个文件启动一个 harvester。每个 prospector 都在自己的 Go 协程中运行。 注：Filebeat prospector只能读取本地文件， 没有功能可以连接到远程主机来读取存储的文件或日志。
-由以上两个组件一起工作来读取文件（tail file）并将事件数据发送到指定的输出。 下图是 Filebeat 官方提供的架构图： Filebeat背后的“老大” 说到Filebeat，它其实只是beats家族众多成员中的一个。除了Filebeat, 还有很多其他的beat小伙伴：
-beat 功能 Filebeat 收集日志文件 Metricbeat 收集各种指标数据 Packetbeat 收集网络数据包 Auditbeat 收集审计数据 Heartbeat 收集服务运行状态监测数据 &amp;hellip; &amp;hellip; 如果你愿意的话，你也可以按照beat的规范来写自己的beat。 能实现以上这些beat，都离不开beats家族真正的“老大”—— libbeat， 它是beat体系的核心库。我们接下来看一下libbeat到底都作了些什么</description></item><item><title>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</link><pubDate>Mon, 02 Jan 2023 10:28:19 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</guid><description>本文将介绍一些最基本的 Go 命令行命令。如果你刚接触 Go 语言，那你有必要记住它们，因为这些命令是 Go 开发者日常工作中所必备的。
-Go version
-开始 Go 项目前，我们应该确保开发机上已经安装好了 Go 编译器。这可以通过 https://go.dev/doc/install 进行下载安装。
-通过执行以下命令可以查看安装的 Go 版本信息。
-$ go version go version go1.18 darwin/amd64 Go env
-如果我们可能想查看一些 Go 相关的环境变量，例如 GOROOT 或者 GOPATH。你可以执行这个命令。
-$ go env 当你想对某个环境变量进行更改，例如修改 Go 代理，你可以这样做。
-$ go env -w GOPROXY=https://goproxy.io,direct go mod
-在你开始建立第一个 Go 程序时，在项目根目录下，你应该运行这样的命令。
-$ go mod init &amp;lt;your project name&amp;gt; 例如
-$ go mod init demo/firstProject 此时，项目根目录将增加 go.mod 文件，它的内容如下
-$ cat go.mod module demo/firstProject go 1.</description></item><item><title>Golang 代码检查工具(golangci-lint)</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7golangci-lint/</link><pubDate>Thu, 22 Dec 2022 11:05:22 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7golangci-lint/</guid><description>一、介绍 golangci-lint 是一个代码检查工具的集合，聚集了多种 Go 代码检查工具，如 golint、go vet 等。
-优点：
-运行速度快 可以集成到 vscode、goland 等开发工具中 包含了非常多种代码检查器 可以集成到 CI 中 这是包含的代码检查器列表：Linters 二、安装 golangci-lint 官方不建议使用 go get 方式安装，推荐使用二进制安装。
-MacOS 直接使用 homebrew 安装：
-brew install golangci-lint brew upgrade golangci-lint Linux 和 Windows # binary will be $(go env GOPATH)/bin/golangci-lint curl -sSfL https://raw.githubusercontent.com/Goci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.42.1 golangci-lint --version golangci-lint 将会被安装到 GOPATH/bin 目录中，如果此目录不在环境变量路径中需要加上。
-三、使用方式 命令行 在项目根目录下执行以下命令检查整个项目的代码：
-golangci-lint run 其等价于:
-golangci-lint run .</description></item><item><title>Golang-使用gvm进行版本控制</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BD%BF%E7%94%A8gvm%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/</link><pubDate>Sun, 14 Aug 2022 18:00:01 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BD%BF%E7%94%A8gvm%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/</guid><description>当你想为每个项目切换 go 版本时，gvm (Go Version Manager) 很方便。
-这里，我将介绍“如何在Mac上安装gvm”和“如何使用gvm”
-使用准备 仅适用于 Mac 的准备工作 按照MacOSX 要求中的说明执行以下命令。
-xcode-select --install brew update brew install mercurial gvm安装 我使用 zsh 作为我的 shell。
-$ echo $SHELL /bin/zsh 对于 zsh，您可以这样安装：
-$ zsh &amp;lt; &amp;lt;(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm No existing Go versions detected Installed GVM v1.0.22 Please restart your terminal session or to get started right away run `source /Users/user_name/.gvm/scripts/gvm` ~/.zshrc 以下行被添加到最后一行
-[[ -s &amp;#34;/Users/user_name/.</description></item><item><title>Golang-常见数据结构Slice</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84slice/</link><pubDate>Sat, 30 Apr 2022 00:56:46 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84slice/</guid><description>Golang-常见数据结构Slice Slice slice 翻译成中文就是切片，它和数组（array）很类似，可以用下标的方式进行访问，如果越界，就会产生 panic。但是它比数组更灵活，可以自动地进行扩容。
-了解 slice 的本质, 最简单的方法就是看它的源码:
-// runtime/slice.go type slice struct { array unsafe.Pointer // 元素指针 len int // 长度 cap int // 容量 } slice 共有三个属性:
-指针 指向底层数组 长度 表示切片可用元素的个数，也就是说使用下标对 slice 的元素进行访问时，下标不能超过 slice 的长度 容量 底层数组的元素个数，容量 &amp;gt;= 长度。在底层数组不进行扩容的情况下，容量也是 slice 可以扩张的最大限度。 注意: 底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。
-slice 创建 方式 代码示例 直接声明 var slice []int new slice := *new([]int) 字面量 slice := []int{1,2,3,4} make slice := make(int[], 5, 10) 从切片或者数组&amp;quot;截取&amp;quot; slice := array[1:5] 或 slice := sourceSlice[1:5] 直接声明</description></item><item><title>Golang-常见数据结构Map</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84map/</link><pubDate>Mon, 11 Apr 2022 10:07:33 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84map/</guid><description>Map map 是一种特殊的数据结构：一种元素对（pair）的无序集合，pair 的一个元素是 key，对应的另一个元素是 value，所以这个结构也称为关联数组或字典。这是一种快速寻找值的理想结构：给定 key，对应的 value 可以迅速定位。
-map 这种数据结构在其他编程语言中也称为字典（Python）、hash 和 HashTable 等。
-哈希表 哈希，也就是 Map 的实现原理；哈希表是除了数组之外，最常见的数据结构，几乎所有的语言都会有数组和哈希表这两种集合元素，有的语言将数组实现成列表， 有的语言将哈希表称作结构体或者字典，但是它们是两种设计集合元素的思路，数组用于表示元素的序列，而哈希表示的是键值对之间映射关系，只是不同语言的叫法和实现稍微有些不同。
-设计原理 哈希表是计算机科学中的最重要数据结构之一，这不仅因为它 O(1) 的读写性能非常优秀，还因为它提供了键值之间的映射。想要实现一个性能优异的哈希表，需要注意两个关键点 —— 哈希函数和冲突解决方法。
-哈希函数 实现哈希表的关键点在于如何选择哈希函数，哈希函数的选择在很大程度上能够决定哈希表的读写性能，在理想情况下，哈希函数应该能够将不同键能够地映射到不同的索引上，这要求哈希函数输出范围大于输入范围，但是由于键的数量会远远大于映射的范围，所以在实际使用时，这个理想的结果是不可能实现的。
-完美哈希函数如图: 比较实际的方式是让哈希函数的结果能够尽可能的均匀分布，然后通过工程上的手段解决哈希碰撞的问题，但是哈希的结果一定要尽可能均匀，结果不均匀的哈希函数会造成更多的冲突并导致更差的读写性能。
-不均匀哈希函数如图: 在一个使用结果较为均匀的哈希函数中，哈希的增删改查都需要 O(1) 的时间复杂度，但是非常不均匀的哈希函数会导致所有的操作都会占用最差 O(n) 的复杂度，所以在哈希表中使用好的哈希函数是至关重要的。
-冲突解决 哈希函数往往都是不完美的，输出的范围是有限的，所以一定会发生哈希碰撞，这时就需要一些方法来解决哈希碰撞的问题，常见方法的就是开放寻址法和拉链法。
-开放寻址法 开放寻址法是一种在哈希表中解决哈希碰撞的方法，这种方法的核心思想是对数组中的元素依次探测和比较以判断目标键值对是否存在于哈希表中，如果使用开放寻址法来实现哈希表，那么在支撑哈希表的数据结构就是数组，不过因为数组的长度有限，存储 (author, draven) 这个键值对时会从索引开始遍历
-当我们向当前哈希表写入新的数据时发生了冲突，就会将键值对写入到下一个不为空的位置 开放地址法写入数据如图: 如上图所示，当 Key3 与已经存入哈希表中的两个键值对 Key1 和 Key2 发生冲突时，Key3 会被写入 Key2 后面的空闲内存中；当我们再去读取 Key3 对应的值时就会先对键进行哈希并取模，这会帮助我们找到 Key1，因为 Key1 与我们期望的键 Key3 不匹配，所以会继续查找后面的元素，直到内存为空或者找到目标元素。
-开放地址法读取数据如图: 当需要查找某个键对应的值时，就会从索引的位置开始对数组进行线性探测，找到目标键值对或者空内存就意味着这一次查询操作的结束。
-开放寻址法中对性能影响最大的就是装载因子，它是数组中元素的数量与数组大小的比值，随着装载因子的增加，线性探测的平均用时就会逐渐增加，这会同时影响哈希表的读写性能，当装载率超过 70% 之后，哈希表的性能就会急剧下降，而一旦装载率达到 100%，整个哈希表就会完全失效，这时查找任意元素都需要遍历数组中全部的元素，所以在实现哈希表时一定要时刻关注装载因子的变化。
-拉链法
-与开放地址法相比，拉链法是哈希表中最常见的实现方法，大多数的编程语言都用拉链法实现哈希表，它的实现比较开放地址法稍微复杂一些，但是平均查找的长度也比较短，各个用于存储节点的内存都是动态申请的，可以节省比较多的存储空间。
-实现拉链法一般会使用数组加上链表，不过有一些语言会在拉链法的哈希中引入红黑树以优化性能，拉链法会使用链表数组作为哈希底层的数据结构，我们可以将它看成一个可以扩展的『二维数组』： 拉链法写入数据如图: 如上图所示，当我们需要将一个键值对 (Key6, Value6) 写入哈希表时，键值对中的键 Key6 都会先经过一个哈希函数，哈希函数返回的哈希会帮助我们选择一个桶，和开放地址法一样，选择桶的方式就是直接对哈希返回的结果取模</description></item><item><title>Golang-channel通道</title><link>https://blog.ch3nnn.cn/posts/2022/golang-channel%E9%80%9A%E9%81%93/</link><pubDate>Sat, 19 Mar 2022 17:41:05 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-channel%E9%80%9A%E9%81%93/</guid><description>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。
-channel 有哪些应用 停止信号 channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。
-定时任务 与计时器结合，一般有两种做法：实现超时控制、实现定期执行某个任务。 有时候，需要执行某项操作，但又不想它耗费太长时间，上一个定时器就可以搞定。这就是时控制：
-select { case &amp;lt;- time.After(100*time.Millisecond): case &amp;lt;- s.stopc: return false } 等待 100 ms 后，如果 s.stopc 还没有读出数据或者被关闭，就直接结束。
-定时执行某个任务，也比较简单：
-func worker() { ticker := time.Tick(1 * time.Second) for { select { case &amp;lt;- ticker: // 执行定时任务 fmt.Println(&amp;#34;执行 1s 定时任务&amp;#34;) } } } 每隔 1 秒种，执行一次定时任务。
-解耦生产方和消费方 服务启动时，启动 n 个 worker，作为工作协程池，这些协程工作在一个 for {} 无限循环里，从某个 channel 消费工作任务并执行：</description></item><item><title>Golang-垃圾回收</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/</link><pubDate>Fri, 18 Mar 2022 23:21:06 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/</guid><description>垃圾回收(Garbage Collection，简称GC)是编程语言中提供的自动的内存管理机制，自动释放不需要的内存对象，让出存储器资源。 GC过程中无需程序员手动执行。GC机制在现代很多编程语言都支持，GC能力的性能与优劣也是不同语言之间对比度指标之一。
-垃圾回收算法 目前比较常见的垃圾回收算法有三种： 引用计数：为每个对象维护一个引用计数，当引用该对象的对象销毁时，引用计数 -1，当对象引用计数为 0 时回收该对象。
-代表语言：Python、PHP、Swift 优点：对象回收快，不会出现内存耗尽或达到某个阈值时才回收。 缺点：不能很好的处理循环引用，而实时维护引用计数也是有损耗的。 标记-清除：从根变量开始遍历所有引用的对象，标记引用的对象，没有被标记的进行回收。
-代表语言：Golang（三色标记法） 优点：解决了引用计数的缺点。 缺点：需要 STW，暂时停掉程序运行。 分代收集：按照对象生命周期长短划分不同的代空间，生命周期长的放入老年代，短的放入新生代，不同代有不同的回收算法和回收频率。
-代表语言：Java 优点：回收性能好 缺点：算法复杂 Golang 垃圾回收 Go1.3之前 标记清除法 进行 STW（stop the world 即暂停程序业务逻辑），然后从 main 函数开始找到不可达的内存占用和可达的内存占用 开始标记，程序找出可达内存占用并做标记 标记结束清除未标记的内存占用 结束 STW 停止暂停，让程序继续运行，循环该过程直到 main 生命周期结束 一开始的做法是将垃圾清理结束时才停止 STW，后来优化了方案将清理垃圾放到了 STW 之后，与程序运行同时进行，这样做减小了 STW 的时长。 但是 STW 会暂停用户逻辑对程序的性能影响是非常大的，这种粒度的 STW 对于性能较高的程序还是无法接受，但是无论怎么优化，Go V1.3都面临这个一个重要问题，就是mark-and-sweep 算法会暂停整个程序 。 因此 Go1.5 采用了三色标记法优化了 STW。
-Go1.5之后 三色并发标记法 三色标记法只是为了叙述方便而抽象出来的一种说法，实际上的对象是没有三色之分的。这里的三色，对应了垃圾回收过程中对象的三种状态：
-灰色：对象还在标记队列中等待 黑色：对象已被标记，gcmarkBits对应位为 1 – 该对象不会在本次 GC 中被回收 白色：对象未被标记，gcmarkBits对应位为 0 – 该对象将会在本次 GC 中被清理</description></item><item><title>Golang-Modules的演进史</title><link>https://blog.ch3nnn.cn/posts/2022/golang-modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/</link><pubDate>Sun, 13 Mar 2022 11:53:48 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/</guid><description>介绍 Go 语言在 v1.11 开始支持 Modules，本文我们介绍一下 Go 语言各个版本支持 Go Modules 的演进史。
-使用 Go Modules 模式，一般分为以下几个流程：
-go mod init 创建一个新模块，初始化 go.mod 文件。 go build、go test、go run、go install 等构建命令，向 go.mod文件中添加模块所需的依赖项。 go list -m -json all 打印当前模块的依赖项。 go get 添加依赖项，或修改依赖项版本。 go mod tidy 删除未使用的依赖项。 Go Modules 演进史 Go v1.11 从 Go v1.11 开始支持 Go Moduls。 为了兼容使用 Go v1.11 之前的任意版本的项目，当设置 GO111MODULE=auto 或 GO111MODULE=off 时，Go v1.11 在 $GOPATH/src 中，继续使用 GOPATH 模式。 当设置 GO111MODULE=auto 时，其它任意位置，如果当前目录或父目录包含 go.mod 文件，则使用 Modules 模式。</description></item><item><title>Golang-逃逸分析</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</link><pubDate>Mon, 07 Mar 2022 13:38:48 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</guid><description>什么是堆/栈 堆（Heap）：一般来讲是人为手动进行管理，手动申请、分配、释放。一般所涉及的内存大小并不定，一般会存放较大的对象。另外其分配相对慢，涉及到的指令动作也相对多 栈（Stack）：由编译器进行管理，自动申请、分配、释放。一般不会太大，我们常见的函数参数（不同平台允许存放的数量不同），局部变量等等都会存放在栈上 什么是逃逸分析 我们如何知道一个对象是应该放在堆内存，还是栈内存之上呢？可以官网的FAQ（地址：https://go.dev/doc/faq#stack_or_heap）中找到答案. 大致意思是:
-从正确性的角度来看，你不需要知道。Go中的每个变量都存在，只要有对它的引用。实现选择的存储位置与语言的语义无关。 存储位置确实对编写高效的程序有影响。如果可能的话，Go编译器将为该函数的堆栈帧中的函数分配局部变量。但是，如果编译器不能证明该变量在函数返回后没有被引用，那么编译器必须在有垃圾回收的堆上分配该变量，以避免悬空指针错误。此外，如果局部变量非常大，那么将其存储在堆中可能比存储在栈中更有意义。 在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。
-在什么阶段确立逃逸 Go语言虽然没有明确说明逃逸分析规则，但是有以下几点准则，是可以参考的。
-逃逸分析是在编译器完成的，这是不同于jvm的运行时逃逸分析 如果变量在函数外部没有引用，则优先放到栈中 如果变量在函数外部存在引用，则必定放在堆中 逃逸规则 我们其实都知道一个普遍的规则，就是如果变量需要使用堆空间，那么他就应该进行逃逸。但是实际上Golang并不仅仅把逃逸的规则如此泛泛。Golang会有很多场景具备出现逃逸的现象。
-一般我们给一个引用类对象中的引用类成员进行赋值，可能出现逃逸现象。可以理解为访问一个引用对象实际上底层就是通过一个指针来间接的访问了，但如果再访问里面的引用成员就会有第二次间接访问，这样操作这部分对象的话，极大可能会出现逃逸的现象。
-Go语言中的引用类型有func（函数类型），interface（接口类型），slice（切片类型），map（字典类型），channel（管道类型），*（指针类型）等。
-怎么确定是否逃逸 可以使用编译器提供的指令-gcflags 就可以看到详细的逃逸分析过程，命令如下：
-go build -gcflags &amp;#39;-m -l&amp;#39; main.go 其指令涉及的参数如下：
--m：打印出逃逸分析的优化策略，实际上最多总共可以用 4 个 -m，但是这样子调试的信息量较大，一般用一个就足够了。 -l ：禁用函数内联，在这里禁用掉 inline 能更好的观察逃逸情况，减少干扰。 常见逃逸案例分析 new的变量在栈还是堆
-package main func foo(argVal int) (*int) { var fooVal1 = new(int) var fooVal2 = new(int) var fooVal3 = new(int) var fooVal4 = new(int) var fooVal5 = new(int) //此处循环是防止go编译器将foo优化成inline(内联函数) //如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量 //即使fooVal3发生逃逸，地址与其他也是连续的 for i := 0; i &amp;lt; 5; i++ { println(argVal, fooVal1, fooVal2, fooVal3, fooVal4, fooVal5) } //fooVal3 return fooVal3 } func main() { mainVal := foo(666) println(*mainVal, mainVal) } 我们将fooVal 1-5 全部用new的方式来开辟, 编译运行看结果, 显然fooVal3发生了逃逸</description></item><item><title>Golang-GMP模型</title><link>https://blog.ch3nnn.cn/posts/2022/golang-gmp%E6%A8%A1%E5%9E%8B/</link><pubDate>Wed, 02 Mar 2022 16:45:39 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-gmp%E6%A8%A1%E5%9E%8B/</guid><description>写在前面 Go 为了自身 goroutine 执行和调度的效率，自身在 runtime 中实现了一套 goroutine 的调度器，下面通过一段简单的代码展示一下 Go 应用程序在运行时的 goroutine，方便大家更好的理解。
-The Go scheduler is part of the Go runtime, and the Go runtime is built into your application
-for i := 0; i &amp;lt; 4; i++ { go func() { time.Sleep(time.Second) }() } fmt.Println(runtime.NumGoroutine()) 上面这段代码的输出为：5 说明当前这个应用程序中存在 goroutine 的数量是 5，事实上也符合我们的预期。那么问题来了，这 5 个 goroutine 作为操作系统用户态的基本调度单元是无法直接占用操作系统的资源来执行的，必须经过内核级线程的分发，这是操作系统内部线程调度的基本模型，根据用户级线程和内核级线程的对应关系可以分为 1 对 1，N 对 1 以及 M 对 N 这三种模型，那么上述的 5 个 goroutine 在内核级线程上是怎么被分发的，这就是 Go语言的 goroutine 调度器决定的。</description></item><item><title>Golang-数组与切片常见错误及陷阱</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E5%8F%8A%E9%99%B7%E9%98%B1/</link><pubDate>Tue, 15 Feb 2022 16:34:35 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E5%8F%8A%E9%99%B7%E9%98%B1/</guid><description>nil切片、空切片、零切片 零切片
-var s = make([]int, 10) fmt.Println(s) ------------ [0 0 0 0 0 0 0 0 0 0] 表示底层数组的二进制内容都是零
-「空切片」和 「nil 切片」
-var s1 []int var s2 = []int{} var s3 = make([]int, 0) // new 函数返回是指针类型，所以需要使用 * 号来解引用 var s4 = *new([]int) fmt.Println(len(s1), len(s2), len(s3), len(s4)) fmt.Println(cap(s1), cap(s2), cap(s3), cap(s4)) fmt.Println(s1, s2, s3, s4) ---------------- 0 0 0 0 0 0 0 0 [] [] [] [] 上面这四种形式从输出结果上来看，似乎一摸一样，没区别。但是实际上是有区别的，我们要讲的两种特殊类型「空切片」和「 nil 切片」，就隐藏在上面的四种形式之中。</description></item><item><title>Golang-代码断行规则</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%96%AD%E8%A1%8C%E8%A7%84%E5%88%99/</link><pubDate>Wed, 02 Feb 2022 16:37:59 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%96%AD%E8%A1%8C%E8%A7%84%E5%88%99/</guid><description>如果你已经写了一些Go代码，你应该知道，Go代码风格不能太随意。 具体说来，我们不能随意在某个空格或者符号字符处断行。 本文余下的部分将列出Go代码中的详细断行规则。
-分号插入规则 我们在Go编程中常遵循的一个规则是：一个显式代码块的起始左大括号{不放在下一行。 比如，下面这个for循环代码块编译将失败。
-for i := 5; i &amp;gt; 0; i-- { // error: 未预料到的新行 } 为了让上面这个for循环代码块编译成功，我们不能在起始左大括号{前断行，而应该像下面这样进行修改：
-for i := 5; i &amp;gt; 0; i-- { } 然而，有时候起始左大括号{却可以放在一个新行上，比如下面这个for循环代编译时没有问题的。
-for { // do something ... } 那么，Go代码中的根本性换行规则究竟是如何定义的呢？ 在回答这个问题之前，我们应该知道一个事实：正式的Go语法是使用（英文）分号;做为结尾标识符的。 但是，我们很少在Go代码中使用和看到分号。为什么呢？原因是大多数分号都是可选的，因此它们常常被省略。 在编译时刻，Go编译器会自动插入这些省略的分号。
-比如，下面这个程序中的十个分号都是可以被省略掉的。
-package main; import &amp;#34;fmt&amp;#34;; func main() { var ( i int; sum int; ); for i &amp;lt; 6 { sum += i; i++; }; fmt.Println(sum); }; 假设上面这个程序存储在一个semicolons.go文件中，我们可以运行go fmt semicolons.</description></item><item><title>Golang:停止Goroutine有几种方法</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%81%9C%E6%AD%A2goroutine%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</link><pubDate>Wed, 12 Jan 2022 18:23:23 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%81%9C%E6%AD%A2goroutine%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</guid><description>goroutine介绍 goroutine 是 Go 语言实现并发编程的利器，是 Go语言中的轻量级线程实现，由 Go 运行时（runtime）管理，简单的一个指令go function就能启动一个 goroutine；Go 程序会智能地将 goroutine 中的任务合理地分配给每个 CPU。
-但是，Go语言并没有提供终止goroutine的接口，也就是说，我们不能从外部去停止一个goroutine，只能由goroutine内部退出(main函数终止除外)；
-goroutine 案例 日常开发开启一个 goroutine go代码, 只需一个 go 关键字即可:
-var wg sync.WaitGroup // 等待组，用来阻塞程序 func main() { wg.Add(1) // 等待组 +1 go func() { for { fmt.Println(&amp;#34;开启 goroutine&amp;#34;) } }() wg.Wait() } 几种停止的办法 Go 目前用 channel 或 context 的方式来取消 (cancelation) 给 goroutine。
-Channel 第一种方法，就是借助 channel 的 close 机制来完成对 goroutine 的精确控制。 func main() { msg := make(chan struct{}) go func() { fmt.</description></item><item><title>Golang:值传递还是引用传递</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/</link><pubDate>Sun, 09 Jan 2022 18:09:14 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/</guid><description>Go 官方的定义 本部分引用 Go 官方 FAQ 的 “When are function parameters passed by value?”，内容如下。
-如同 C 系列的所有语言一样，Go 语言中的所有东西都是以值传递的。也就是说，一个函数总是得到一个被传递的东西的副本，就像有一个赋值语句将值赋给参数一样。
-传值和传引用 什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。其指的是在调用函数时将实际参数复制一份传递到函数中，这样在函数中如果对参数进行修改，将不会影响到实际参数。 比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。
-对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我们看个例子。
-test_demo.go
-package main import ( &amp;#34;fmt&amp;#34; &amp;#34;testing&amp;#34; ) func modify(ip *int) { fmt.Printf(&amp;#34;函数里接收到的指针的内存地址是：%p\n&amp;#34;, &amp;amp;ip) *ip = 1 } func TestDemo(t *testing.T) { i := 10 ip := &amp;amp;i fmt.Printf(&amp;#34;原始指针的内存地址是：%p\n&amp;#34;, &amp;amp;ip) modify(ip) fmt.Println(&amp;#34;int值被修改了，新值为:&amp;#34;, i) } 输出结果:
-原始指针的内存地址是：0xc00000e038 函数里接收到的指针的内存地址是：0xc00000e040 int值被修改了，新值为: 1 什么是传引用(引用传递) 传引用，也叫做引用传递， 指在调用函数时将实际参数的地址直接传递到函数中，那么在函数中对参数所进行的修改，将影响到实际参数。
-在 Go 语言中，官方已经明确了没有传引用，也就是没有引用传递这一情况。
-争议最大的 map 和 slice 这时候又有小伙伴疑惑了，你看 Go 语言中的 map 和 slice 类型，能直接修改，难道不是同个内存地址，不是引用了？</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Go on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/go/</link><description>Recent content in Go on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 27 Aug 2024 00:51:35 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/go/index.xml" rel="self" type="application/rss+xml"/><item><title>Gorm 分表中间件(Sharding)</title><link>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</link><pubDate>Tue, 27 Aug 2024 00:51:35 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</guid><description>&lt;blockquote>
+&lt;p>&lt;a href="https://github.com/go-gorm/sharding">Sharding&lt;/a> 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通
+SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="一功能特点">一、功能特点&lt;/h2>
+&lt;ul>
+&lt;li>非侵入式设计， 加载插件，指定配置，既可实现分表。&lt;/li>
+&lt;li>轻快， 非基于网络层的中间件，像 Go 一样快&lt;/li>
+&lt;li>支持多种数据库。 PostgreSQL 已通过测试，MySQL 和 SQLite 也在路上。&lt;/li>
+&lt;li>多种主键生成方式支持（Snowflake, PostgreSQL Sequence, 以及自定义支持）Snowflake 支持从主键中确定分表键。&lt;/li>
+&lt;/ul>
+&lt;h2 id="二示例代码">二、示例代码&lt;/h2>
+&lt;p>注意: 依然保持原来的方式使用 db 来查询数据库。 你只需要注意在 CURD 动作的时候，明确知道 &lt;strong>Sharding Key&lt;/strong> 对应的分表，&lt;strong>查询条件带 Sharding Key，以确保
+Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;h3 id="mysql">Mysql&lt;/h3>
+&lt;p>Gorm Sharding 中内置了 MySQL 序列主键实现，只需配置PrimaryKeyGenerator: sharding.PKMySQLSequence即可使用。&lt;/p>
+&lt;p>您不需要手动创建序列，当 MySQL 序列不存在时，Gorm Sharding 会检查并创建。&lt;/p>
+&lt;p>这个序列名后面跟着gorm_sharding_${table_name}_id_seq，例如orders表，序列名就是gorm_sharding_orders_id_seq。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050"> * @Author: chentong
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050"> * @Date: 2024/08/27 00:09
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;testing&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;gorm.io/driver/mysql&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;gorm.io/gorm&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;gorm.io/sharding&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> Order &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ID &lt;span style="color:#005a5f">int64&lt;/span> &lt;span style="color:#2544bb">`gorm:&amp;#34;primarykey&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> UserID &lt;span style="color:#005a5f">int64&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ProductID &lt;span style="color:#005a5f">int64&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">TestSharding_Mysql&lt;/span>(t &lt;span style="color:#00538b">*&lt;/span>testing.T) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dsn &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;root:123456@tcp(localhost:3306)/dev?parseTime=True&amp;amp;timeout=5s&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> db, err &lt;span style="color:#00538b">:=&lt;/span> gorm.&lt;span style="color:#721045">Open&lt;/span>(mysql.&lt;span style="color:#721045">Open&lt;/span>(dsn))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">panic&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">2&lt;/span>; i &lt;span style="color:#00538b">+=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> table &lt;span style="color:#00538b">:=&lt;/span> fmt.&lt;span style="color:#721045">Sprintf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;orders_%d&amp;#34;&lt;/span>, i)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">`DROP TABLE IF EXISTS `&lt;/span> &lt;span style="color:#00538b">+&lt;/span> table)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;CREATE TABLE &amp;#34;&lt;/span> &lt;span style="color:#00538b">+&lt;/span> table &lt;span style="color:#00538b">+&lt;/span> &lt;span style="color:#2544bb">&amp;#34; ( `id` bigint(20) NOT NULL AUTO_INCREMENT, `user_id` int(11) DEFAULT NULL, `product_id` int(11) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> db.&lt;span style="color:#721045">Use&lt;/span>(sharding.&lt;span style="color:#721045">Register&lt;/span>(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sharding.Config{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ShardingKey: &lt;span style="color:#2544bb">&amp;#34;user_id&amp;#34;&lt;/span>, &lt;span style="color:#505050">// 分片key
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> NumberOfShards: &lt;span style="color:#0000c0">2&lt;/span>, &lt;span style="color:#505050">// 分片数量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> PrimaryKeyGenerator: sharding.PKMySQLSequence, &lt;span style="color:#505050">// 主键生成器, 这里使用 mysql
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;orders&amp;#34;&lt;/span>}, &lt;span style="color:#505050">// 需要分片 tables 
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> ))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this record will insert to orders_02
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Create&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{UserID: &lt;span style="color:#0000c0">2&lt;/span>}).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this record will insert to orders_03
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;INSERT INTO orders(user_id) VALUES(?)&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will throw ErrMissingShardingKey error
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;INSERT INTO orders(product_id) VALUES(1)&amp;#34;&lt;/span>).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will redirect query to orders_02
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">var&lt;/span> orders []Order
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Model&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{}).&lt;span style="color:#721045">Where&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;user_id&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">2&lt;/span>)).&lt;span style="color:#721045">Find&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%#v\n&amp;#34;&lt;/span>, orders)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// Raw SQL also supported
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> db.&lt;span style="color:#721045">Raw&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;SELECT * FROM orders WHERE user_id = ?&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).&lt;span style="color:#721045">Scan&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%#v\n&amp;#34;&lt;/span>, orders)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will throw ErrMissingShardingKey error
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Model&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{}).&lt;span style="color:#721045">Where&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;product_id&amp;#34;&lt;/span>, &lt;span style="color:#2544bb">&amp;#34;1&amp;#34;&lt;/span>).&lt;span style="color:#721045">Find&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// Update and Delete are similar to create and query
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;UPDATE orders SET product_id = ? WHERE user_id = ?&amp;#34;&lt;/span>, &lt;span style="color:#0000c0">2&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err) &lt;span style="color:#505050">// nil
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;DELETE FROM orders WHERE product_id = 3&amp;#34;&lt;/span>).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err) &lt;span style="color:#505050">// ErrMissingShardingKey
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ul></description></item><item><title>Go 1.22的新功能 Cmp.Or</title><link>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</link><pubDate>Sat, 27 Apr 2024 22:45:54 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</guid><description>&lt;h2 id="一介绍">一、介绍&lt;/h2>
+&lt;p>&lt;a href="https://go.dev/doc/go1.22">截至撰写本文时， Go 1.22&lt;/a>已经发布几个月了。&lt;/p>
+&lt;p>Go 1.22提出并实现的最终函数是&lt;code>cmp.Or&lt;/code>。&lt;/p>
+&lt;p>首先我们看一下代码：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Or returns the first of its arguments that is not equal to the zero value.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// If no argument is non-zero, it returns the zero value.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> Or[T comparable](vals &lt;span style="color:#00538b">...&lt;/span>T) T {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">var&lt;/span> zero T
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> _, val &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#5317ac">range&lt;/span> vals {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">if&lt;/span> val &lt;span style="color:#00538b">!=&lt;/span> zero {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> val
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">return&lt;/span> zero
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>它非常简短。它只是比较其参数并返回第一个不是 &lt;code>0&lt;/code> or &lt;code>nil&lt;/code> or &lt;code>&amp;quot;&amp;quot;&lt;/code> 或&lt;strong>其类型的零值&lt;/strong>的参数。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="二如何使用它">二、如何使用它?&lt;/h2>
+&lt;p>主要用途&lt;code>cmp.Or&lt;/code>是获取数字并返回第一个非0数字。例如，一个 API 获取列表页中的 &lt;code>page&lt;/code> 和 &lt;code>pageSize&lt;/code>参数值, 给一些默认值。&lt;/p></description></item><item><title>Go Sync并发包之errgroup</title><link>https://blog.ch3nnn.cn/posts/2024/go-sync%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B9%8Berrgroup/</link><pubDate>Wed, 24 Apr 2024 10:44:21 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-sync%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B9%8Berrgroup/</guid><description>&lt;p>你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。&lt;/p>
+&lt;p>想想看，你有一个函数可以做 3 件事：&lt;/p>
+&lt;ul>
+&lt;li>按用户 ID 从数据库中获取用户详细信息。&lt;/li>
+&lt;li>调用外部服务，按用户 ID 获取用户最近的活动信息&lt;/li>
+&lt;li>访问日志服务，按用户 ID 获取用户上次登录的详细信息&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">FetchUserData&lt;/span>(userID &lt;span style="color:#005a5f">string&lt;/span>) &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> g &lt;span style="color:#00538b">:=&lt;/span> errgroup.Group{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户详细信息
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> userDetail, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserDetails&lt;/span>(userID)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户活动
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> userAct, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserActivity&lt;/span>(userID)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 获取用户登录详细信息
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> userLoginInfo, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserLoginDetails&lt;/span>(userID)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>所有这些任务都只需要用户 ID，而不使用其他任务的数据。&lt;/p>
+&lt;p>您可以尝试使用 goroutines 来实现这一点，但您需要自己处理细节问题。让我们来回答这些问题：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>同步&lt;/strong>：如何确保一切完成？&lt;/li>
+&lt;li>&lt;strong>错误处理&lt;/strong>：如果一项任务出错，你该怎么办？或者三项任务中有两项不成功？&lt;/li>
+&lt;li>&lt;strong>取消&lt;/strong>：如果一个任务出现问题，如何停止所有其他正在运行的程序？&lt;/li>
+&lt;li>&lt;strong>限制&lt;/strong>：你是否考虑过限制同时运行多少个 goroutines？&lt;/li>
+&lt;li>&lt;strong>可重复使用&lt;/strong>：一旦找到解决方案，如何在类似情况下再次使用？&lt;/li>
+&lt;/ul>
+&lt;h2 id="1什么是-errgroup">1.什么是 errgroup？&lt;/h2>
+&lt;blockquote>
+&lt;p>errgroup 软件包可让您同时处理多项任务。&lt;/p>
+&lt;/blockquote>
+&lt;p>通过它，可以轻松地以安全的方式一起运行，保持同步，处理错误，并控制何时停止 goroutines。下面是一个如何使用它的快速示例：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">FetchUserData&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	g &lt;span style="color:#00538b">:=&lt;/span> errgroup.Group{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户详细信息
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Fetched user details...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 获取用户活动
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Fetched user activity...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户登录详细信息
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">2&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Fetched user login details...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 等待所有goroutines完成并返回第一个错误 (如果有)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	&lt;span style="color:#5317ac">return&lt;/span> g.&lt;span style="color:#721045">Wait&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>因此，errgroup 的工作就是运行这些任务，并通过 &lt;code>g.Wait()&lt;/code> 等待任务结束，我们需要做的就是添加任务。
+&lt;img src="https://s2.loli.net/2024/04/24/GMLih1vYBzDbWsO.png" alt="什么是 errgroup？">&lt;/p></description></item><item><title>使用 go-elasticsearch v8 请求示例</title><link>https://blog.ch3nnn.cn/posts/2024/%E4%BD%BF%E7%94%A8go-elasticsearch-v8%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B/</link><pubDate>Tue, 19 Mar 2024 23:07:33 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E4%BD%BF%E7%94%A8go-elasticsearch-v8%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B/</guid><description>&lt;h2 id="一简介">一、简介&lt;/h2>
+&lt;p>&lt;a href="https://www.elastic.co/guide/en/elasticsearch/client/go-api/current/getting-started-go.html">你可以通过参考Go 官方文档&lt;/a>找到简单的示例，所以我认为先看看这个是个好主意。&lt;/p>
+&lt;p>连接客户端有两种方式&lt;/p>
+&lt;p>至于两者的特点，TypedClient 有类型，更容易编写，但文档较少。另外，批量索引不支持TypedClient。由于普通客户端都是基于json的，所以我觉得从文档转换到代码还是比较容易的。&lt;/p>
+&lt;p>我的建议基本上是使用 TypedClient！
+虽然文档很稀疏，但它是基于规律性的类型化的，所以你越习惯它（特别是当涉及到有很多变化的东西时，比如查询），从 json 转换为类型化代码就越容易。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// client
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewClient&lt;/span>(elasticsearch.Config{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Addresses: []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;http://localhost:9200&amp;#34;&lt;/span>},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error creating the client: %s&amp;#34;&lt;/span>, err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// typed client
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewTypedClient&lt;/span>(elasticsearch.Config{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Addresses: []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;http://localhost:9200&amp;#34;&lt;/span>},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error creating the client: %s&amp;#34;&lt;/span>, err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="二index-createdelete">二、Index Create/Delete&lt;/h2>
+&lt;p>关于索引创建，Go官方文档中有一个示例，所以我简单介绍一下。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewTypedClient&lt;/span>(elasticsearch.Config{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		Addresses: []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;http://localhost:9200&amp;#34;&lt;/span>},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error creating the client: %s&amp;#34;&lt;/span>, err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	ignoreAbove &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">256&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	keywordProperty &lt;span style="color:#00538b">:=&lt;/span> types.&lt;span style="color:#721045">NewKeywordProperty&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	keywordProperty.IgnoreAbove = &lt;span style="color:#00538b">&amp;amp;&lt;/span>ignoreAbove
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	dateProperty &lt;span style="color:#00538b">:=&lt;/span> types.&lt;span style="color:#721045">NewDateProperty&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	format &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;yyyy/MM/dd||yyyy/MM||MM/dd||yyyy||MM||dd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	dateProperty.Format = &lt;span style="color:#00538b">&amp;amp;&lt;/span>format
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// index作成
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	_, err = es.Indices.&lt;span style="color:#721045">Create&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;sample_index&amp;#34;&lt;/span>).&lt;span style="color:#721045">Request&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>create.Request{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		Settings: &lt;span style="color:#00538b">&amp;amp;&lt;/span>types.IndexSettings{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			IndexSettings: &lt;span style="color:#5317ac">map&lt;/span>[&lt;span style="color:#005a5f">string&lt;/span>]json.RawMessage{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 設定項目
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#505050">// bulk index里面的数据更新感觉。如果不需要频繁更新，设置得更长会提高性能。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#2544bb">&amp;#34;refresh_interval&amp;#34;&lt;/span>: json.&lt;span style="color:#721045">RawMessage&lt;/span>(&lt;span style="color:#2544bb">`&amp;#34;30s&amp;#34;`&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 可取得的最大件数的上限
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#2544bb">&amp;#34;max_result_window&amp;#34;&lt;/span>: json.&lt;span style="color:#721045">RawMessage&lt;/span>(&lt;span style="color:#2544bb">`&amp;#34;1000000&amp;#34;`&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		Mappings: &lt;span style="color:#00538b">&amp;amp;&lt;/span>types.TypeMapping{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			Properties: &lt;span style="color:#5317ac">map&lt;/span>[&lt;span style="color:#005a5f">string&lt;/span>]types.Property{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 映射的定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#2544bb">&amp;#34;name&amp;#34;&lt;/span>: keywordProperty,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;age&amp;#34;&lt;/span>: types.&lt;span style="color:#721045">NewIntegerNumberProperty&lt;/span>(),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;is_checked&amp;#34;&lt;/span>: types.&lt;span style="color:#721045">NewBooleanProperty&lt;/span>(),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;created_at&amp;#34;&lt;/span>: dateProperty,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}).&lt;span style="color:#721045">Do&lt;/span>(context.&lt;span style="color:#721045">TODO&lt;/span>())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error creating the client: %s&amp;#34;&lt;/span>, err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// index削除
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	_, err = es.Indices.&lt;span style="color:#721045">Delete&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;sample_index&amp;#34;&lt;/span>).&lt;span style="color:#721045">Do&lt;/span>(context.&lt;span style="color:#721045">TODO&lt;/span>())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error deleting the client: %s&amp;#34;&lt;/span>, err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="三bulk-index">三、Bulk Index&lt;/h2>
+&lt;p>批量索引代码基于go-elasticsearch 示例。&lt;/p></description></item><item><title>Golang 接口:nil接口为什么不等于nil?</title><link>https://blog.ch3nnn.cn/posts/2024/golang-%E6%8E%A5%E5%8F%A3nil%E6%8E%A5%E5%8F%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%AD%89%E4%BA%8Enil/</link><pubDate>Mon, 11 Mar 2024 10:48:24 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/golang-%E6%8E%A5%E5%8F%A3nil%E6%8E%A5%E5%8F%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%AD%89%E4%BA%8Enil/</guid><description>&lt;h2 id="一go-接口的地位">一、Go 接口的地位&lt;/h2>
+&lt;p>Go 语言核心团队的技术负责人 &lt;code>Russ Cox&lt;/code> 也曾说过这样一句话：“如果要从 Go 语言中挑选出一个特性放入其他语言，我会选择接口”，这句话足以说明接口这一语法特性在这位
+Go 语言大神心目中的地位。&lt;/p>
+&lt;p>为什么接口在 Go 中有这么高的地位呢？这是因为接口是 Go 这门静态语言中唯一“动静兼备”的语法特性。而且，接口“动静兼备”的特性给 Go 带来了强大的表达能力，但同时也给
+Go 语言初学者带来了不少困惑。要想真正解决这些困惑，我们必须深入到 Go 运行时层面，看看 Go 语言在运行时是如何表示接口类型的。&lt;/p>
+&lt;p>接下来，我们先来看看接口的静态与动态特性，看看“动静皆备”的含义。&lt;/p>
+&lt;h2 id="二接口的静态特性与动态特性">二、接口的静态特性与动态特性&lt;/h2>
+&lt;p>2.1 接口的静态特性与动态特性介绍
+接口的静态特性体现在接口类型变量具有静态类型。&lt;/p>
+&lt;p>比如 var err error 中变量 err 的静态类型为 error。拥有静态类型，那就意味着编译器会在编译阶段对所有接口类型变量的赋值操作进行类型检查，编译器会检查右值的类型是否实现了该接口方法集合中的所有方法。如果不满足，就会报错：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> err &lt;span style="color:#005a5f">error&lt;/span> = &lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#505050">// cannot use 1 (type int) as type error in assignment: int does not implement error (missing Error method)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>而接口的动态特性，就体现在接口类型变量在运行时还存储了右值的真实类型信息，这个右值的真实类型被称为接口类型变量的动态类型。例如，下面示例代码：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> err &lt;span style="color:#005a5f">error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>err = errors.&lt;span style="color:#721045">New&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;error1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%T\n&amp;#34;&lt;/span>, err) &lt;span style="color:#505050">// *errors.errorString
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>2.2 “动静皆备”的特性的好处
+首先，接口类型变量在程序运行时可以被赋值为不同的动态类型变量，每次赋值后，接口类型变量中存储的动态类型信息都会发生变化，这让 Go 语言可以像动态语言（比如
+Python）那样拥有使用 Duck Typing（鸭子类型）的灵活性。所谓鸭子类型，就是指某类型所表现出的特性（比如是否可以作为某接口类型的右值），不是由其基因（比如
+C++ 中的父类）决定的，而是由类型所表现出来的行为（比如类型拥有的方法）决定的。&lt;/p></description></item><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>&lt;blockquote>
+&lt;p>这是 Google Protocol Buffers 文档生成器插件 (protoc)。
+该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="一前言">一、前言&lt;/h2>
+&lt;p>毫无疑问, 目前后台开发接口协议应用最广泛的除了 HTTP 之外就是 gRPC 了, HTTP 接口有成熟的&lt;code>swagger&lt;/code>工具可以生成界面美观和使用友好的文档，那么对于gRPC呢？&lt;/p>
+&lt;p>所以通过 .proto 文件能否生成更易阅读的 HTML 接口文档？&lt;/p>
+&lt;h2 id="二安装">二、安装&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="三使用">三、使用&lt;/h2>
+&lt;h3 id="userproto-文件">user.proto 文件&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>以&lt;code>user.proto&lt;/code>为例, 如下内容:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-protobuf" data-lang="protobuf">&lt;span style="display:flex;">&lt;span>syntax &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;proto3&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">option&lt;/span> go_package &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;./pb&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> user;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Messages
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">//--------------------------------用户--------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SysUser {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#005a5f">int64&lt;/span> id &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// ID
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> username &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 用户名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> password &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// 密码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> create_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">4&lt;/span>; &lt;span style="color:#505050">// 创建时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> update_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; &lt;span style="color:#505050">// 修改时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> delete_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">6&lt;/span>; &lt;span style="color:#505050">// 删除时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SysUserFilter {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> id &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// ID
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> username &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 用户名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">string&lt;/span> password &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// 密码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> create_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">4&lt;/span>; &lt;span style="color:#505050">// 创建时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> update_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; &lt;span style="color:#505050">// 修改时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> delete_at &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">6&lt;/span>; &lt;span style="color:#505050">// 删除时间
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SelectSysUserListReq {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#005a5f">int64&lt;/span> page &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// 页码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> page_size &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 每页数量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">optional&lt;/span> SysUserFilter filter &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// SysUserFilter
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">message&lt;/span> SelectSysUserListResp {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#005a5f">int64&lt;/span> count &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">1&lt;/span>; &lt;span style="color:#505050">// 总数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#005a5f">int64&lt;/span> page_count &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">2&lt;/span>; &lt;span style="color:#505050">// 页码总数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">repeated&lt;/span> SysUser results &lt;span style="color:#00538b">=&lt;/span> &lt;span style="color:#0000c0">3&lt;/span>; &lt;span style="color:#505050">// sys_user
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Rpc Func
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// ------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">service&lt;/span> User {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//-----------------------用户-----------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 用户 列表
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">rpc&lt;/span> SelectSysUserList(SelectSysUserListReq) &lt;span style="color:#5317ac">returns&lt;/span> (SelectSysUserListResp);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h3 id="1-生成-markdown-文档">1. 生成 markdown 文档&lt;/h3>
+&lt;ol>
+&lt;li>命令:
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>protoc --doc_out&lt;span style="color:#00538b">=&lt;/span>. --doc_opt&lt;span style="color:#00538b">=&lt;/span>markdown,index.md pb/*.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>效果:
+&lt;img src="https://s2.loli.net/2024/02/28/TwXqVdFvJyNZnfp.png" alt="20240228172356.png">&lt;/li>
+&lt;/ol>
+&lt;h3 id="2-生成-html-文档">2. 生成 html 文档&lt;/h3>
+&lt;ol>
+&lt;li>命令:
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>protoc --doc_out&lt;span style="color:#00538b">=&lt;/span>. --doc_opt&lt;span style="color:#00538b">=&lt;/span>html,index.html pb/*.proto
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>效果:
+&lt;img src="https://s2.loli.net/2024/02/28/Jv67NT9cpYdCjre.png" alt="">&lt;/li>
+&lt;/ol>
+&lt;h2 id="四自定义模板">四、自定义模板&lt;/h2>
+&lt;p>如果想使用自己的模板, 只需使用模板文件的路径而不是类型。&lt;/p></description></item><item><title>Golang 更严格的代码格式化工具 gofumpt</title><link>https://blog.ch3nnn.cn/posts/2024/golang-%E6%9B%B4%E4%B8%A5%E6%A0%BC%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%B7%A5%E5%85%B7gofumpt/</link><pubDate>Mon, 19 Feb 2024 19:56:22 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/golang-%E6%9B%B4%E4%B8%A5%E6%A0%BC%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%B7%A5%E5%85%B7gofumpt/</guid><description>&lt;h2 id="一前言">一、前言&lt;/h2>
+&lt;p>gofmt 是 golang 自带的代码自动格式化工具，是保证 Go 代码风格一致的大杀器。我们这次要推荐的 gofumpt 在 gofmt 的基础上添加了一系列更加严格的格式化规则，并保证了对
+gofmt 的兼容。&lt;/p>
+&lt;h2 id="二gofumpt-简介">二、gofumpt 简介&lt;/h2>
+&lt;p>gofumpt(&lt;a href="https://github.com/mvdan/gofumpt">https://github.com/mvdan/gofumpt&lt;/a>) fork 自 gofmt，支持与 gofmt 几乎相同的命令行参数，因此可以作为 gofmt 的直接替代品使用。gofumpt 是
+gofmt 的&amp;quot;超集&amp;quot;，经过 gofumpt 格式化的代码也符合 gofmt 的要求，其本身所扩展的格式化规则也可能在后续被集成进 gofmt。&lt;/p>
+&lt;p>gofumpt 有以下特点:&lt;/p>
+&lt;ul>
+&lt;li>更多的格式化规则(参见 &lt;a href="https://github.com/mvdan/gofumpt#Added-rules">https://github.com/mvdan/gofumpt#Added-rules&lt;/a>)&lt;/li>
+&lt;li>默认跳过对 vendor 的格式化&lt;/li>
+&lt;li>不对自动生成的代码应用扩展规则&lt;/li>
+&lt;li>不支持 -r 参数&lt;/li>
+&lt;/ul>
+&lt;h2 id="三安装使用命令">三、安装、使用命令&lt;/h2>
+&lt;p>安装命令:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>go install mvdan.cc/gofumpt@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>执行命令:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>gofumpt -l -w .
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="四使用举例">四、使用举例&lt;/h2>
+&lt;p>&lt;strong>赋值运算符后面没有空行&lt;/strong>&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">foo&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>foo &lt;span style="color:#00538b">:=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#2544bb">&amp;#34;bar&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>改为 gofumpt 格式化后：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">foo&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>foo &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;bar&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;!-- raw HTML omitted -->
+&lt;p>&lt;strong>函数体周围没有空行&lt;/strong>&lt;/p></description></item><item><title>在 Go 使用 embed 当中嵌入父目录中的文件</title><link>https://blog.ch3nnn.cn/posts/2023/%E5%9C%A8go%E4%BD%BF%E7%94%A8embed%E5%BD%93%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%88%B6%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</link><pubDate>Sat, 07 Oct 2023 09:48:41 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E5%9C%A8go%E4%BD%BF%E7%94%A8embed%E5%BD%93%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%88%B6%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</guid><description>&lt;blockquote>
+&lt;p>自 Go 1.16 版本开始，Go 提供了将二进制文件打包进入到 Binary 文件当中的机制:`//go:embed。不过，我看到的示例大多数都是嵌入当前文件夹下的子文件夹的示例。并没有嵌入父一级文件夹的示例。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="为什么会需要嵌入父目录中的文件">为什么会需要嵌入父目录中的文件？&lt;/h2>
+&lt;p>这是因为不同的项目的构建规则不同。一些小型项目可能只有一个 main.go 或同级目录下几个其他的 go source 文件即可，但对于更大型的项目，合理的项目拆分是有助于帮助提升项目的可维护性的。&lt;/p>
+&lt;p>以我为例，我的目录结构如下：biz 目录下是我的核心逻辑，也是我日常写代码的地方；conf 则放置了各种配置，比如各种 API Key，ral 则是网络访问层，比如我比较喜欢用 gin 来做底层的网络访问层；script 放置了开发所需要的各种脚本文件；static 则放置了前端所需要的 JS / CSS 文件。在开发一些偏内容向的页面时，我会习惯使用 Server Side Render，所以我在 biz 目录下还有一个 template 目录。而主要的逻辑则放在 handler。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>├── biz
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── dal
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── handler
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── logic
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ ├── service
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── template
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── conf
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── ral
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│ └── gin
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── script
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>└── static
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── public
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在日常开发时，一个非常常见的操作是在 handler 里处理基本的逻辑，并将 template 中的模板渲染出来，并返回给用户，这个时候就需要在 handler 里使用上一级目录的文件了。&lt;/p></description></item><item><title>Golang-语言源码级调试器 Delve</title><link>https://blog.ch3nnn.cn/posts/2023/golang-%E8%AF%AD%E8%A8%80%E6%BA%90%E7%A0%81%E7%BA%A7%E8%B0%83%E8%AF%95%E5%99%A8-delve/</link><pubDate>Fri, 11 Aug 2023 15:43:40 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/golang-%E8%AF%AD%E8%A8%80%E6%BA%90%E7%A0%81%E7%BA%A7%E8%B0%83%E8%AF%95%E5%99%A8-delve/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>Go 目前的调试器有如下几种：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>GDB&lt;/code> 最早期的调试工具，现在用的很少。&lt;/li>
+&lt;li>&lt;code>LLDB&lt;/code> macOS 系统推荐的标准调试工具，单 Go 的一些专有特性支持的比较少。&lt;/li>
+&lt;li>&lt;code>Delve&lt;/code> 专门为 Go 语言打造的调试工具，使用最为广泛。&lt;/li>
+&lt;/ul>
+&lt;p>本篇简单说明如何使用 &lt;code>Delve&lt;/code> 工具来调试 Go 程序，使用的 &lt;code>delve&lt;/code> 版本为 1.20.1。&lt;/p>
+&lt;p>delve 的汉语意思是：钻研、探索；用这个来命名一个debug工具还是非常的形象。&lt;/p>
+&lt;h2 id="安装">安装&lt;/h2>
+&lt;p>已知以下说明适用于 Linux、macOS、Windows 和 FreeBSD。&lt;/p>
+&lt;p>克隆 git 存储库并构建：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>$ git clone https://github.com/go-delve/delve
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#8f0075">cd&lt;/span> delve
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ go install github.com/go-delve/delve/cmd/dlv
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>或者，在 Go 版本 1.16 或更高版本上：&lt;/p>
+&lt;p>&lt;strong>Install the latest release:&lt;/strong>
+&lt;code>$ go install github.com/go-delve/delve/cmd/dlv@latest&lt;/code>&lt;/p>
+&lt;p>&lt;strong>Install at tree head:&lt;/strong>
+&lt;code>$ go install github.com/go-delve/delve/cmd/dlv@master&lt;/code>&lt;/p>
+&lt;p>&lt;strong>安装在一个特定的版本或:&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>$ go install github.com/go-delve/delve/cmd/dlv@v1.7.3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ go install github.com/go-delve/delve/cmd/dlv@v1.7.4-0.20211208103735-2f13672765fe
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="命令">命令&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>Usage:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dlv &lt;span style="color:#00538b">[&lt;/span>command&lt;span style="color:#00538b">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Available Commands:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> attach 附加到正在运行的进程并开始调试.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> connect 使用终端客户端连接到无头调试服务器.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> core 检查核心转储.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dap 启动一个通过调试适配器协议&lt;span style="color:#00538b">(&lt;/span>DAP&lt;span style="color:#00538b">)&lt;/span>通信的无头TCP服务器.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> debug 编译并开始调试当前目录中的主包或指定的包.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">exec&lt;/span> 执行预编译的二进制文件，并开始调试会话.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">help&lt;/span> Help about any &lt;span style="color:#8f0075">command&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run 弃用的命令。使用&lt;span style="color:#2544bb">&amp;#39;debug&amp;#39;&lt;/span>代替.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">test&lt;/span> 编译测试二进制文件并开始调试程序.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trace 编译并开始跟踪程序.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version Prints version.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="操作-示例代码">[操作] 示例代码&lt;/h2>
+&lt;p>下面是检查操作的代码&lt;/p></description></item><item><title>Filebeat轻量型日志采集器-自定义processors处理器</title><link>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/</link><pubDate>Thu, 23 Feb 2023 18:14:25 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/</guid><description>&lt;h2 id="引入对beat的依赖">引入对beat的依赖&lt;/h2>
+&lt;p>&lt;code>go get github.com/elastic/beats/v7&lt;/code>&lt;/p>
+&lt;h2 id="定义在filebeat中的配置文件">定义在filebeat中的配置文件&lt;/h2>
+&lt;p>filebeat通常以配置文件的方式加载插件。让定义一下自定义配置。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>filebeat.inputs:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - type: &lt;span style="color:#0000c0">log&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> paths:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#0000c0">example/example.log&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>processors:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050"># 自定义处理器插件 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - parse_text:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> file_has_suffix: &lt;span style="color:#0000c0">example.log&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>output.console:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pretty: &lt;span style="color:#0000c0">true&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="go文件中的配置">go文件中的配置&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> actions
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> config &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	FileHasSuffix &lt;span style="color:#005a5f">string&lt;/span> &lt;span style="color:#2544bb">`config:&amp;#34;file_has_suffix&amp;#34; validate:&amp;#34;required&amp;#34;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="初始化加载插件">初始化加载插件&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">init&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	processors.&lt;span style="color:#721045">RegisterPlugin&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;parse_text&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		checks.&lt;span style="color:#721045">ConfigChecked&lt;/span>(NewParseText,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			checks.&lt;span style="color:#721045">RequireFields&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;file_has_suffix&amp;#34;&lt;/span>)),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="run接口">Run接口&lt;/h2>
+&lt;p>处理 &lt;strong>filebeat&lt;/strong> 读取到的每行日志数据&lt;code>message&lt;/code>, 这里我们就可以自定义一些处理解析逻辑, 下面逻辑是将日志数据按&lt;code>,&lt;/code>切分,重新组装到&lt;code>event.Fields&lt;/code>字段里.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (p parseText) &lt;span style="color:#721045">Run&lt;/span>(event &lt;span style="color:#00538b">*&lt;/span>beat.Event) (&lt;span style="color:#00538b">*&lt;/span>beat.Event, &lt;span style="color:#005a5f">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> !p.&lt;span style="color:#721045">isParseFile&lt;/span>(event) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> event, &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	message, err &lt;span style="color:#00538b">:=&lt;/span> p.&lt;span style="color:#721045">getMessage&lt;/span>(event)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> event, &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 按空格切分文本
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	split &lt;span style="color:#00538b">:=&lt;/span> strings.&lt;span style="color:#721045">Split&lt;/span>(message, &lt;span style="color:#2544bb">&amp;#34;,&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	p.result[&lt;span style="color:#2544bb">&amp;#34;split&amp;#34;&lt;/span>] = split
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_, err = event.Fields.&lt;span style="color:#721045">Put&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;parse_text&amp;#34;&lt;/span>, p.result)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>, err
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">return&lt;/span> event, &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="main函数">main函数&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;os&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_ &lt;span style="color:#2544bb">&amp;#34;filebeat-plugin/pkg/processors/actions&amp;#34;&lt;/span> &lt;span style="color:#505050">// 这里需要将自定义插件注册
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	&lt;span style="color:#2544bb">&amp;#34;github.com/elastic/beats/v7/filebeat/cmd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	inputs &lt;span style="color:#2544bb">&amp;#34;github.com/elastic/beats/v7/filebeat/input/default-inputs&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">:=&lt;/span> cmd.&lt;span style="color:#721045">Filebeat&lt;/span>(inputs.Init, cmd.&lt;span style="color:#721045">FilebeatSettings&lt;/span>()).&lt;span style="color:#721045">Execute&lt;/span>(); err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		os.&lt;span style="color:#721045">Exit&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="打包-build">打包 build&lt;/h2>
+&lt;p>项目路径下执行 &lt;code>go build -o filebeat.exe ./cmd/filebeat/&lt;/code>&lt;/p></description></item><item><title>Facebook 开源 Golang 实体框架 Ent</title><link>https://blog.ch3nnn.cn/posts/2023/facebook-ent%E5%BC%80%E6%BA%90%E5%AE%9E%E4%BD%93%E6%A1%86%E6%9E%B6/</link><pubDate>Mon, 16 Jan 2023 17:29:45 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/facebook-ent%E5%BC%80%E6%BA%90%E5%AE%9E%E4%BD%93%E6%A1%86%E6%9E%B6/</guid><description>&lt;p>&lt;img src="https://cdn.jsdelivr.net/gh/ch3nnn/picgo/blog/imgs16738590832901.jpg" alt="">&lt;/p>
+&lt;p>ent是一个简单而又功能强大的Go语言实体框架，ent易于构建和维护应用程序与大数据模型。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>图就是代码&lt;/strong> - 将任何数据库表建模为Go对象。&lt;/li>
+&lt;li>&lt;strong>轻松地遍历任何图形&lt;/strong> - 可以轻松地运行查询、聚合和遍历任何图形结构。&lt;/li>
+&lt;li>&lt;strong>静态类型和显式API&lt;/strong> - 使用代码生成静态类型和显式API，查询数据更加便捷。&lt;/li>
+&lt;li>&lt;strong>多存储驱动程序&lt;/strong> - 支持MySQL, PostgreSQL, SQLite 和 Gremlin。&lt;/li>
+&lt;li>&lt;strong>可扩展&lt;/strong> - 简单地扩展和使用Go模板自定义。&lt;/li>
+&lt;/ul>
+&lt;h2 id="安装">安装&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-console" data-lang="console">&lt;span style="display:flex;">&lt;span>go install entgo.io/ent/cmd/ent@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="快速开始">快速开始&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>go mod init &amp;lt;project&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="创建你的第一个项目">创建你的第一个项目&lt;/h3>
+&lt;p>进入你项目的根目录，然后运行：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>go run -mod&lt;span style="color:#00538b">=&lt;/span>mod entgo.io/ent/cmd/ent init User
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>以上的命令会在&lt;code>&amp;lt;project&amp;gt;/ent/schema/&lt;/code>目录下产生&lt;code>User&lt;/code>的数据模式（数据模式是数据库系统设计中的专业术语，若对该部分有任何理解问题，请查阅数据库系统的相关书籍）：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> schema
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User在User实体中组合了ent默认的数据库模式定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ent.Schema
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的边
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Edges&lt;/span>() []ent.Edge {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>为&lt;code>User&lt;/code> 模式添加两个字段：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> schema
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent/schema/field&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> []ent.Field{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> field.&lt;span style="color:#721045">Int&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;age&amp;#34;&lt;/span>).
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#721045">Positive&lt;/span>(),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> field.&lt;span style="color:#721045">String&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;name&amp;#34;&lt;/span>).
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#721045">Default&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;unknown&amp;#34;&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>从项目的根目录下像如下命令那样，运行&lt;code>go generate&lt;/code>：&lt;/p></description></item><item><title>Filebeat轻量型日志采集器及output插件开发</title><link>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/</link><pubDate>Mon, 09 Jan 2023 16:36:01 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/</guid><description>&lt;blockquote>
+&lt;p>无论您是从安全设备、云、容器、主机还是 OT 进行数据收集，Filebeat 都将为您提供一种轻量型方法，用于转发和汇总日志与文件，让简单的事情不再繁杂。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="介绍">介绍&lt;/h2>
+&lt;p>Filebeat 是使用 Golang 实现的轻量型日志采集器。本质上是一个 agent ，可以安装在各个节点上，根据配置读取对应位置的日志，并上报到相应的地方去。&lt;/p>
+&lt;h3 id="概要">概要&lt;/h3>
+&lt;p>Filebeat 并不依赖于 ElasticSearch，可以单独存在。我们可以单独使用Filebeat进行日志的上报和搜集。filebeat 内置了常用的 Output 组件, 例如 kafka、ElasticSearch、redis 等，出于调试考虑，也可以输出到 console 和 file 。我们可以利用现有的 Output 组件，将日志进行上报。&lt;/p>
+&lt;h3 id="整体工作原理">整体工作原理&lt;/h3>
+&lt;p>Filebeat 由两个主要组件组成：harvester 和 prospector。&lt;/p>
+&lt;ul>
+&lt;li>harvester (采集器) 的主要职责是读取单个文件的内容。读取每个文件，并将内容发送到 the output。 每个文件启动一个 harvester，harvester 负责打开和关闭文件，这意味着在运行时文件描述符保持打开状态。如果文件在读取时被删除或重命名，Filebeat 将继续读取文件。&lt;/li>
+&lt;li>prospector (查找器) 的主要职责是管理 harvester 并找到所有要读取的文件来源。如果输入类型为日志，则查找器将查找路径匹配的所有文件，并为每个文件启动一个 harvester。每个 prospector 都在自己的 Go 协程中运行。&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;em>注：Filebeat prospector只能读取本地文件， 没有功能可以连接到远程主机来读取存储的文件或日志。&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;p>由以上两个组件一起工作来读取文件（tail file）并将事件数据发送到指定的输出。
+下图是 Filebeat 官方提供的架构图：
+&lt;img src="https://cdn.jsdelivr.net/gh/ch3nnn/picgo/blog/imgs20230109163928.png" alt="">&lt;/p>
+&lt;h4 id="filebeat背后的老大">Filebeat背后的“老大”&lt;/h4>
+&lt;p>说到Filebeat，它其实只是&lt;a href="https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Felastic%2Fbeats%2Ftree%2Fmaster%2Flibbeat">beats家族&lt;/a>众多成员中的一个。除了Filebeat, 还有很多其他的beat小伙伴：&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>beat&lt;/th>
+ &lt;th>功能&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>Filebeat&lt;/td>
+ &lt;td>收集日志文件&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>Metricbeat&lt;/td>
+ &lt;td>收集各种指标数据&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>Packetbeat&lt;/td>
+ &lt;td>收集网络数据包&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>Auditbeat&lt;/td>
+ &lt;td>收集审计数据&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>Heartbeat&lt;/td>
+ &lt;td>收集服务运行状态监测数据&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&amp;hellip;&lt;/td>
+ &lt;td>&amp;hellip;&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;p>如果你愿意的话，你也可以按照beat的规范来写自己的beat。
+能实现以上这些beat，都离不开beats家族真正的“老大”—— libbeat， 它是beat体系的核心库。我们接下来看一下libbeat到底都作了些什么&lt;/p></description></item><item><title>这些最常用的 Go CLI 命令，新手 Gopher 应该掌握</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</link><pubDate>Mon, 02 Jan 2023 10:28:19 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84gocli%E5%91%BD%E4%BB%A4/</guid><description>&lt;p>本文将介绍一些最基本的 Go 命令行命令。如果你刚接触 Go 语言，那你有必要记住它们，因为这些命令是 Go 开发者日常工作中所必备的。&lt;/p>
+&lt;p>&lt;strong>Go version&lt;/strong>&lt;/p>
+&lt;p>开始 Go 项目前，我们应该确保开发机上已经安装好了 Go 编译器。这可以通过 &lt;a href="https://go.dev/doc/install">https://go.dev/doc/install&lt;/a> 进行下载安装。&lt;/p>
+&lt;p>通过执行以下命令可以查看安装的 Go 版本信息。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> version
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">go&lt;/span> version go1&lt;span style="color:#0000c0">.18&lt;/span> darwin&lt;span style="color:#00538b">/&lt;/span>amd64
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>Go env&lt;/strong>&lt;/p>
+&lt;p>如果我们可能想查看一些 Go 相关的环境变量，例如 GOROOT 或者 GOPATH。你可以执行这个命令。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> env
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当你想对某个环境变量进行更改，例如修改 Go 代理，你可以这样做。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> env &lt;span style="color:#00538b">-&lt;/span>w GOPROXY=https:&lt;span style="color:#505050">//goproxy.io,direct
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>go mod&lt;/strong>&lt;/p>
+&lt;p>在你开始建立第一个 Go 程序时，在项目根目录下，你应该运行这样的命令。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> mod init &amp;lt;your project name&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>例如&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> mod init demo&lt;span style="color:#00538b">/&lt;/span>firstProject
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>此时，项目根目录将增加 go.mod 文件，它的内容如下&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ cat &lt;span style="color:#5317ac">go&lt;/span>.mod 
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>module demo&lt;span style="color:#00538b">/&lt;/span>firstProject
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#0000c0">1.18&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果你有其他语言的经验，那么 go.mod 类似于 Python 中的 requirements.txt，Java 中的 pom.xml，它用于管理项目的依赖包。&lt;/p></description></item><item><title>Golang 代码检查工具(golangci-lint)</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7golangci-lint/</link><pubDate>Thu, 22 Dec 2022 11:05:22 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7golangci-lint/</guid><description>&lt;h2 id="一介绍">一、介绍&lt;/h2>
+&lt;p>&lt;code>golangci-lint&lt;/code> 是一个代码检查工具的集合，聚集了多种 Go 代码检查工具，如 &lt;code>golint&lt;/code>、&lt;code>go vet&lt;/code> 等。&lt;/p>
+&lt;p>优点：&lt;/p>
+&lt;ul>
+&lt;li>运行速度快&lt;/li>
+&lt;li>可以集成到 vscode、goland 等开发工具中&lt;/li>
+&lt;li>包含了非常多种代码检查器&lt;/li>
+&lt;li>可以集成到 CI 中&lt;/li>
+&lt;li>这是包含的代码检查器列表：Linters&lt;/li>
+&lt;/ul>
+&lt;h2 id="二安装">二、安装&lt;/h2>
+&lt;p>&lt;code>golangci-lint&lt;/code> 官方不建议使用 &lt;code>go get&lt;/code> 方式安装，推荐使用二进制安装。&lt;/p>
+&lt;h3 id="macos">MacOS&lt;/h3>
+&lt;p>直接使用 homebrew 安装：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>brew install golangci-lint
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>brew upgrade golangci-lint
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="linux-和-windows">Linux 和 Windows&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050"># binary will be $(go env GOPATH)/bin/golangci-lint&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl -sSfL https://raw.githubusercontent.com/Goci/golangci-lint/master/install.sh | sh -s -- -b &lt;span style="color:#5317ac">$(&lt;/span>go env GOPATH&lt;span style="color:#5317ac">)&lt;/span>/bin v1.42.1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>golangci-lint --version
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>golangci-lint&lt;/code> 将会被安装到 &lt;strong>GOPATH/bin&lt;/strong> 目录中，如果此目录不在环境变量路径中需要加上。&lt;/p>
+&lt;h2 id="三使用方式">三、使用方式&lt;/h2>
+&lt;h3 id="命令行">命令行&lt;/h3>
+&lt;p>在项目根目录下执行以下命令检查整个项目的代码：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>golangci-lint run
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其等价于:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>golangci-lint run ./...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>或者可以指定检查某个目录下的代码文件，指定目录时不会递归分析其子目录，要递归分析其子目录需要加上 /&amp;hellip;：&lt;/p></description></item><item><title>Golang-使用gvm进行版本控制</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BD%BF%E7%94%A8gvm%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/</link><pubDate>Sun, 14 Aug 2022 18:00:01 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BD%BF%E7%94%A8gvm%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/</guid><description>&lt;p>当你想为每个项目切换 go 版本时，gvm (Go Version Manager) 很方便。&lt;/p>
+&lt;p>这里，我将介绍“如何在Mac上安装gvm”和“如何使用gvm”&lt;/p>
+&lt;h2 id="使用准备">使用准备&lt;/h2>
+&lt;h3 id="仅适用于-mac-的准备工作">仅适用于 Mac 的准备工作&lt;/h3>
+&lt;p>按照MacOSX 要求中的说明执行以下命令。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>xcode-select --install
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>brew update
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>brew install mercurial
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="gvm安装">gvm安装&lt;/h3>
+&lt;p>我使用 zsh 作为我的 shell。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#8f0075">echo&lt;/span> &lt;span style="color:#00538b">$SHELL&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/bin/zsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>对于 zsh，您可以这样安装：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>$ zsh &amp;lt; &amp;lt;&lt;span style="color:#00538b">(&lt;/span>curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer&lt;span style="color:#00538b">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cloning from https://github.com/moovweb/gvm.git to /Users/user_name/.gvm
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>No existing Go versions detected
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Installed GVM v1.0.22
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Please restart your terminal session or to get started right away run
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">`&lt;/span>&lt;span style="color:#8f0075">source&lt;/span> /Users/user_name/.gvm/scripts/gvm&lt;span style="color:#2544bb">`&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>~/.zshrc&lt;/code> 以下行被添加到最后一行&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#00538b">[[&lt;/span> -s &lt;span style="color:#2544bb">&amp;#34;/Users/user_name/.gvm/scripts/gvm&amp;#34;&lt;/span> &lt;span style="color:#00538b">]]&lt;/span> &lt;span style="color:#00538b">&amp;amp;&amp;amp;&lt;/span> &lt;span style="color:#8f0075">source&lt;/span> &lt;span style="color:#2544bb">&amp;#34;/Users/user_name/.gvm/scripts/gvm&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>重新启动终端 gvm 即可使用&lt;/p></description></item><item><title>Golang-常见数据结构Slice</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84slice/</link><pubDate>Sat, 30 Apr 2022 00:56:46 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84slice/</guid><description>&lt;h1 id="golang-常见数据结构slice">Golang-常见数据结构Slice&lt;/h1>
+&lt;h2 id="slice">Slice&lt;/h2>
+&lt;p>slice 翻译成中文就是切片，它和数组（array）很类似，可以用下标的方式进行访问，如果越界，就会产生 panic。但是它比数组更灵活，可以自动地进行扩容。&lt;/p>
+&lt;p>了解 slice 的本质, 最简单的方法就是看它的源码:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// runtime/slice.go
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">type&lt;/span> slice &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> array unsafe.Pointer &lt;span style="color:#505050">// 元素指针
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> len &lt;span style="color:#005a5f">int&lt;/span> &lt;span style="color:#505050">// 长度 
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> cap &lt;span style="color:#005a5f">int&lt;/span> &lt;span style="color:#505050">// 容量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>slice 共有三个属性:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>指针&lt;/strong> 指向底层数组&lt;/li>
+&lt;li>&lt;strong>长度&lt;/strong> 表示切片可用元素的个数，也就是说使用下标对 slice 的元素进行访问时，下标不能超过 slice 的长度&lt;/li>
+&lt;li>&lt;strong>容量&lt;/strong> 底层数组的元素个数，容量 &amp;gt;= 长度。在底层数组不进行扩容的情况下，容量也是 slice 可以扩张的最大限度。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://cdn.ch3nnn.cn/blog/202304191511106.png" alt="">&lt;/p>
+&lt;p>&lt;strong>注意&lt;/strong>: 底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。&lt;/p>
+&lt;h2 id="slice-创建">slice 创建&lt;/h2>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>方式&lt;/th>
+ &lt;th>代码示例&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>直接声明&lt;/td>
+ &lt;td>var slice []int&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>new&lt;/td>
+ &lt;td>slice := *new([]int)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>字面量&lt;/td>
+ &lt;td>slice := []int{1,2,3,4}&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>make&lt;/td>
+ &lt;td>slice := make(int[], 5, 10)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>从切片或者数组&amp;quot;截取&amp;quot;&lt;/td>
+ &lt;td>slice := array[1:5] 或 slice := sourceSlice[1:5]&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>直接声明&lt;/strong>&lt;/p></description></item><item><title>Golang-常见数据结构Map</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84map/</link><pubDate>Mon, 11 Apr 2022 10:07:33 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84map/</guid><description>&lt;h2 id="map">Map&lt;/h2>
+&lt;p>map 是一种特殊的数据结构：一种元素对（pair）的无序集合，pair 的一个元素是 key，对应的另一个元素是 value，所以这个结构也称为关联数组或字典。这是一种快速寻找值的理想结构：给定 key，对应的 value 可以迅速定位。&lt;/p>
+&lt;p>map 这种数据结构在其他编程语言中也称为字典（Python）、hash 和 HashTable 等。&lt;/p>
+&lt;h2 id="哈希表">哈希表&lt;/h2>
+&lt;p>哈希，也就是 Map 的实现原理；哈希表是除了数组之外，最常见的数据结构，几乎所有的语言都会有数组和哈希表这两种集合元素，有的语言将数组实现成列表， 有的语言将哈希表称作结构体或者字典，但是它们是两种设计集合元素的思路，数组用于表示元素的序列，而哈希表示的是键值对之间映射关系，只是不同语言的叫法和实现稍微有些不同。&lt;/p>
+&lt;h2 id="设计原理">设计原理&lt;/h2>
+&lt;p>哈希表是计算机科学中的最重要数据结构之一，这不仅因为它 &lt;code>O(1)&lt;/code> 的读写性能非常优秀，还因为它提供了键值之间的映射。想要实现一个性能优异的哈希表，需要注意两个关键点 —— 哈希函数和冲突解决方法。&lt;/p>
+&lt;h3 id="哈希函数">哈希函数&lt;/h3>
+&lt;p>实现哈希表的关键点在于如何选择哈希函数，哈希函数的选择在很大程度上能够决定哈希表的读写性能，在理想情况下，哈希函数应该能够将不同键能够地映射到不同的索引上，这要求哈希函数输出范围大于输入范围，但是由于键的数量会远远大于映射的范围，所以在实际使用时，这个理想的结果是不可能实现的。&lt;/p>
+&lt;p>完美哈希函数如图:
+&lt;img src="https://cdn.ch3nnn.cn/img202304111020765.png" alt="">&lt;/p>
+&lt;p>比较实际的方式是让哈希函数的结果能够尽可能的均匀分布，然后通过工程上的手段解决哈希碰撞的问题，但是哈希的结果一定要尽可能均匀，结果不均匀的哈希函数会造成更多的冲突并导致更差的读写性能。&lt;/p>
+&lt;p>不均匀哈希函数如图:
+&lt;img src="https://cdn.ch3nnn.cn/img202304111022378.png" alt="">&lt;/p>
+&lt;p>在一个使用结果较为均匀的哈希函数中，哈希的增删改查都需要 O(1) 的时间复杂度，但是非常不均匀的哈希函数会导致所有的操作都会占用最差 O(n) 的复杂度，所以在哈希表中使用好的哈希函数是至关重要的。&lt;/p>
+&lt;h3 id="冲突解决">冲突解决&lt;/h3>
+&lt;p>哈希函数往往都是不完美的，输出的范围是有限的，所以一定会发生哈希碰撞，这时就需要一些方法来解决哈希碰撞的问题，常见方法的就是开放寻址法和拉链法。&lt;/p>
+&lt;p>&lt;strong>开放寻址法&lt;/strong>
+开放寻址法是一种在哈希表中解决哈希碰撞的方法，这种方法的核心思想是对数组中的元素依次探测和比较以判断目标键值对是否存在于哈希表中，如果使用开放寻址法来实现哈希表，那么在支撑哈希表的数据结构就是数组，不过因为数组的长度有限，存储 (author, draven) 这个键值对时会从索引开始遍历&lt;/p>
+&lt;p>当我们向当前哈希表写入新的数据时发生了冲突，就会将键值对写入到下一个不为空的位置
+开放地址法写入数据如图:
+&lt;img src="https://cdn.ch3nnn.cn/img202304111027414.png" alt="">
+如上图所示，当 Key3 与已经存入哈希表中的两个键值对 Key1 和 Key2 发生冲突时，Key3 会被写入 Key2 后面的空闲内存中；当我们再去读取 Key3 对应的值时就会先对键进行哈希并取模，这会帮助我们找到 Key1，因为 Key1 与我们期望的键 Key3 不匹配，所以会继续查找后面的元素，直到内存为空或者找到目标元素。&lt;/p>
+&lt;p>开放地址法读取数据如图:
+&lt;img src="https://cdn.ch3nnn.cn/img202304111029114.png" alt="">&lt;/p>
+&lt;p>当需要查找某个键对应的值时，就会从索引的位置开始对数组进行线性探测，找到目标键值对或者空内存就意味着这一次查询操作的结束。&lt;/p>
+&lt;p>开放寻址法中对性能影响最大的就是装载因子，它是数组中元素的数量与数组大小的比值，随着装载因子的增加，线性探测的平均用时就会逐渐增加，这会同时影响哈希表的读写性能，当装载率超过 70% 之后，哈希表的性能就会急剧下降，而一旦装载率达到 100%，整个哈希表就会完全失效，这时查找任意元素都需要遍历数组中全部的元素，所以在实现哈希表时一定要时刻关注装载因子的变化。&lt;/p>
+&lt;p>&lt;strong>拉链法&lt;/strong>&lt;/p>
+&lt;p>与开放地址法相比，拉链法是哈希表中最常见的实现方法，大多数的编程语言都用拉链法实现哈希表，它的实现比较开放地址法稍微复杂一些，但是平均查找的长度也比较短，各个用于存储节点的内存都是动态申请的，可以节省比较多的存储空间。&lt;/p>
+&lt;p>实现拉链法一般会使用数组加上链表，不过有一些语言会在拉链法的哈希中引入红黑树以优化性能，拉链法会使用链表数组作为哈希底层的数据结构，我们可以将它看成一个可以扩展的『二维数组』：
+拉链法写入数据如图:
+&lt;img src="https://cdn.ch3nnn.cn/img202304111030711.png" alt="">&lt;/p></description></item><item><title>Golang-channel通道</title><link>https://blog.ch3nnn.cn/posts/2022/golang-channel%E9%80%9A%E9%81%93/</link><pubDate>Sat, 19 Mar 2022 17:41:05 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-channel%E9%80%9A%E9%81%93/</guid><description>&lt;blockquote>
+&lt;p>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="channel-有哪些应用">channel 有哪些应用&lt;/h2>
+&lt;p>&lt;strong>停止信号&lt;/strong>
+channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。&lt;/p>
+&lt;p>&lt;strong>定时任务&lt;/strong>
+与计时器结合，一般有两种做法：实现超时控制、实现定期执行某个任务。
+有时候，需要执行某项操作，但又不想它耗费太长时间，上一个定时器就可以搞定。这就是时控制：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">select&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span> time.&lt;span style="color:#721045">After&lt;/span>(&lt;span style="color:#0000c0">100&lt;/span>&lt;span style="color:#00538b">*&lt;/span>time.Millisecond):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span> s.stopc:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>等待 100 ms 后，如果 s.stopc 还没有读出数据或者被关闭，就直接结束。&lt;/p>
+&lt;p>定时执行某个任务，也比较简单：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">worker&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	ticker &lt;span style="color:#00538b">:=&lt;/span> time.&lt;span style="color:#721045">Tick&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">select&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span> ticker:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#505050">// 执行定时任务
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;执行 1s 定时任务&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>每隔 1 秒种，执行一次定时任务。&lt;/p>
+&lt;p>&lt;strong>解耦生产方和消费方&lt;/strong>
+服务启动时，启动 n 个 worker，作为工作协程池，这些协程工作在一个 for {} 无限循环里，从某个 channel 消费工作任务并执行：&lt;/p></description></item><item><title>Golang-垃圾回收</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/</link><pubDate>Fri, 18 Mar 2022 23:21:06 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/</guid><description>&lt;p>垃圾回收(Garbage Collection，简称GC)是编程语言中提供的自动的内存管理机制，自动释放不需要的内存对象，让出存储器资源。 GC过程中无需程序员手动执行。GC机制在现代很多编程语言都支持，GC能力的性能与优劣也是不同语言之间对比度指标之一。&lt;/p>
+&lt;h3 id="垃圾回收算法">垃圾回收算法&lt;/h3>
+&lt;p>目前比较常见的垃圾回收算法有三种：
+&lt;strong>引用计数&lt;/strong>：为每个对象维护一个引用计数，当引用该对象的对象销毁时，引用计数 -1，当对象引用计数为 0 时回收该对象。&lt;/p>
+&lt;ul>
+&lt;li>代表语言：Python、PHP、Swift&lt;/li>
+&lt;li>优点：对象回收快，不会出现内存耗尽或达到某个阈值时才回收。&lt;/li>
+&lt;li>缺点：不能很好的处理循环引用，而实时维护引用计数也是有损耗的。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>标记-清除&lt;/strong>：从根变量开始遍历所有引用的对象，标记引用的对象，没有被标记的进行回收。&lt;/p>
+&lt;ul>
+&lt;li>代表语言：Golang（三色标记法）&lt;/li>
+&lt;li>优点：解决了引用计数的缺点。&lt;/li>
+&lt;li>缺点：需要 STW，暂时停掉程序运行。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>分代收集&lt;/strong>：按照对象生命周期长短划分不同的代空间，生命周期长的放入老年代，短的放入新生代，不同代有不同的回收算法和回收频率。&lt;/p>
+&lt;ul>
+&lt;li>代表语言：Java&lt;/li>
+&lt;li>优点：回收性能好&lt;/li>
+&lt;li>缺点：算法复杂&lt;/li>
+&lt;/ul>
+&lt;h3 id="golang-垃圾回收">Golang 垃圾回收&lt;/h3>
+&lt;h4 id="go13之前-标记清除法">Go1.3之前 标记清除法&lt;/h4>
+&lt;ol>
+&lt;li>进行 STW（stop the world 即暂停程序业务逻辑），然后从 main 函数开始找到不可达的内存占用和可达的内存占用&lt;/li>
+&lt;li>开始标记，程序找出可达内存占用并做标记&lt;/li>
+&lt;li>标记结束清除未标记的内存占用&lt;/li>
+&lt;li>结束 STW 停止暂停，让程序继续运行，循环该过程直到 main 生命周期结束&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://s2.loli.net/2023/03/18/eaq4SfrMFOHYxVI.png" alt="">&lt;/p>
+&lt;p>一开始的做法是将垃圾清理结束时才停止 STW，后来优化了方案将清理垃圾放到了 STW 之后，与程序运行同时进行，这样做减小了 STW 的时长。
+但是 STW 会暂停用户逻辑对程序的性能影响是非常大的，这种粒度的 STW 对于性能较高的程序还是无法接受，但是无论怎么优化，Go V1.3都面临这个一个重要问题，就是mark-and-sweep 算法会暂停整个程序 。
+因此 Go1.5 采用了三色标记法优化了 STW。&lt;/p>
+&lt;h4 id="go15之后-三色并发标记法">Go1.5之后 三色并发标记法&lt;/h4>
+&lt;p>三色标记法只是为了叙述方便而抽象出来的一种说法，实际上的对象是没有三色之分的。这里的三色，对应了垃圾回收过程中对象的三种状态：&lt;/p>
+&lt;p>灰色：对象还在标记队列中等待
+黑色：对象已被标记，gcmarkBits对应位为 1 – 该对象不会在本次 GC 中被回收
+白色：对象未被标记，gcmarkBits对应位为 0 – 该对象将会在本次 GC 中被清理&lt;/p></description></item><item><title>Golang-Modules的演进史</title><link>https://blog.ch3nnn.cn/posts/2022/golang-modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/</link><pubDate>Sun, 13 Mar 2022 11:53:48 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-modules%E7%9A%84%E6%BC%94%E8%BF%9B%E5%8F%B2/</guid><description>&lt;h2 id="介绍">介绍&lt;/h2>
+&lt;p>Go 语言在 v1.11 开始支持 Modules，本文我们介绍一下 Go 语言各个版本支持 Go Modules 的演进史。&lt;/p>
+&lt;p>使用&lt;code> Go Modules&lt;/code> 模式，一般分为以下几个流程：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>go mod init&lt;/code> 创建一个新模块，初始化 &lt;code>go.mod&lt;/code> 文件。&lt;/li>
+&lt;li>&lt;code>go build&lt;/code>、&lt;code>go test&lt;/code>、&lt;code>go run&lt;/code>、&lt;code>go install&lt;/code> 等构建命令，向 &lt;code>go.mod&lt;/code>文件中添加模块所需的依赖项。&lt;/li>
+&lt;li>&lt;code>go list -m -json all&lt;/code> 打印当前模块的依赖项。&lt;/li>
+&lt;li>&lt;code>go get&lt;/code> 添加依赖项，或修改依赖项版本。&lt;/li>
+&lt;li>&lt;code>go mod tidy&lt;/code> 删除未使用的依赖项。&lt;/li>
+&lt;/ul>
+&lt;h2 id="go-modules-演进史">Go Modules 演进史&lt;/h2>
+&lt;p>&lt;strong>Go v1.11&lt;/strong>
+从 Go v1.11 开始支持 Go Moduls。
+为了兼容使用 Go v1.11 之前的任意版本的项目，当设置 &lt;code>GO111MODULE=auto&lt;/code> 或 &lt;code>GO111MODULE=off&lt;/code> 时，Go v1.11 在 &lt;code>$GOPATH/src&lt;/code> 中，继续使用 &lt;code>GOPATH&lt;/code> 模式。
+当设置 &lt;code>GO111MODULE=auto&lt;/code> 时，其它任意位置，如果当前目录或父目录包含 go.mod 文件，则使用 Modules 模式。&lt;/p></description></item><item><title>Golang-逃逸分析</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</link><pubDate>Mon, 07 Mar 2022 13:38:48 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</guid><description>&lt;h3 id="什么是堆栈">什么是堆/栈&lt;/h3>
+&lt;ul>
+&lt;li>堆（Heap）：一般来讲是人为手动进行管理，手动申请、分配、释放。一般所涉及的内存大小并不定，一般会存放较大的对象。另外其分配相对慢，涉及到的指令动作也相对多&lt;/li>
+&lt;li>栈（Stack）：由编译器进行管理，自动申请、分配、释放。一般不会太大，我们常见的函数参数（不同平台允许存放的数量不同），局部变量等等都会存放在栈上&lt;/li>
+&lt;/ul>
+&lt;h3 id="什么是逃逸分析">什么是逃逸分析&lt;/h3>
+&lt;p>我们如何知道一个对象是应该放在堆内存，还是栈内存之上呢？可以官网的FAQ（地址：&lt;a href="https://go.dev/doc/faq#stack_or_heap">https://go.dev/doc/faq#stack_or_heap&lt;/a>）中找到答案.
+&lt;img src="https://s2.loli.net/2023/03/07/5xzbUkInvQrVpDu.png" alt="">&lt;/p>
+&lt;p>大致意思是:&lt;/p>
+&lt;blockquote>
+&lt;p>从正确性的角度来看，你不需要知道。Go中的每个变量都存在，只要有对它的引用。实现选择的存储位置与语言的语义无关。
+存储位置确实对编写高效的程序有影响。如果可能的话，Go编译器将为该函数的堆栈帧中的函数分配局部变量。但是，如果编译器不能证明该变量在函数返回后没有被引用，那么编译器必须在有垃圾回收的堆上分配该变量，以避免悬空指针错误。此外，如果局部变量非常大，那么将其存储在堆中可能比存储在栈中更有意义。
+在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="在什么阶段确立逃逸">在什么阶段确立逃逸&lt;/h3>
+&lt;p>Go语言虽然没有明确说明逃逸分析规则，但是有以下几点准则，是可以参考的。&lt;/p>
+&lt;ul>
+&lt;li>逃逸分析是在编译器完成的，这是不同于jvm的运行时逃逸分析&lt;/li>
+&lt;li>如果变量在函数外部没有引用，则优先放到栈中&lt;/li>
+&lt;li>如果变量在函数外部存在引用，则必定放在堆中&lt;/li>
+&lt;/ul>
+&lt;h3 id="逃逸规则">逃逸规则&lt;/h3>
+&lt;p>我们其实都知道一个普遍的规则，就是如果变量需要使用堆空间，那么他就应该进行逃逸。但是实际上Golang并不仅仅把逃逸的规则如此泛泛。Golang会有很多场景具备出现逃逸的现象。&lt;/p>
+&lt;p>一般我们给一个引用类对象中的引用类成员进行赋值，可能出现逃逸现象。可以理解为访问一个引用对象实际上底层就是通过一个指针来间接的访问了，但如果再访问里面的引用成员就会有第二次间接访问，这样操作这部分对象的话，极大可能会出现逃逸的现象。&lt;/p>
+&lt;p>Go语言中的引用类型有&lt;code>func&lt;/code>（函数类型），&lt;code>interface&lt;/code>（接口类型），&lt;code>slice&lt;/code>（切片类型），&lt;code>map&lt;/code>（字典类型），&lt;code>channel&lt;/code>（管道类型），&lt;code>*&lt;/code>（指针类型）等。&lt;/p>
+&lt;h3 id="怎么确定是否逃逸">怎么确定是否逃逸&lt;/h3>
+&lt;p>可以使用编译器提供的指令&lt;code>-gcflags&lt;/code> 就可以看到详细的逃逸分析过程，命令如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>go build -gcflags &lt;span style="color:#2544bb">&amp;#39;-m -l&amp;#39;&lt;/span> main.go
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其指令涉及的参数如下：&lt;/p>
+&lt;ul>
+&lt;li>-m：打印出逃逸分析的优化策略，实际上最多总共可以用 4 个 -m，但是这样子调试的信息量较大，一般用一个就足够了。&lt;/li>
+&lt;li>-l ：禁用函数内联，在这里禁用掉 inline 能更好的观察逃逸情况，减少干扰。&lt;/li>
+&lt;/ul>
+&lt;h3 id="常见逃逸案例分析">常见逃逸案例分析&lt;/h3>
+&lt;p>&lt;strong>new的变量在栈还是堆&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">foo&lt;/span>(argVal &lt;span style="color:#005a5f">int&lt;/span>) (&lt;span style="color:#00538b">*&lt;/span>&lt;span style="color:#005a5f">int&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal1 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal2 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal3 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal4 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal5 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//此处循环是防止go编译器将foo优化成inline(内联函数)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#505050">//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#505050">//即使fooVal3发生逃逸，地址与其他也是连续的
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">5&lt;/span>; i&lt;span style="color:#00538b">++&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">println&lt;/span>(argVal, fooVal1, fooVal2, fooVal3, fooVal4, fooVal5)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//fooVal3
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">return&lt;/span> fooVal3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mainVal &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">foo&lt;/span>(&lt;span style="color:#0000c0">666&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">println&lt;/span>(&lt;span style="color:#00538b">*&lt;/span>mainVal, mainVal)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>我们将fooVal 1-5 全部用&lt;code>new&lt;/code>的方式来开辟, 编译运行看结果, 显然&lt;code>fooVal3&lt;/code>发生了逃逸&lt;/p></description></item><item><title>Golang-GMP模型</title><link>https://blog.ch3nnn.cn/posts/2022/golang-gmp%E6%A8%A1%E5%9E%8B/</link><pubDate>Wed, 02 Mar 2022 16:45:39 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-gmp%E6%A8%A1%E5%9E%8B/</guid><description>&lt;h3 id="写在前面">写在前面&lt;/h3>
+&lt;p>Go 为了自身 goroutine 执行和调度的效率，自身在 runtime 中实现了一套 goroutine 的调度器，下面通过一段简单的代码展示一下 Go 应用程序在运行时的 goroutine，方便大家更好的理解。&lt;/p>
+&lt;blockquote>
+&lt;p>The Go scheduler is part of the Go runtime, and the Go runtime is built into your application&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">4&lt;/span>; i&lt;span style="color:#00538b">++&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#5317ac">func&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> time.&lt;span style="color:#721045">Sleep&lt;/span>(time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(runtime.&lt;span style="color:#721045">NumGoroutine&lt;/span>())
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>上面这段代码的输出为：&lt;code>5&lt;/code> 说明当前这个应用程序中存在 &lt;code>goroutine&lt;/code> 的数量是 &lt;code>5&lt;/code>，事实上也符合我们的预期。那么问题来了，这 5 个 goroutine 作为操作系统用户态的基本调度单元是无法直接占用操作系统的资源来执行的，必须经过内核级线程的分发，这是操作系统内部线程调度的基本模型，根据用户级线程和内核级线程的对应关系可以分为 1 对 1，N 对 1 以及 M 对 N 这三种模型，那么上述的 5 个 goroutine 在内核级线程上是怎么被分发的，这就是 Go语言的 goroutine 调度器决定的。&lt;/p></description></item><item><title>Golang-数组与切片常见错误及陷阱</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E5%8F%8A%E9%99%B7%E9%98%B1/</link><pubDate>Tue, 15 Feb 2022 16:34:35 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E5%8F%8A%E9%99%B7%E9%98%B1/</guid><description>&lt;h2 id="nil切片空切片零切片">nil切片、空切片、零切片&lt;/h2>
+&lt;p>&lt;strong>零切片&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s = &lt;span style="color:#8f0075">make&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>, &lt;span style="color:#0000c0">10&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(s)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#00538b">------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[&lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>表示底层数组的二进制内容都是零&lt;/p>
+&lt;p>&lt;strong>「空切片」和 「nil 切片」&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s1 []&lt;span style="color:#005a5f">int&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s2 = []&lt;span style="color:#005a5f">int&lt;/span>{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s3 = &lt;span style="color:#8f0075">make&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>, &lt;span style="color:#0000c0">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// new 函数返回是指针类型，所以需要使用 * 号来解引用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">var&lt;/span> s4 = &lt;span style="color:#00538b">*&lt;/span>&lt;span style="color:#8f0075">new&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#8f0075">len&lt;/span>(s1), &lt;span style="color:#8f0075">len&lt;/span>(s2), &lt;span style="color:#8f0075">len&lt;/span>(s3), &lt;span style="color:#8f0075">len&lt;/span>(s4))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#8f0075">cap&lt;/span>(s1), &lt;span style="color:#8f0075">cap&lt;/span>(s2), &lt;span style="color:#8f0075">cap&lt;/span>(s3), &lt;span style="color:#8f0075">cap&lt;/span>(s4))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(s1, s2, s3, s4)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#00538b">----------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[] [] [] []
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>上面这四种形式从输出结果上来看，似乎一摸一样，没区别。但是实际上是有区别的，我们要讲的两种特殊类型「空切片」和「 nil 切片」，就隐藏在上面的四种形式之中。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s1 []&lt;span style="color:#005a5f">int&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s2 = []&lt;span style="color:#005a5f">int&lt;/span>{}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s3 = &lt;span style="color:#8f0075">make&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>, &lt;span style="color:#0000c0">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s4 = &lt;span style="color:#00538b">*&lt;/span>&lt;span style="color:#8f0075">new&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> a1 = &lt;span style="color:#00538b">*&lt;/span>(&lt;span style="color:#00538b">*&lt;/span>[&lt;span style="color:#0000c0">3&lt;/span>]&lt;span style="color:#005a5f">int&lt;/span>)(unsafe.&lt;span style="color:#721045">Pointer&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>s1))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> a2 = &lt;span style="color:#00538b">*&lt;/span>(&lt;span style="color:#00538b">*&lt;/span>[&lt;span style="color:#0000c0">3&lt;/span>]&lt;span style="color:#005a5f">int&lt;/span>)(unsafe.&lt;span style="color:#721045">Pointer&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>s2))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> a3 = &lt;span style="color:#00538b">*&lt;/span>(&lt;span style="color:#00538b">*&lt;/span>[&lt;span style="color:#0000c0">3&lt;/span>]&lt;span style="color:#005a5f">int&lt;/span>)(unsafe.&lt;span style="color:#721045">Pointer&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>s3))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> a4 = &lt;span style="color:#00538b">*&lt;/span>(&lt;span style="color:#00538b">*&lt;/span>[&lt;span style="color:#0000c0">3&lt;/span>]&lt;span style="color:#005a5f">int&lt;/span>)(unsafe.&lt;span style="color:#721045">Pointer&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>s4))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(a1)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(a2)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(a3)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(a4)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#00538b">---------------------&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[&lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[&lt;span style="color:#0000c0">824634199592&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[&lt;span style="color:#0000c0">824634199592&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[&lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中输出为 [0 0 0] 的 s1 和 s4 变量就是「 nil 切片」，s2 和 s3 变量就是「空切片」。824634199592 这个值是一个特殊的内存地址，所有类型的「空切片」都共享这一个内存地址。&lt;/p></description></item><item><title>Golang-代码断行规则</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%96%AD%E8%A1%8C%E8%A7%84%E5%88%99/</link><pubDate>Wed, 02 Feb 2022 16:37:59 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E4%BB%A3%E7%A0%81%E6%96%AD%E8%A1%8C%E8%A7%84%E5%88%99/</guid><description>&lt;p>如果你已经写了一些Go代码，你应该知道，Go代码风格不能太随意。 具体说来，我们不能随意在某个空格或者符号字符处断行。 本文余下的部分将列出Go代码中的详细断行规则。&lt;/p>
+&lt;h2 id="分号插入规则">分号插入规则&lt;/h2>
+&lt;p>我们在Go编程中常遵循的一个规则是：一个显式代码块的起始左大括号{不放在下一行。 比如，下面这个for循环代码块编译将失败。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; i &amp;gt; &lt;span style="color:#0000c0">0&lt;/span>; i&lt;span style="color:#00538b">--&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{ &lt;span style="color:#505050">// error: 未预料到的新行
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>为了让上面这个for循环代码块编译成功，我们不能在起始左大括号{前断行，而应该像下面这样进行修改：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; i &amp;gt; &lt;span style="color:#0000c0">0&lt;/span>; i&lt;span style="color:#00538b">--&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然而，有时候起始左大括号{却可以放在一个新行上，比如下面这个for循环代编译时没有问题的。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// do something ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>那么，Go代码中的根本性换行规则究竟是如何定义的呢？ 在回答这个问题之前，我们应该知道一个事实：正式的Go语法是使用（英文）分号;做为结尾标识符的。 但是，我们很少在Go代码中使用和看到分号。为什么呢？原因是大多数分号都是可选的，因此它们常常被省略。 在编译时刻，Go编译器会自动插入这些省略的分号。&lt;/p>
+&lt;p>比如，下面这个程序中的十个分号都是可以被省略掉的。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> &lt;span style="color:#2544bb">&amp;#34;fmt&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">var&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		i &lt;span style="color:#005a5f">int&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		sum &lt;span style="color:#005a5f">int&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> i &amp;lt; &lt;span style="color:#0000c0">6&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		sum &lt;span style="color:#00538b">+=&lt;/span> i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		i&lt;span style="color:#00538b">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Println&lt;/span>(sum);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>假设上面这个程序存储在一个semicolons.go文件中，我们可以运行go fmt semicolons.go将此程序中的不必要的分号去除掉。 在编译时刻，编译器会自动此插入这些去除掉的分号（至此文件的内存中的版本）。&lt;/p>
+&lt;p>自动插入分号的规则是什么呢？Go白皮书这样描述：&lt;/p></description></item><item><title>Golang:停止Goroutine有几种方法</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%81%9C%E6%AD%A2goroutine%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</link><pubDate>Wed, 12 Jan 2022 18:23:23 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%81%9C%E6%AD%A2goroutine%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</guid><description>&lt;h3 id="goroutine介绍">goroutine介绍&lt;/h3>
+&lt;p>goroutine 是 Go 语言实现并发编程的利器，是 Go语言中的轻量级线程实现，由 Go 运行时（runtime）管理，简单的一个指令go function就能启动一个 goroutine；Go 程序会智能地将 goroutine 中的任务合理地分配给每个 CPU。&lt;/p>
+&lt;p>但是，Go语言并没有提供终止goroutine的接口，也就是说，我们不能从外部去停止一个goroutine，只能由goroutine内部退出(main函数终止除外)；&lt;/p>
+&lt;h3 id="goroutine-案例">goroutine 案例&lt;/h3>
+&lt;p>日常开发开启一个 goroutine go代码, 只需一个 go 关键字即可:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> wg sync.WaitGroup &lt;span style="color:#505050">// 等待组，用来阻塞程序
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span>) &lt;span style="color:#505050">// 等待组 +1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#5317ac">func&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">for&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;开启 goroutine&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Wait&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="几种停止的办法">几种停止的办法&lt;/h3>
+&lt;p>Go 目前用 channel 或 context 的方式来取消 (cancelation) 给 goroutine。&lt;/p>
+&lt;h4 id="channel">Channel&lt;/h4>
+&lt;ul>
+&lt;li>第一种方法，就是借助 channel 的 close 机制来完成对 goroutine 的精确控制。&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	msg &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#5317ac">struct&lt;/span>{})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#5317ac">func&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;[go-routine] start&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">select&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>msg:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;[go-routine] done&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#505050">// 必须 return, 否则 goroutine 不会结束
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>		}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;start&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;close channel&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#8f0075">close&lt;/span>(msg) &lt;span style="color:#505050">// 直接关闭通道 程序结束
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>第二种方法，通过定期轮训 channel 其结合了第一种方法和类似信号量的处理方式。&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;sync&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;time&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> wg sync.WaitGroup
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">worker&lt;/span>(in, quit &lt;span style="color:#00538b">&amp;lt;-&lt;/span>&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">defer&lt;/span> wg.&lt;span style="color:#721045">Done&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">select&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>quit:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;收到退出信号&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#505050">//必须return，否则goroutine不会结束
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>		&lt;span style="color:#5317ac">case&lt;/span> v &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>in:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(v)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	quit &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>) &lt;span style="color:#505050">//退出通道
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	in &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#721045">worker&lt;/span>(in, quit)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">3&lt;/span>; i&lt;span style="color:#00538b">++&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		in &lt;span style="color:#00538b">&amp;lt;-&lt;/span> i
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	quit &lt;span style="color:#00538b">&amp;lt;-&lt;/span> &lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#505050">//想通道写入退出信号
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	wg.&lt;span style="color:#721045">Wait&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="context">Context&lt;/h4>
+&lt;p>Go 语言的上下文（context）来做 goroutine 的控制和关闭, 对于是一种 tree 结构的goroutine, 要停止 sub tree 使用 channel 的方式不太方便&lt;/p></description></item><item><title>Golang:值传递还是引用传递</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/</link><pubDate>Sun, 09 Jan 2022 18:09:14 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/</guid><description>&lt;h2 id="go-官方的定义">Go 官方的定义&lt;/h2>
+&lt;p>本部分引用 Go 官方 FAQ 的 “When are function parameters passed by value?”，内容如下。&lt;/p>
+&lt;p>如同 C 系列的所有语言一样，Go 语言中的所有东西都是以值传递的。也就是说，一个函数总是得到一个被传递的东西的副本，就像有一个赋值语句将值赋给参数一样。&lt;/p>
+&lt;h2 id="传值和传引用">传值和传引用&lt;/h2>
+&lt;h3 id="什么是传值值传递">什么是传值（值传递）&lt;/h3>
+&lt;p>传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。&lt;strong>其指的是在调用函数时将实际参数复制一份传递到函数中，这样在函数中如果对参数进行修改，将不会影响到实际参数。&lt;/strong> 比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。&lt;/p>
+&lt;p>对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我们看个例子。&lt;/p>
+&lt;p>test_demo.go&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;testing&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">modify&lt;/span>(ip &lt;span style="color:#00538b">*&lt;/span>&lt;span style="color:#005a5f">int&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;函数里接收到的指针的内存地址是：%p\n&amp;#34;&lt;/span>, &lt;span style="color:#00538b">&amp;amp;&lt;/span>ip)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#00538b">*&lt;/span>ip = &lt;span style="color:#0000c0">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">TestDemo&lt;/span>(t &lt;span style="color:#00538b">*&lt;/span>testing.T) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	ip &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#00538b">&amp;amp;&lt;/span>i
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;原始指针的内存地址是：%p\n&amp;#34;&lt;/span>, &lt;span style="color:#00538b">&amp;amp;&lt;/span>ip)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#721045">modify&lt;/span>(ip)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;int值被修改了，新值为:&amp;#34;&lt;/span>, i)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>输出结果:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-text" data-lang="text">&lt;span style="display:flex;">&lt;span>原始指针的内存地址是：0xc00000e038
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>函数里接收到的指针的内存地址是：0xc00000e040
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>int值被修改了，新值为: 1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="什么是传引用引用传递">什么是传引用(引用传递)&lt;/h3>
+&lt;p>传引用，也叫做引用传递， &lt;strong>指在调用函数时将实际参数的地址直接传递到函数中&lt;/strong>，那么在函数中对参数所进行的修改，将影响到实际参数。&lt;/p>
+&lt;p>在 Go 语言中，官方已经明确了没有传引用，也就是没有引用传递这一情况。&lt;/p>
+&lt;p>&lt;strong>争议最大的 map 和 slice&lt;/strong>
+这时候又有小伙伴疑惑了，你看 Go 语言中的 map 和 slice 类型，能直接修改，难道不是同个内存地址，不是引用了？&lt;/p></description></item></channel></rss>

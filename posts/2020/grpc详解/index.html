@@ -1,15 +1,61 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='RPC 框架原理 RPC 框架的目标就是让远程服务调用更加简单、透明，RPC 框架负责屏蔽底层的传输方式（TCP 或者 UDP）、序列化方式（XML/Json/ 二进制）和通信细节。服务调用者可以像调用本地接口一样调用远程的服务提供者，而不需要关心底层通信细节和调用过程。
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='RPC 框架原理
+RPC 框架的目标就是让远程服务调用更加简单、透明，RPC 框架负责屏蔽底层的传输方式（TCP 或者 UDP）、序列化方式（XML/Json/ 二进制）和通信细节。服务调用者可以像调用本地接口一样调用远程的服务提供者，而不需要关心底层通信细节和调用过程。
 RPC 框架的调用原理图如下所示：
-gRPC是什么？ 官方文档-Python
+
+gRPC是什么？
+官方文档-Python
 gRPC是什么可以用官网的一句话来概括
+
 A high-performance, open-source universal RPC framework
+
 **所谓RPC(remote procedure call 远程过程调用)框架实际是提供了一套机制，使得应用程序之间可以进行通信，而且也遵从server/client模型。使用的时候客户端调用server端提供的接口就像是调用本地的函数一样。**如下图所示就是一个典型的RPC结构图。
-gRPC有什么好处以及在什么场景下需要用gRPC 既然是server/client模型，那么我们直接用restful api不是也可以满足吗，为什么还需要RPC呢？下面我们就来看看RPC到底有哪些优势
-gRPC vs. Restful API gRPC和restful API都提供了一套通信机制，用于server/client模型通信，而且它们都使用http作为底层的传输协议(严格地说, gRPC使用的http2.0，而restful api则不一定)。不过gRPC还是有些特有的优势，如下：
-gRPC可以通过protobuf来定义接口，从而可以有更加严格的接口约束条件。关于protobuf可以参见笔者之前的小文Google Protobuf简明教程 另外，通过protobuf可以将数据序列化为二进制编码，这会大幅减少需要传输的数据量，从而大幅提高性能。 gRPC可以方便地支持流式通信(理论上通过http2.0就可以使用streaming模式, 但是通常web服务的restful api似乎很少这么用，通常的流式数据应用如视频流，一般都会使用专门的协议如HLS，RTMP等，这些就不是我们通常web服务了，而是有专门的服务器应用。） gRPC HelloWorld实例详解 gRPC的使用通常包括如下几个步骤：
-通过protobuf来定义接口和数据类型 编写gRPC server端代码 编写gRPC client端代码
+
+gRPC有什么好处以及在什么场景下需要用gRPC
+既然是server/client模型，那么我们直接用restful api不是也可以满足吗，为什么还需要RPC呢？下面我们就来看看RPC到底有哪些优势
+gRPC vs. Restful API
+gRPC和restful API都提供了一套通信机制，用于server/client模型通信，而且它们都使用http作为底层的传输协议(严格地说, gRPC使用的http2.0，而restful api则不一定)。不过gRPC还是有些特有的优势，如下：
+
+gRPC可以通过protobuf来定义接口，从而可以有更加严格的接口约束条件。关于protobuf可以参见笔者之前的小文Google Protobuf简明教程
+另外，通过protobuf可以将数据序列化为二进制编码，这会大幅减少需要传输的数据量，从而大幅提高性能。
+gRPC可以方便地支持流式通信(理论上通过http2.0就可以使用streaming模式, 但是通常web服务的restful api似乎很少这么用，通常的流式数据应用如视频流，一般都会使用专门的协议如HLS，RTMP等，这些就不是我们通常web服务了，而是有专门的服务器应用。）
+
+gRPC HelloWorld实例详解
+gRPC的使用通常包括如下几个步骤：
+
+通过protobuf来定义接口和数据类型
+编写gRPC server端代码
+编写gRPC client端代码
 下面来通过一个实例来详细讲解上述的三步。
-下边的hello world实例完成之后，其目录结果如下： 定义接口和数据类型 通过protobuf定义接口和数据类型 syntax = "proto3"; package rpc_package; // define a service service HelloWorldService { // define the interface and data type rpc SayHello (HelloRequest) returns (HelloReply) {} } // define the data type of request message HelloRequest { string name = 1; } // define the data type of response message HelloReply { string message = 1; } 使用gRPC protobuf生成工具生成对应语言的库函数 python -m grpc_tools.'><title>Python 使用-gRPC详解
+下边的hello world实例完成之后，其目录结果如下：
+
+定义接口和数据类型
+
+通过protobuf定义接口和数据类型
+
+syntax = "proto3";
+
+package rpc_package;
+
+// define a service
+service HelloWorldService {
+    // define the interface and data type
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// define the data type of request
+message HelloRequest {
+    string name = 1;
+}
+
+// define the data type of response
+message HelloReply {
+    string message = 1;
+}
+
+使用gRPC protobuf生成工具生成对应语言的库函数
+
+python -m grpc_tools.protoc -I=./protos --python_out=./rpc_package --grpc_python_out=./rpc_package ./protos/user_info.proto
+这个指令会自动生成rpc_package文件夹中的helloworld_pb2.py和helloworld_pb2_grpc.py，但是不会自动生成__init__.py文件，需要我们手动添加'><title>Python 使用-gRPC详解
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2020-12-24 09:05:00 +0800 +0800">2020-12-24</time></p><h1>Python 使用-gRPC详解</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共272字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><h2 id=rpc-框架原理>RPC 框架原理</h2><p><strong>RPC 框架的目标就是让远程服务调用更加简单、透明</strong>，RPC 框架负责屏蔽底层的传输方式（TCP 或者 UDP）、序列化方式（XML/Json/ 二进制）和通信细节。<strong>服务调用者可以像调用本地接口一样调用远程的服务提供者，而不需要关心底层通信细节和调用过程。</strong></p><p>RPC 框架的调用原理图如下所示：</p><p><img src=https://s2.loli.net/2023/03/10/E4o5iRd3KuaH2Fg.png alt></p><h2 id=grpc是什么>gRPC是什么？</h2><p><a href=https://www.grpc.io/docs/languages/python/quickstart/>官方文档-Python</a></p><p>gRPC是什么可以用官网的一句话来概括</p><blockquote><p>A high-performance, open-source universal RPC framework</p></blockquote><p>**所谓RPC(remote procedure call 远程过程调用)框架实际是提供了一套机制，使得应用程序之间可以进行通信，而且也遵从server/client模型。使用的时候客户端调用server端提供的接口就像是调用本地的函数一样。**如下图所示就是一个典型的RPC结构图。</p><p><img src=https://www.grpc.io/img/landing-2.svg alt=概念图></p><h2 id=grpc有什么好处以及在什么场景下需要用grpc>gRPC有什么好处以及在什么场景下需要用gRPC</h2><p>既然是server/client模型，那么我们直接用restful api不是也可以满足吗，为什么还需要RPC呢？下面我们就来看看RPC到底有哪些优势</p><h2 id=grpc-vs-restful-api>gRPC vs. Restful API</h2><p>gRPC和restful API都提供了一套通信机制，用于server/client模型通信，而且它们都使用http作为底层的传输协议(严格地说, gRPC使用的http2.0，而restful api则不一定)。不过gRPC还是有些特有的优势，如下：</p><ul><li>gRPC可以通过protobuf来定义接口，从而可以有更加严格的接口约束条件。关于protobuf可以参见笔者之前的小文<a href=https://www.jianshu.com/p/b723053a86a6>Google Protobuf简明教程</a></li><li>另外，通过protobuf可以将数据序列化为二进制编码，这会大幅减少需要传输的数据量，从而大幅提高性能。</li><li>gRPC可以方便地支持流式通信(理论上通过http2.0就可以使用streaming模式, 但是通常web服务的restful api似乎很少这么用，通常的流式数据应用如视频流，一般都会使用专门的协议如HLS，RTMP等，这些就不是我们通常web服务了，而是有专门的服务器应用。）</li></ul><h2 id=grpc-helloworld实例详解>gRPC HelloWorld实例详解</h2><p>gRPC的使用通常包括如下几个步骤：</p><ol><li>通过protobuf来定义接口和数据类型</li><li>编写gRPC server端代码</li><li>编写gRPC client端代码<br>下面来通过一个实例来详细讲解上述的三步。<br>下边的hello world实例完成之后，其目录结果如下：</li></ol><h3 id=定义接口和数据类型>定义接口和数据类型</h3><ul><li>通过protobuf定义接口和数据类型</li></ul><pre tabindex=0><code>syntax = &#34;proto3&#34;;
 
 package rpc_package;
