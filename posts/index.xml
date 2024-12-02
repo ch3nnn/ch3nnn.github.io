@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/posts/</link><description>Recent content in Posts on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 27 Aug 2024 00:51:35 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Gorm 分表中间件(Sharding)</title><link>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</link><pubDate>Tue, 27 Aug 2024 00:51:35 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/posts/</link><description>Recent content in Posts on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 27 Aug 2024 00:51:35 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>动手不求人，记录一次 Mac Pro 拆机清灰</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</link><pubDate>Sat, 27 Apr 2024 23:28:09 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</guid><description>&lt;h2 id="一前言">一、前言&lt;/h2>
+&lt;p>自从换了新的吃饭家伙后(M3 Pro 女朋友送的!啊哈哈~)，老的 Mac Pro 退役后其实也没停下来，偶尔会用它搬砖调试。在使用过程中风扇的噪音变得非常大，整个键盘区域非常长烫手。
+仔细一算，这台家伙从18年到23年也已经快陪我走过了5年，但是一次拆机清灰都还没有过，于是找好了工具准备大干一场(其实是第三方清灰太贵了)。&lt;/p>
+&lt;h2 id="二准备工具">二、准备工具&lt;/h2>
+&lt;p>本以为我觉得很简单的，在淘宝搜了一下 &amp;ldquo;Mac 拆机螺丝刀&amp;quot;随便买了一套工具(找的价格最低的)。等拿到工具时居然所有螺丝刀头都不匹配，当时心情直接裂开。本想大展身手的这下好了螺丝刀白买(12 合一螺丝刀)。
+&lt;img src="https://s2.loli.net/2024/04/28/ysjv69PqG8HaV7l.png" alt="">&lt;/p>
+&lt;p>只能怪自己没有提前做好功课， Mac 底部需要五角梅花螺丝刀才能拧开。这次做好功课选好工具，重新购买:&lt;/p>
+&lt;ul>
+&lt;li>梅花 T4 (电池处螺丝)&lt;/li>
+&lt;li>五星 P5 (后盖螺丝)&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://s2.loli.net/2024/04/28/BXsjM59xA27HuGO.png" alt="">&lt;/p>
+&lt;h2 id="三拆机大干一场">三、拆机(大干一场!)&lt;/h2>
+&lt;p>拆机过程其实非常简单，只需要把底部六个梅花螺丝拧开就可以轻松打开后盖。看到内部所有零件确实挺震撼，佩服苹果一贯的简约风格(秩序感)，从来没见过这么整齐的内部排布。
+(请忽视主板和电池表面浮灰，确实没清理过一次。5 年下来其实没有太脏，个人感觉)&lt;/p>
+&lt;p>注: &lt;strong>记得断开电池排线&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://s2.loli.net/2024/04/28/iWHldMhrCKgV7IG.png" alt="">&lt;/p>
+&lt;p>&lt;img src="https://s2.loli.net/2024/04/28/EVFPeYr58nkMISo.png" alt="">&lt;/p>
+&lt;h2 id="四清理工作">四、清理工作&lt;/h2>
+&lt;p>对于更深度的拆机操作没有太敢做(拆除主板、CPU、风扇)。只是把内部、风扇和排风口灰尘毛屑清理干净。内部、风扇拿刷子和吹风机进行清理，排风口用镊子把毛屑夹出，
+总体难度不是太大。顺带将买来的硅脂条也贴在热管后，提高一下散热。
+&lt;img src="https://s2.loli.net/2024/04/28/HwpW5KJ4Lc2n6Qf.png" alt="">&lt;/p>
+&lt;h2 id="五完美收工">五、完美收工&lt;/h2>
+&lt;p>这下应该整体机温可以下降 1 到 2 度了吧。其实整体拆机清灰难度不大，最主要是前期想当然了螺丝刀工具买错耽误几天时间，清理完成并没有出现主板短路、开不了机情况。总的来说算是比较不错。&lt;/p></description></item><item><title>Gorm 分表中间件(Sharding)</title><link>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</link><pubDate>Tue, 27 Aug 2024 00:51:35 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</guid><description>&lt;blockquote>
 &lt;p>&lt;a href="https://github.com/go-gorm/sharding">Sharding&lt;/a> 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通
 SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问&lt;/p>
 &lt;/blockquote>
@@ -102,30 +125,56 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
-&lt;/ul></description></item><item><title>动手不求人，记录一次 Mac Pro 拆机清灰</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</link><pubDate>Sat, 27 Apr 2024 23:28:09 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</guid><description>&lt;h2 id="一前言">一、前言&lt;/h2>
-&lt;p>自从换了新的吃饭家伙后(M3 Pro 女朋友送的!啊哈哈~)，老的 Mac Pro 退役后其实也没停下来，偶尔会用它搬砖调试。在使用过程中风扇的噪音变得非常大，整个键盘区域非常长烫手。
-仔细一算，这台家伙从18年到23年也已经快陪我走过了5年，但是一次拆机清灰都还没有过，于是找好了工具准备大干一场(其实是第三方清灰太贵了)。&lt;/p>
-&lt;h2 id="二准备工具">二、准备工具&lt;/h2>
-&lt;p>本以为我觉得很简单的，在淘宝搜了一下 &amp;ldquo;Mac 拆机螺丝刀&amp;quot;随便买了一套工具(找的价格最低的)。等拿到工具时居然所有螺丝刀头都不匹配，当时心情直接裂开。本想大展身手的这下好了螺丝刀白买(12 合一螺丝刀)。
-&lt;img src="https://s2.loli.net/2024/04/28/ysjv69PqG8HaV7l.png" alt="">&lt;/p>
-&lt;p>只能怪自己没有提前做好功课， Mac 底部需要五角梅花螺丝刀才能拧开。这次做好功课选好工具，重新购买:&lt;/p>
+&lt;/ul></description></item><item><title>Go 编程风格指南 - 最佳实践</title><link>https://blog.ch3nnn.cn/posts/2024/go%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC%E6%8C%87%E5%8D%97-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link><pubDate>Mon, 03 Jun 2024 10:42:06 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC%E6%8C%87%E5%8D%97-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid><description>&lt;p>原文：&lt;a href="https://google.github.io/styleguide/go">https://google.github.io/styleguide/go&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://gocn.github.io/styleguide/docs/01-overview/">概述&lt;/a> | &lt;a href="https://gocn.github.io/styleguide/docs/02-guide/">风格指南&lt;/a> | &lt;a href="https://gocn.github.io/styleguide/docs/03-decisions/">风格决策&lt;/a> | &lt;a href="https://gocn.github.io/styleguide/docs/04-best-practices/">最佳实践&lt;/a>&lt;/p>
+&lt;p>&lt;strong>注意：&lt;/strong> 本文是 Google &lt;a href="https://gocn.github.io/styleguide/docs/01-overview/">Go 风格&lt;/a> 系列文档的一部分。本文档是 *
+&lt;em>&lt;a href="https://gocn.github.io/styleguide/docs/01-overview/#%E6%A0%87%E5%87%86normative">规范性(normative)&lt;/a>
+但不是&lt;a href="https://gocn.github.io/styleguide/docs/01-overview/#%E8%A7%84%E8%8C%83canonical">强制规范(canonical)&lt;/a>&lt;/em>*
+，并且从属于&lt;a href="https://gocn.github.io/styleguide/docs/02-guide/">Google 风格指南&lt;/a>
+。请参阅&lt;a href="https://gocn.github.io/styleguide/docs/01-overview/#%E5%85%B3%E4%BA%8E">概述&lt;/a>获取更多详细信息。&lt;/p>
+&lt;h2 id="关于">关于&lt;/h2>
+&lt;p>本文件记录了&lt;strong>关于如何更好地应用 Go 风格指南的指导意见&lt;/strong>。该指导旨在解决经常出现的通用问题，但不一定适用于所有情况。在可能的情况下，我们讨论了多种替代方法，以及决定何时该用和何时不该用这些方法的考虑因素。&lt;/p>
+&lt;p>查看&lt;a href="https://gocn.github.io/styleguide/docs/01-overview/#%E5%85%B3%E4%BA%8E">概述&lt;/a>来获取完整的风格指导文档&lt;/p>
+&lt;h2 id="命名">命名&lt;/h2>
+&lt;h3 id="函数和方法名称">函数和方法名称&lt;/h3>
+&lt;h4 id="避免重复">避免重复&lt;/h4>
+&lt;p>在为一个函数或方法选择名称时，要考虑该名称将被阅读的环境。请考虑以下建议，以避免在调用地点出现过多的&lt;a href="https://gocn.github.io/styleguide/docs/03-decisions/#%E9%87%8D%E5%A4%8Drepetition">重复&lt;/a>:&lt;/p>
 &lt;ul>
-&lt;li>梅花 T4 (电池处螺丝)&lt;/li>
-&lt;li>五星 P5 (后盖螺丝)&lt;/li>
+&lt;li>
+&lt;p>以下内容一般可以从函数和方法名称中省略。&lt;/p>
+&lt;ul>
+&lt;li>输入和输出的类型（当没有冲突的时候）&lt;/li>
+&lt;li>方法的接收器的类型&lt;/li>
+&lt;li>一个输入或输出是否是一个指针&lt;/li>
 &lt;/ul>
-&lt;p>&lt;img src="https://s2.loli.net/2024/04/28/BXsjM59xA27HuGO.png" alt="">&lt;/p>
-&lt;h2 id="三拆机大干一场">三、拆机(大干一场!)&lt;/h2>
-&lt;p>拆机过程其实非常简单，只需要把底部六个梅花螺丝拧开就可以轻松打开后盖。看到内部所有零件确实挺震撼，佩服苹果一贯的简约风格(秩序感)，从来没见过这么整齐的内部排布。
-(请忽视主板和电池表面浮灰，确实没清理过一次。5 年下来其实没有太脏，个人感觉)&lt;/p>
-&lt;p>注: &lt;strong>记得断开电池排线&lt;/strong>&lt;/p>
-&lt;p>&lt;img src="https://s2.loli.net/2024/04/28/iWHldMhrCKgV7IG.png" alt="">&lt;/p>
-&lt;p>&lt;img src="https://s2.loli.net/2024/04/28/EVFPeYr58nkMISo.png" alt="">&lt;/p>
-&lt;h2 id="四清理工作">四、清理工作&lt;/h2>
-&lt;p>对于更深度的拆机操作没有太敢做(拆除主板、CPU、风扇)。只是把内部、风扇和排风口灰尘毛屑清理干净。内部、风扇拿刷子和吹风机进行清理，排风口用镊子把毛屑夹出，
-总体难度不是太大。顺带将买来的硅脂条也贴在热管后，提高一下散热。
-&lt;img src="https://s2.loli.net/2024/04/28/HwpW5KJ4Lc2n6Qf.png" alt="">&lt;/p>
-&lt;h2 id="五完美收工">五、完美收工&lt;/h2>
-&lt;p>这下应该整体机温可以下降 1 到 2 度了吧。其实整体拆机清灰难度不大，最主要是前期想当然了螺丝刀工具买错耽误几天时间，清理完成并没有出现主板短路、开不了机情况。总的来说算是比较不错。&lt;/p></description></item><item><title>Go 1.22的新功能 Cmp.Or</title><link>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</link><pubDate>Sat, 27 Apr 2024 22:45:54 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</guid><description>&lt;h2 id="一介绍">一、介绍&lt;/h2>
+&lt;/li>
+&lt;li>
+&lt;p>对于函数，不要&lt;a href="https://gocn.github.io/styleguide/docs/03-decisions/#%E5%8C%85%E5%90%8D-vs-%E5%8F%AF%E5%AF%BC%E5%87%BA%E7%AC%A6%E5%8F%B7%E5%90%8Dpackage-vs-exported-symbol-name">重复软件包的名称&lt;/a>。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">package&lt;/span> yamlconfig
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">ParseYAMLConfig&lt;/span>(input &lt;span style="color:#005a5f">string&lt;/span>) (&lt;span style="color:#00538b">*&lt;/span>Config, &lt;span style="color:#005a5f">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">package&lt;/span> yamlconfig
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">Parse&lt;/span>(input &lt;span style="color:#005a5f">string&lt;/span>) (&lt;span style="color:#00538b">*&lt;/span>Config, &lt;span style="color:#005a5f">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>对于方法不要重复方法接收器的名称。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (c &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#721045">WriteConfigTo&lt;/span>(w io.Writer) (&lt;span style="color:#005a5f">int64&lt;/span>, &lt;span style="color:#005a5f">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (c &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#721045">WriteTo&lt;/span>(w io.Writer) (&lt;span style="color:#005a5f">int64&lt;/span>, &lt;span style="color:#005a5f">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>不要重复传参的变量名称&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">OverrideFirstWithSecond&lt;/span>(dest, source &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#005a5f">error&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">Override&lt;/span>(dest, source &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#005a5f">error&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>不要重复返回值的名称和类型&lt;/p></description></item><item><title>Go 1.22的新功能 Cmp.Or</title><link>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</link><pubDate>Sat, 27 Apr 2024 22:45:54 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</guid><description>&lt;h2 id="一介绍">一、介绍&lt;/h2>
 &lt;p>&lt;a href="https://go.dev/doc/go1.22">截至撰写本文时， Go 1.22&lt;/a>已经发布几个月了。&lt;/p>
 &lt;p>Go 1.22提出并实现的最终函数是&lt;code>cmp.Or&lt;/code>。&lt;/p>
 &lt;p>首先我们看一下代码：&lt;/p>
@@ -2000,16 +2049,10 @@ amq.headers headers
 &lt;h2 id="匿名的交换器">匿名的交换器&lt;/h2>
 &lt;p>前面的教程中我们对交换机一无所知，但仍然能够发送消息到队列中。因为我们使用了命名为空字符串 (&amp;quot;&amp;quot;) 默认的交换机。&lt;/p>
 &lt;p>回想我们之前是如何发布一则消息：&lt;/p>
-&lt;pre tabindex="0">&lt;code>channel.basic_publish(exchange=&amp;#39;&amp;#39;,
- routing_key=&amp;#39;hello&amp;#39;,
- body=message) 
-&lt;/code>&lt;/pre>&lt;p>exchange 参数就是交换机的名称。空字符串代表默认或者匿名交换机：消息将会根据指定的 routing_key 分发到指定的队列。&lt;/p>
-&lt;p>现在，我们就可以发送消息到一个具名交换机了：&lt;/p>
-&lt;pre tabindex="0">&lt;code>channel.basic_publish(exchange=&amp;#39;logs&amp;#39;,
- routing_key=&amp;#39;&amp;#39;,
- body=message) 
-&lt;/code>&lt;/pre>&lt;h2 id="临时队列">临时队列&lt;/h2>
-&lt;p>你还记得之前我们使用的队列名吗（ hello 和 task_queue）？给一个队列命名是很重要的——我们需要把工作者（workers）指向正确的队列。如果你打算在发布者（producers）和消费者（consumers）之间共享同队列的话，给队列命名是十分重要的。&lt;/p></description></item><item><title>RabbitMq系列之二：工作队列</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</link><pubDate>Sat, 12 Oct 2019 05:50:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</guid><description>&lt;h1 id="工作队列">工作队列&lt;/h1>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>channel&lt;span style="color:#00538b">.&lt;/span>basic_publish(exchange&lt;span style="color:#00538b">=&lt;/span>&lt;span style="color:#2544bb">&amp;#39;&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> routing_key&lt;span style="color:#00538b">=&lt;/span>&lt;span style="color:#2544bb">&amp;#39;hello&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> body&lt;span style="color:#00538b">=&lt;/span>message) 
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>exchange 参数就是交换机的名称。空字符串代表默认或者匿名交换机：消息将会根据指定的 routing_key 分发到指定的队列。&lt;/p></description></item><item><title>RabbitMq系列之二：工作队列</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</link><pubDate>Sat, 12 Oct 2019 05:50:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/</guid><description>&lt;h1 id="工作队列">工作队列&lt;/h1>
 &lt;p>&lt;strong>（使用pika 0.9.5 Python客户端）&lt;/strong>&lt;/p>
 &lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/7.png" alt="">&lt;/p>
 &lt;p>在第一篇教程中，我们已经写了一个从已知队列中发送和获取消息的程序。在这篇教程中，我们将创建一个工作队列（Work Queue），它会发送一些耗时的任务给多个工作者（Worker）。&lt;/p>
@@ -2034,87 +2077,48 @@ def callback(ch, method, properties, body):
  print &amp;#34; [x] Done&amp;#34; 
 &lt;/code>&lt;/pre>&lt;h2 id="循环调度">循环调度&lt;/h2>
 &lt;p>使用工作队列的一个好处就是它能够并行的处理队列。如果堆积了很多任务，我们只需要添加更多的工作者（workers）就可以了，扩展很简单。&lt;/p>
-&lt;p>首先，我们先同时运行两个 worker.py 脚本，它们都会从队列中获取消息，到底是不是这样呢？我们看看。&lt;/p></description></item><item><title>RabbitMq系列之一：介绍</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</link><pubDate>Sat, 12 Oct 2019 05:49:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</guid><description>&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted --></description></item><item><title>使用UnblockNeteaseMusic播放网易云音乐客户端无版权歌曲</title><link>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</link><pubDate>Sun, 18 Feb 2018 03:56:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</guid><description>&lt;p>&lt;strong>说明：&lt;/strong>&lt;code>UnblockNeteaseMusic&lt;/code>是一款可以给你解除网易云音乐海外限制并解锁变灰(无版权)歌曲的工具，让你可以听取客户端任何的歌曲，而不受到限制，此前该类似工具挺多的，不过貌似都不维护或者失效了，这里提到的项目更新很频繁，支持&lt;code>Windows&lt;/code>、&lt;code>MacOS&lt;/code>、安卓、&lt;code>IOS&lt;/code>等设备，所以就分享一下使用方法。&lt;/p>
+&lt;p>首先，我们先同时运行两个 worker.py 脚本，它们都会从队列中获取消息，到底是不是这样呢？我们看看。&lt;/p></description></item><item><title>RabbitMq系列之一：介绍</title><link>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</link><pubDate>Sat, 12 Oct 2019 05:49:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2019/rabbitmq%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E4%BB%8B%E7%BB%8D/</guid><description>&lt;p>RabbitMQ 是一个消息代理。它的核心原理非常简单：接收和发送消息。你可以把它想像成一个邮局：你把信件放入邮箱，邮递员就会把信件投递到你的收件人处。在这个比喻中，RabbitMQ
+就扮演着邮箱、邮局以及邮递员的角色。&lt;/p>
+&lt;p>RabbitMQ 和邮局的主要区别是，它不是用来处理纸张的，它是用来接收、存储和发送消息（message）这种二进制数据的。&lt;/p>
+&lt;p>一般提到 RabbitMQ 和消息，都会用到一些专有名词。&lt;/p>
+&lt;ul>
+&lt;li>生产(Producing)意思就是发送。发送消息的程序就是一个生产者(producer)。我们一般用 &amp;ldquo;P&amp;rdquo; 来表示:&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/1.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>队列(queue)就是邮箱的名称。消息通过你的应用程序和 RabbitMQ 进行传输，它们能够只存储在一个队列（queue）中。
+队列（queue）没有任何限制，你要存储多少消息都可以——基本上是一个无限的缓冲。多个生产者（producers）能够把消息发送给同一个队列，同样，多个消费者（consumers）也能够从同一个队列（queue）中获取数据。队列可以绘制成这样（图上是队列的名称）：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/2.png" alt="">&lt;/p>
+&lt;ul>
+&lt;li>消费（Consuming）和获取消息是一样的意思。一个消费者（consumer）就是一个等待获取消息的程序。我们把它绘制为 &amp;ldquo;C&amp;rdquo;：&lt;/li>
+&lt;/ul>
+&lt;p>需要指出的是生产者、消费者、代理需不要待在同一个设备上；事实上大多数应用也确实不在会将他们放在一台机器上。&lt;/p>
+&lt;h2 id="hello-world">Hello World!&lt;/h2>
+&lt;p>&lt;strong>（使用pika 0.9.5 Python客户端）&lt;/strong>&lt;/p>
+&lt;p>我们的 “Hello world” 不会很复杂——仅仅发送一个消息，然后获取它并输出到屏幕。这样以来我们需要两个程序，一个用作发送消息，另一个接受消息并打印消息内容&lt;/p>
+&lt;p>我们的大致的设计是这样的：&lt;/p>
+&lt;p>&lt;img src="http://wiki.jikexueyuan.com/project/rabbitmq/images/3.png" alt="">&lt;/p>
+&lt;p>生产者（producer）把消息发送到一个名为 “hello” 的队列中。消费者（consumer）从这个队列中获取消息。&lt;/p>
+&lt;h2 id="rabbitmq-库">RabbitMQ 库&lt;/h2>
+&lt;p>RabbitMQ 使用的是 AMQP 协议。要使用她你就必须需要一个使用同样协议的库。几乎所有的编程语言都有可选择的库。python 也是一样，可以从以下几个库中选择：&lt;/p>
+&lt;p>&lt;a href="http://barryp.org/software/py-amqplib/">py-amqplib&lt;/a>&lt;br>
+&lt;a href="https://launchpad.net/txamqp">txAMQP&lt;/a>&lt;br>
+&lt;a href="http://github.com/pika/pika">pika&lt;/a>&lt;/p>
+&lt;p>在这一系列教程中，我们打算使用 pika。要安装 pika，你可以使用 pip 这个包管理工具：&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ sudo pip install pika==0.9.5 
+&lt;/code>&lt;/pre>&lt;p>安装过程依赖于 pip 和 git-core 两个包，你需要先安装它们。&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Ubuntu平台&lt;br>
+$ sudo apt-get install python-pip git-core&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Debian平台&lt;br>
+sudoapt−getinstallpython−setuptoolsgit−core sudo easy_install pip&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Windows平台 运行easy_install的安装程序setuptools即可，安装后运行以下命令&lt;/p></description></item><item><title>使用UnblockNeteaseMusic播放网易云音乐客户端无版权歌曲</title><link>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</link><pubDate>Sun, 18 Feb 2018 03:56:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2018/%E4%BD%BF%E7%94%A8unblockneteasemusic%E6%92%AD%E6%94%BE%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A0%E7%89%88%E6%9D%83%E6%AD%8C%E6%9B%B2/</guid><description>&lt;p>&lt;strong>说明：&lt;/strong>&lt;code>UnblockNeteaseMusic&lt;/code>是一款可以给你解除网易云音乐海外限制并解锁变灰(无版权)歌曲的工具，让你可以听取客户端任何的歌曲，而不受到限制，此前该类似工具挺多的，不过貌似都不维护或者失效了，这里提到的项目更新很频繁，支持&lt;code>Windows&lt;/code>、&lt;code>MacOS&lt;/code>、安卓、&lt;code>IOS&lt;/code>等设备，所以就分享一下使用方法。&lt;/p>
 &lt;h2 id="截图">截图&lt;/h2>
 &lt;p>&lt;img src="https://s2.loli.net/2023/03/10/qhxZAHFeOT7uLf9.png" alt="">&lt;/p>
 &lt;p>&lt;img src="https://s2.loli.net/2023/03/10/YXCdq6igRQnsrU7.png" alt="">&lt;/p>
