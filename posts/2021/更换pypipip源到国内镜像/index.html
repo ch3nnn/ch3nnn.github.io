@@ -13,45 +13,36 @@ Linux Mac Windows 通用命令
 可以在使用pip的时候在后面加上-i参数，指定pip源
 
 pip install scrapy -ihttps://pypi.tuna.tsinghua.edu.cn/simple
-
 永久修改：
 Linux:
 修改 pip.conf 文件 (没有就创建一个)
 
 $HOME/.config/pip/pip.conf
-
 修改内容如下：
 
 [global]
 index-url =https://pypi.tuna.tsinghua.edu.cn/simple12
-
 Mac:
 修改 pip.conf 文件
 
 $HOME/Library/Application Support/pip/pip.conf
-
 如果没有上面的目录,在如下目录创建 pip.conf
 
 $HOME/.config/pip/pip.conf
-
 修改内容如下：
 
 [global]
 index-url =https://pypi.tuna.tsinghua.edu.cn/simple12
-
 Windows:
 修改 pip.conf 文件 (没有就创建一个)
 
 %APPDATA%\pip\pip.ini
-
 修改内容如下：
 
 [global]
 index-url =https://pypi.tuna.tsinghua.edu.cn/simple
-
 修改文件后，执行命令发生错误
 使用非HTTPS加密源（如豆瓣源），在执行命令发生错误，在命令最后加上--trusted-host pypi.douban.com
 
-pip install django -ihttp://pypi.douban.com/simple&ndash;trusted-hostpypi.douban.com
-"><title>更换（Pypi）pip源到国内镜像
+pip install django -ihttp://pypi.douban.com/simple&ndash;trusted-hostpypi.douban.com"><title>更换（Pypi）pip源到国内镜像
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2021-02-22 03:09:00 +0800 +0800">2021-02-22</time></p><h1>更换（Pypi）pip源到国内镜像</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共59字</span></p><p class=post-meta>预计阅读约: 1 分钟</p><h3 id=pip国内的一些镜像>pip国内的一些镜像</h3><ul><li>阿里云<a href=http://mirrors.aliyun.com/pypi/simple/>https://mirrors.aliyun.com/pypi/simple/</a></li><li>中国科技大学<a href=https://pypi.mirrors.ustc.edu.cn/simple/>https://pypi.mirrors.ustc.edu.cn/simple/</a></li><li>豆瓣(douban)<a href=http://pypi.douban.com/simple/>https://pypi.douban.com/simple/</a></li><li>清华大学<a href=https://pypi.tuna.tsinghua.edu.cn/simple/>https://pypi.tuna.tsinghua.edu.cn/simple/</a></li><li>中国科学技术大学<a href=http://pypi.mirrors.ustc.edu.cn/simple/>https://pypi.mirrors.ustc.edu.cn/simple/</a></li></ul><p><strong>提示：若担心安全问题请使用HTTPS加密源</strong></p><h3 id=修改源方法>修改源方法：</h3><h4 id=临时使用>临时使用：</h4><p><strong>Linux Mac Windows 通用命令</strong></p><p>可以在使用pip的时候在后面加上-i参数，指定pip源</p><blockquote><p>pip install scrapy -i<a href=https://pypi.tuna.tsinghua.edu.cn/simple>https://pypi.tuna.tsinghua.edu.cn/simple</a></p></blockquote><h4 id=永久修改>永久修改：</h4><p><strong>Linux:</strong></p><p>修改 pip.conf 文件 (没有就创建一个)</p><blockquote><p>$HOME/.config/pip/pip.conf</p></blockquote><p>修改内容如下：</p><blockquote><p>[global]</p><p>index-url =<a href=https://pypi.tuna.tsinghua.edu.cn/simple12>https://pypi.tuna.tsinghua.edu.cn/simple12</a></p></blockquote><p><strong>Mac:</strong></p><p>修改 pip.conf 文件</p><blockquote><p>$HOME/Library/Application Support/pip/pip.conf</p></blockquote><p>如果没有上面的目录,在如下目录创建 pip.conf</p><blockquote><p>$HOME/.config/pip/pip.conf</p></blockquote><p>修改内容如下：</p><blockquote><p>[global]</p><p>index-url =<a href=https://pypi.tuna.tsinghua.edu.cn/simple12>https://pypi.tuna.tsinghua.edu.cn/simple12</a></p></blockquote><p><strong>Windows:</strong></p><p>修改 pip.conf 文件 (没有就创建一个)</p><blockquote><p>%APPDATA%\pip\pip.ini</p></blockquote><p>修改内容如下：</p><blockquote><p>[global]</p><p>index-url =<a href=https://pypi.tuna.tsinghua.edu.cn/simple>https://pypi.tuna.tsinghua.edu.cn/simple</a></p></blockquote><h3 id=修改文件后执行命令发生错误>修改文件后，执行命令发生错误</h3><p>使用非HTTPS加密源（如豆瓣源），在执行命令发生错误，在命令最后加上<code>--trusted-host pypi.douban.com</code></p><blockquote><p>pip install django -i<a href=http://pypi.douban.com/simple>http://pypi.douban.com/simple</a>&ndash;trusted-host<a href=http://pypi.douban.com/>pypi.douban.com</a></p></blockquote></article></div></main></body></html>

@@ -1,7 +1,56 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/</link><description>Recent content in 工具 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 28 Feb 2024 16:20:31 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/</link><description>Recent content in 工具 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 20 Feb 2025 11:05:31 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>fieldalignment 优化结构体内存对齐的静态分析工具</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%B7%A5%E5%85%B7-fieldalignment%E4%BC%98%E5%8C%96%E7%BB%93%E6%9E%84%E4%BD%93%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E7%9A%84%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</link><pubDate>Thu, 20 Feb 2025 11:05:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%B7%A5%E5%85%B7-fieldalignment%E4%BC%98%E5%8C%96%E7%BB%93%E6%9E%84%E4%BD%93%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E7%9A%84%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</guid><description>&lt;p>&lt;code>fieldalignment&lt;/code> 是 Go 官方工具链中用于优化结构体内存对齐的静态分析工具，可自动检测并修复结构体字段排列顺序问题。以下是核心要点：&lt;/p>
+&lt;hr>
+&lt;h3 id="-安装方式">🔧 安装方式&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-基础用法">🚀 基础用法&lt;/h3>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>命令&lt;/th>
+ &lt;th>作用&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;code>fieldalignment ./...&lt;/code>&lt;/td>
+ &lt;td>扫描当前项目所有结构体&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;code>fieldalignment -fix ./...&lt;/code>&lt;/td>
+ &lt;td>&lt;strong>自动修复&lt;/strong>可优化的结构体字段顺序&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;code>fieldalignment -json ./...&lt;/code>&lt;/td>
+ &lt;td>输出 JSON 格式报告&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-功能特性">🔍 功能特性&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>智能检测&lt;/strong>&lt;br>
+识别字段排列顺序导致内存浪费的结构体，例如：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// 检测前 (24 bytes)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> active &lt;span style="color:#005a5f">bool&lt;/span> &lt;span style="color:#505050">// 1字节 (导致后续填充)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> id &lt;span style="color:#005a5f">int64&lt;/span> &lt;span style="color:#505050">// 8字节&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> age &lt;span style="color:#005a5f">int32&lt;/span> &lt;span style="color:#505050">// 4字节&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// 检测后自动优化 (16 bytes)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> id &lt;span style="color:#005a5f">int64&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> age &lt;span style="color:#005a5f">int32&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> active &lt;span style="color:#005a5f">bool&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>节省计算&lt;/strong>&lt;br>
+报告潜在内存节省量，如：&lt;code>24 -&amp;gt; 16 bytes (saves 33%)&lt;/code>&lt;/p></description></item><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>&lt;blockquote>
 &lt;p>这是 Google Protocol Buffers 文档生成器插件 (protoc)。
-该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。&lt;/p>
-&lt;/blockquote>
+该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。&lt;/p>&lt;/blockquote>
 &lt;h2 id="一前言">一、前言&lt;/h2>
 &lt;p>毫无疑问, 目前后台开发接口协议应用最广泛的除了 HTTP 之外就是 gRPC 了, HTTP 接口有成熟的&lt;code>swagger&lt;/code>工具可以生成界面美观和使用友好的文档，那么对于gRPC呢？&lt;/p>
 &lt;p>所以通过 .proto 文件能否生成更易阅读的 HTML 接口文档？&lt;/p>
@@ -119,11 +168,10 @@
  &lt;/tbody>
 &lt;/table>
 &lt;h2 id="-功能简介">📖 功能简介&lt;/h2>
-&lt;p>下载的扩展兼容以下浏览器：&lt;/p></description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>&lt;h2 id="utoolspnghttpsresu-toolscnwebsiteutoolspng">&lt;img src="https://res.u-tools.cn/website/utools.png" alt="utools.png">&lt;/h2>
+&lt;p>下载的扩展兼容以下浏览器：&lt;/p></description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>&lt;h2 id="utoolspng">&lt;img src="https://res.u-tools.cn/website/utools.png" alt="utools.png">&lt;/h2>
 &lt;h2 id="utools-是什么">uTools 是什么？&lt;/h2>
 &lt;blockquote>
-&lt;p>uTools = your tools（你的工具集）&lt;/p>
-&lt;/blockquote>
+&lt;p>uTools = your tools（你的工具集）&lt;/p>&lt;/blockquote>
 &lt;p>uTools 是一个极简、插件化的现代桌面软件，通过自由选配丰富的插件，打造得心应手的工具集合。&lt;/p>
 &lt;p>通过快捷键（默认&lt;code>alt + space&lt;/code>）就可以快速呼出这个搜索框。你可以往输入框内粘贴文本、图片、截图、文件、文件夹等等，能够处理此内容的插件也早已准备就绪，统一的设计风格和操作方式，助你高效的得到结果。&lt;/p>
 &lt;h2 id="utools-能做什么">uTools 能做什么？&lt;/h2>
@@ -136,20 +184,17 @@
 &lt;h2 id="超级面板">超级面板&lt;/h2>
 &lt;p>可以通过鼠标右键/中键（可配置），快速打开 uTools 超级面板，uTools 会根据当前选择的内容（文本、截图、文件、文件夹）自动匹配已安装的插件供你选择。与平时使用右键类似的习惯，uTools 超级面板却能为你带来完全不一样的内容及体验。&lt;/p>
 &lt;blockquote>
-&lt;p>针对英文，还提供单词词典和整句翻译功能。&lt;/p>
-&lt;/blockquote>
+&lt;p>针对英文，还提供单词词典和整句翻译功能。&lt;/p>&lt;/blockquote>
 &lt;p>&lt;img src="https://res.u-tools.cn/website/translate.jpg" alt="superPanel">&lt;/p></description></item><item><title>Github标星34K+Star，这款开源项目助你秒建Git服务！</title><link>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</link><pubDate>Tue, 06 Jul 2021 09:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</guid><description>&lt;blockquote>
-&lt;p>以前使用Gitlab搭建过Git服务，如果服务器配置低的话启动和访问都会特别慢。最近发现了Gogs这个开源项目，安装方便，特别轻量级，推荐给大家！&lt;/p>
-&lt;/blockquote>
-&lt;h2 id="推荐语httpwwwmacrozhengcomreferencegogs_startide68ea8e88d90e8afad">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%8e%a8%e8%8d%90%e8%af%ad">推荐语&lt;/a>&lt;/h2>
+&lt;p>以前使用Gitlab搭建过Git服务，如果服务器配置低的话启动和访问都会特别慢。最近发现了Gogs这个开源项目，安装方便，特别轻量级，推荐给大家！&lt;/p>&lt;/blockquote>
+&lt;h2 id="推荐语">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%8e%a8%e8%8d%90%e8%af%ad">推荐语&lt;/a>&lt;/h2>
 &lt;p>一款极易搭建的自助Git服务，特别轻量级，推荐给大家！&lt;/p>
-&lt;h2 id="gogs简介httpwwwmacrozhengcomreferencegogs_startidgogse7ae80e4bb8b">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=gogs%e7%ae%80%e4%bb%8b">Gogs简介&lt;/a>&lt;/h2>
+&lt;h2 id="gogs简介">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=gogs%e7%ae%80%e4%bb%8b">Gogs简介&lt;/a>&lt;/h2>
 &lt;p>Gogs是一款极易搭建的自助Git服务，使用Go语言开发，只要Go语言支持的平台它都支持，包括Linux、Mac OS X、Windows以及ARM平台。Gogs对系统硬件要求极低，你甚至可以在树莓派上搭建它。&lt;/p>
 &lt;p>项目地址：&lt;a href="https://github.com/gogs/gogs">https://github.com/gogs/gogs&lt;/a>&lt;/p>
-&lt;h2 id="安装httpwwwmacrozhengcomreferencegogs_startide5ae89e8a385">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%ae%89%e8%a3%85">安装&lt;/a>&lt;/h2>
+&lt;h2 id="安装">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%ae%89%e8%a3%85">安装&lt;/a>&lt;/h2>
 &lt;blockquote>
-&lt;p>Gogs在Docker环境下的安装非常简单，只需要两个命令即可，推荐使用该方式来进行安装。&lt;/p>
-&lt;/blockquote>
+&lt;p>Gogs在Docker环境下的安装非常简单，只需要两个命令即可，推荐使用该方式来进行安装。&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>首先我们需要先下载Gogs的Docker镜像；&lt;/li>
 &lt;/ul>
@@ -160,7 +205,7 @@
 &lt;/code>&lt;/pre>&lt;ul>
 &lt;li>这里我们说下命令中值得注意的地方，&lt;code>10022&lt;/code>对应的是Gogs的SSH服务端口，&lt;code>10080&lt;/code>对应的使用Gogs的HTTP服务端口，我们还将容器的数据目录挂载到了宿主机的&lt;code>/mydata/gogs&lt;/code>目录下，这样就算我们重新创建容器数据也不会丢失。&lt;/li>
 &lt;/ul>
-&lt;h2 id="配置httpwwwmacrozhengcomreferencegogs_startide9858de7bdae">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e9%85%8d%e7%bd%ae">配置&lt;/a>&lt;/h2>
+&lt;h2 id="配置">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e9%85%8d%e7%bd%ae">配置&lt;/a>&lt;/h2>
 &lt;ul>
 &lt;li>
 &lt;p>安装完成后，我们第一次访问Gogs服务会显示一个设置页面，访问地址：&lt;a href="http://192.168.5.19:10080/">http://192.168.5.19:10080/&lt;/a>&lt;/p>
@@ -175,8 +220,8 @@
 &lt;li>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/c1c4936ed1184085a60c7b1c567bb7b4.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_02.png" alt="">&lt;/p>
-&lt;h2 id="使用httpwwwmacrozhengcomreferencegogs_startide4bdbfe794a8">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e4%bd%bf%e7%94%a8">使用&lt;/a>&lt;/h2>
-&lt;h3 id="注册httpwwwmacrozhengcomreferencegogs_startide6b3a8e5868c">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b3%a8%e5%86%8c">注册&lt;/a>&lt;/h3>
+&lt;h2 id="使用">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e4%bd%bf%e7%94%a8">使用&lt;/a>&lt;/h2>
+&lt;h3 id="注册">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b3%a8%e5%86%8c">注册&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>配置好以后会直接跳转到登录界面，首先注册一个帐户；&lt;/li>
 &lt;/ul>
@@ -186,7 +231,7 @@
 &lt;li>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/98c5b485a2244a6cb9b24fd433ff92e2.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_04.png" alt="">&lt;/p>
-&lt;h3 id="创建仓库httpwwwmacrozhengcomreferencegogs_startide5889be5bbbae4bb93e5ba93">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%88%9b%e5%bb%ba%e4%bb%93%e5%ba%93">创建仓库&lt;/a>&lt;/h3>
+&lt;h3 id="创建仓库">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%88%9b%e5%bb%ba%e4%bb%93%e5%ba%93">创建仓库&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>直接使用我的仓库右侧的加号即可创建仓库，简单设置下仓库名称和可见性来完成创建；&lt;/li>
 &lt;/ul>
@@ -203,7 +248,7 @@
 &lt;li>检出完成后，加入我们的代码直接提交、推送，在Gogs里面就可以看到我们提交的代码了。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_08.png" alt="">&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/2cb90e1a6d674b74b9be06db5970ec55.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
-&lt;h3 id="工单管理httpwwwmacrozhengcomreferencegogs_startide5b7a5e58d95e7aea1e79086">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%b7%a5%e5%8d%95%e7%ae%a1%e7%90%86">工单管理&lt;/a>&lt;/h3>
+&lt;h3 id="工单管理">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%b7%a5%e5%8d%95%e7%ae%a1%e7%90%86">工单管理&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>这里的工单管理，有点类似Github上面的Issue的功能，我们可以通过&lt;code>创建工单&lt;/code>按钮来创建；&lt;/li>
 &lt;/ul>
@@ -216,7 +261,7 @@
 &lt;li>创建完成后显示效果如下。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/de43c3f2c8c044909b9359f31080f8e0.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_11.png" alt="">&lt;/p>
-&lt;h3 id="添加用户httpwwwmacrozhengcomreferencegogs_startide6b7bbe58aa0e794a8e688b7">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b7%bb%e5%8a%a0%e7%94%a8%e6%88%b7">添加用户&lt;/a>&lt;/h3>
+&lt;h3 id="添加用户">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b7%bb%e5%8a%a0%e7%94%a8%e6%88%b7">添加用户&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>有时候管理员需要新建一些帐户来协作开发，此时我们只要点击&lt;code>头像-&amp;gt;管理面板-&amp;gt;用户管理&lt;/code>即可打开用户管理界面；&lt;/li>
 &lt;/ul>
@@ -225,7 +270,7 @@
 &lt;li>然后点击&lt;code>创建新的帐户&lt;/code>，输入相关信息即可完成创建。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_13.png" alt="">&lt;/p>
-&lt;h3 id="管理协作者httpwwwmacrozhengcomreferencegogs_startide7aea1e79086e58d8fe4bd9ce88085">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e7%ae%a1%e7%90%86%e5%8d%8f%e4%bd%9c%e8%80%85">管理协作者&lt;/a>&lt;/h3>
+&lt;h3 id="管理协作者">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e7%ae%a1%e7%90%86%e5%8d%8f%e4%bd%9c%e8%80%85">管理协作者&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>创建完成后，我们可以在仓库页面的&lt;code>仓库设置&lt;/code>中打开&lt;code>管理协作者&lt;/code>功能；&lt;/li>
 &lt;/ul>
@@ -233,12 +278,7 @@
 &lt;ul>
 &lt;li>之后通过输入协作者账户，点击&lt;code>增加新的协作者&lt;/code>并设置好权限即可，这样协作者就可以访问并向该仓库提交代码了。&lt;/li>
 &lt;/ul>
-&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_15.png" alt="">&lt;/p>
-&lt;h3 id="迁移外部仓库httpwwwmacrozhengcomreferencegogs_startide8bf81e7a7bbe5a496e983a8e4bb93e5ba93">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e8%bf%81%e7%a7%bb%e5%a4%96%e9%83%a8%e4%bb%93%e5%ba%93">迁移外部仓库&lt;/a>&lt;/h3>
-&lt;ul>
-&lt;li>Gogs还提供了从外部仓库迁移代码的功能，通过头像左侧的加号，然后选择&lt;code>迁移外部仓库&lt;/code>即可；&lt;/li>
-&lt;/ul>
-&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_16.png" alt="">&lt;/p></description></item><item><title>PostmanCn:Postman中文版</title><link>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</link><pubDate>Mon, 21 Dec 2020 08:30:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</guid><description>&lt;p>最新版本：7.36.1&lt;/p>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_15.png" alt="">&lt;/p></description></item><item><title>PostmanCn:Postman中文版</title><link>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</link><pubDate>Mon, 21 Dec 2020 08:30:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/postmancnpostman%E4%B8%AD%E6%96%87%E7%89%88/</guid><description>&lt;p>最新版本：7.36.1&lt;/p>
 &lt;p>更新时间：2020-12-18&lt;/p>
 &lt;p>&lt;a href="https://gitee.com/hlmd/PostmanCn/releases">点击下载&lt;/a>&lt;/p>
 &lt;h2 id="介绍">介绍&lt;/h2>
@@ -414,8 +454,7 @@ PS:这个&lt;code>zh-Hans.lproj&lt;/code>汉化文件是从&lt;code>Navicat Prem
 &lt;blockquote>
 &lt;p>&lt;strong>uPic(upload Picture) 是一款 Mac 端的图床(文件)上传客户端&lt;/strong>&lt;br>
 可将图片、各种文件上传到配置好的指定提供商的对象存储中。&lt;br>
-然后快速获取可供互联网访问的文件 URL&lt;/p>
-&lt;/blockquote>
+然后快速获取可供互联网访问的文件 URL&lt;/p>&lt;/blockquote>
 &lt;p>**💡 特点：**无论是本地文件、或者屏幕截图都可自动上传，菜单栏显示实时上传进度。上传完成后文件链接自动复制到剪切板，让你无论是在写博客、灌水聊天都能快速插入图片。&lt;br>
 连接格式可以是普通 URL、HTML 或者 Markdown，仍由你掌控。&lt;/p>
 &lt;p>&lt;strong>🔋 支持图床：&lt;/strong>&lt;a href="https://sm.ms/">smms&lt;/a>、&lt;a href="https://www.upyun.com/products/file-storage">又拍云 USS&lt;/a>、&lt;a href="https://www.qiniu.com/products/kodo">七牛云 KODO&lt;/a>、&lt;a href="https://www.aliyun.com/product/oss/">阿里云 OSS&lt;/a>、&lt;a href="https://cloud.tencent.com/product/cos">腾讯云 COS&lt;/a>、&lt;a href="https://weibo.com/">微博&lt;/a>、&lt;a href="https://github.com/settings/tokens">Github&lt;/a>、&lt;a href="https://gitee.com/profile/personal_access_tokens">Gitee&lt;/a>、&lt;a href="https://aws.amazon.com/cn/s3/">Amazon S3&lt;/a>、&lt;a href="https://blog.svend.cc/upic/tutorials/custom">自定义上传接口&lt;/a>、…&lt;/p>

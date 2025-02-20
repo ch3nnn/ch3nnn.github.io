@@ -32,14 +32,14 @@ func main() {
 假设上面这个程序存储在一个semicolons.go文件中，我们可以运行go fmt semicolons.go将此程序中的不必要的分号去除掉。 在编译时刻，编译器会自动此插入这些去除掉的分号（至此文件的内存中的版本）。
 自动插入分号的规则是什么呢？Go白皮书这样描述：'><title>Golang-代码断行规则
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2022-02-02 16:37:59 +0000 UTC">2022-02-02</time></p><h1>Golang-代码断行规则</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共531字</span></p><p class=post-meta>预计阅读约: 3 分钟</p><p>如果你已经写了一些Go代码，你应该知道，Go代码风格不能太随意。 具体说来，我们不能随意在某个空格或者符号字符处断行。 本文余下的部分将列出Go代码中的详细断行规则。</p><h2 id=分号插入规则>分号插入规则</h2><p>我们在Go编程中常遵循的一个规则是：一个显式代码块的起始左大括号{不放在下一行。 比如，下面这个for循环代码块编译将失败。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>5</span>; i &gt; <span style=color:#0000c0>0</span>; i<span style=color:#00538b>--</span>
-</span></span><span style=display:flex><span>{ <span style=color:#505050>// error: 未预料到的新行
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span><span style=display:flex><span>{ <span style=color:#505050>// error: 未预料到的新行</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>为了让上面这个for循环代码块编译成功，我们不能在起始左大括号{前断行，而应该像下面这样进行修改：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>5</span>; i &gt; <span style=color:#0000c0>0</span>; i<span style=color:#00538b>--</span> {
 </span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>然而，有时候起始左大括号{却可以放在一个新行上，比如下面这个for循环代编译时没有问题的。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>for</span>
 </span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#505050>// do something ...
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span><span style=display:flex><span>    <span style=color:#505050>// do something ...</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>那么，Go代码中的根本性换行规则究竟是如何定义的呢？ 在回答这个问题之前，我们应该知道一个事实：正式的Go语法是使用（英文）分号;做为结尾标识符的。 但是，我们很少在Go代码中使用和看到分号。为什么呢？原因是大多数分号都是可选的，因此它们常常被省略。 在编译时刻，Go编译器会自动插入这些省略的分号。</p><p>比如，下面这个程序中的十个分号都是可以被省略掉的。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main;
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>import</span> <span style=color:#2544bb>&#34;fmt&#34;</span>;
@@ -103,13 +103,13 @@ func main() {
 </span></span><span style=display:flex><span>	i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>
 </span></span><span style=display:flex><span>	i &lt; <span style=color:#0000c0>6</span>
 </span></span><span style=display:flex><span>	i<span style=color:#00538b>++</span> {
-</span></span><span style=display:flex><span>		<span style=color:#505050>// 使用i ...
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	}
+</span></span><span style=display:flex><span>		<span style=color:#505050>// 使用i ...</span>
+</span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> x <span style=color:#00538b>:=</span> <span style=color:#721045>alwaysFalse</span>()
 </span></span><span style=display:flex><span>	!x {
-</span></span><span style=display:flex><span>		<span style=color:#505050>// ...
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	}
+</span></span><span style=display:flex><span>		<span style=color:#505050>// ...</span>
+</span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>switch</span> <span style=color:#721045>alwaysFalse</span>()
 </span></span><span style=display:flex><span>	{
@@ -135,15 +135,15 @@ func main() {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>1</span>:
 </span></span><span style=display:flex><span>	{
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>goto</span> A
-</span></span><span style=display:flex><span>		A: <span style=color:#505050>// 这里编译没问题
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	}
+</span></span><span style=display:flex><span>		A: <span style=color:#505050>// 这里编译没问题</span>
+</span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>2</span>:
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>goto</span> B
-</span></span><span style=display:flex><span>		B: <span style=color:#505050>// syntax error: 跳转标签后缺少语句
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>0</span>:
+</span></span><span style=display:flex><span>		B: <span style=color:#505050>// syntax error: 跳转标签后缺少语句</span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>0</span>:
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>goto</span> C
-</span></span><span style=display:flex><span>		C: <span style=color:#505050>// 这里编译没问题
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	}
+</span></span><span style=display:flex><span>		C: <span style=color:#505050>// 这里编译没问题</span>
+</span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>编译错误信息表明跳转标签的声明之后必须跟一条语句。 但是，看上去，上例中的三个标签声明没什么不同，它们都没有跟随一条语句。 那为什么只有B:标签声明是不合法的呢？ 原因是，根据上述第二条分号自动插入规则，编译器将在A:和C:标签声明之后的右大括号}字符之前插入一个分号，如下所示：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>f</span>(x <span style=color:#005a5f>int</span>) {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>switch</span> x {
@@ -151,40 +151,40 @@ func main() {
 </span></span><span style=display:flex><span>	{
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>goto</span> A
 </span></span><span style=display:flex><span>		A:
-</span></span><span style=display:flex><span>	;} <span style=color:#505050>// 一个分号插入到了这里
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>2</span>:
+</span></span><span style=display:flex><span>	;} <span style=color:#505050>// 一个分号插入到了这里</span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>2</span>:
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>goto</span> B
-</span></span><span style=display:flex><span>		B: <span style=color:#505050>// syntax error: 跳转标签后缺少语句
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>0</span>:
+</span></span><span style=display:flex><span>		B: <span style=color:#505050>// syntax error: 跳转标签后缺少语句</span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>case</span> <span style=color:#0000c0>0</span>:
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>goto</span> C
 </span></span><span style=display:flex><span>		C:
-</span></span><span style=display:flex><span>	;} <span style=color:#505050>// 一个分号插入到了这里
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span><span style=display:flex><span>	;} <span style=color:#505050>// 一个分号插入到了这里</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>一个单独的分号实际上表示一条空语句。 这就意味着A:和C:标签声明之后确实跟随了一条语句，所以它们是合法的。 而B:标签声明跟随的case 0:不是一条语句，所以它是不合法的。</p><p>我们可以在B:标签声明之后手动插入一个分号使之变得合法。</p><h2 id=逗号从不会被自动插入>逗号,从不会被自动插入</h2><p>一些包含多个类似项目的语法形式多用逗号,来做为这些项目之间的分割符，比如组合字面量和函数参数列表等。 在这样的一个语法形式中，最后一个项目后总可以跟一个可选的逗号。 如果此逗号为它所在代码行的最后一个有效字符，则此逗号是必需的；否则，此逗号可以省略。 编译器在任何情况下都不会自动插入逗号。</p><p>比如，下面的代码是合法的：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>f1</span>(a <span style=color:#005a5f>int</span>, b <span style=color:#005a5f>string</span>,) (x <span style=color:#005a5f>bool</span>, y <span style=color:#005a5f>int</span>,) {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> <span style=color:#0000c0>true</span>, <span style=color:#0000c0>789</span>
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span><span style=color:#5317ac>var</span> f2 <span style=color:#5317ac>func</span> (a <span style=color:#005a5f>int</span>, b <span style=color:#005a5f>string</span>) (x <span style=color:#005a5f>bool</span>, y <span style=color:#005a5f>int</span>)
-</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> f3 <span style=color:#5317ac>func</span> (a <span style=color:#005a5f>int</span>, b <span style=color:#005a5f>string</span>, <span style=color:#505050>// 最后一个逗号是必需的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>) (x <span style=color:#005a5f>bool</span>, y <span style=color:#005a5f>int</span>,             <span style=color:#505050>// 最后一个逗号是必需的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>)
-</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span>,} <span style=color:#505050>// 最后一个逗号是可选的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span>,  <span style=color:#505050>// 最后一个逗号是必需的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> f3 <span style=color:#5317ac>func</span> (a <span style=color:#005a5f>int</span>, b <span style=color:#005a5f>string</span>, <span style=color:#505050>// 最后一个逗号是必需的</span>
+</span></span><span style=display:flex><span>) (x <span style=color:#005a5f>bool</span>, y <span style=color:#005a5f>int</span>,             <span style=color:#505050>// 最后一个逗号是必需的</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span>,} <span style=color:#505050>// 最后一个逗号是可选的</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span>,  <span style=color:#505050>// 最后一个逗号是必需的</span>
+</span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span>}
-</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span>,) <span style=color:#505050>// 最后一个逗号是可选的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span>,  <span style=color:#505050>// 最后一个逗号是必需的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>)
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span>,) <span style=color:#505050>// 最后一个逗号是可选的</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span>,  <span style=color:#505050>// 最后一个逗号是必需的</span>
+</span></span><span style=display:flex><span>)
 </span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span>)
-</span></span><span style=display:flex><span><span style=color:#505050>// 对于显式转换也是一样的：
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>var</span> _ = <span style=color:#8f0075>string</span>(<span style=color:#0000c0>65</span>,) <span style=color:#505050>// 最后一个逗号是可选的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>var</span> _ = <span style=color:#8f0075>string</span>(<span style=color:#0000c0>65</span>,  <span style=color:#505050>// 最后一个逗号是必需的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>)
-</span></span></code></pre></div><p>而下面这段代码是不合法的，因为编译器将自动在每一行的行尾插入一个分号（除了第二行）。 其中三行在插入分号后将导致编译错误。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>f1</span>(a <span style=color:#005a5f>int</span>, b <span style=color:#005a5f>string</span>,) (x <span style=color:#005a5f>bool</span>, y <span style=color:#005a5f>int</span> <span style=color:#505050>// error
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>) {
+</span></span><span style=display:flex><span><span style=color:#505050>// 对于显式转换也是一样的：</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = <span style=color:#8f0075>string</span>(<span style=color:#0000c0>65</span>,) <span style=color:#505050>// 最后一个逗号是可选的</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = <span style=color:#8f0075>string</span>(<span style=color:#0000c0>65</span>,  <span style=color:#505050>// 最后一个逗号是必需的</span>
+</span></span><span style=display:flex><span>)
+</span></span></code></pre></div><p>而下面这段代码是不合法的，因为编译器将自动在每一行的行尾插入一个分号（除了第二行）。 其中三行在插入分号后将导致编译错误。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>f1</span>(a <span style=color:#005a5f>int</span>, b <span style=color:#005a5f>string</span>,) (x <span style=color:#005a5f>bool</span>, y <span style=color:#005a5f>int</span> <span style=color:#505050>// error</span>
+</span></span><span style=display:flex><span>) {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> <span style=color:#0000c0>true</span>, <span style=color:#0000c0>789</span>
 </span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span> <span style=color:#505050>// error: unexpected newline
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
-</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span> <span style=color:#505050>// error: unexpected newline
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>)
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _ = []<span style=color:#005a5f>int</span>{<span style=color:#0000c0>2</span>, <span style=color:#0000c0>3</span>, <span style=color:#0000c0>5</span>, <span style=color:#0000c0>7</span>, <span style=color:#0000c0>9</span> <span style=color:#505050>// error: unexpected newline</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> _, _ = <span style=color:#721045>f1</span>(<span style=color:#0000c0>123</span>, <span style=color:#2544bb>&#34;Go&#34;</span> <span style=color:#505050>// error: unexpected newline</span>
+</span></span><span style=display:flex><span>)
 </span></span></code></pre></div><h2 id=结束语>结束语</h2><p>最后，根据上面的解释，在这里描述一下Go代码中的断行规则。</p><p>在Go代码中，以下断行是没问题的（不影响程序行为的）：</p><ul><li>在除了<code>break</code>、<code>continue</code>和<code>return</code>这几个跳转关键字之外的任何关键字之后断行，或者在不跟随标签的<code>break</code>和<code>continue</code>关键字以及不跟随返回值的<code>return</code>关键字之后断行；</li><li>在（显式输入的或者隐式被编译器插入的）分号;之后断行；</li><li>在不会导致新的隐式分号被编译器插入的情况下断行。</li></ul><p>和很多Go中的其它设计细节一样，Go代码断行规则设计的评价也是褒贬不一。 有些程序员不太喜欢这样的断行规则，因为这样的规则限制了代码风格的自由度。 但是这些规则不但使得代码编译速度大大提高，另一方面也使得不同Go程序员写出的代码风格大体一致，从而相互可以比较轻松地读懂对方的代码。</p><h2 id=参考>参考</h2><p><a href=https://gfw.go101.org/article/line-break-rules.html>Go代码断行规则</a></p></article></div></main></body></html>

@@ -74,16 +74,16 @@ func main() {
 批量索引代码基于go-elasticsearch 示例。'><title>使用 go-elasticsearch v8 请求示例
 </title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2024-03-19 23:07:33 +0800 +0800">2024-03-19</time></p><h1>使用 go-elasticsearch v8 请求示例</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共601字</span></p><p class=post-meta>预计阅读约: 3 分钟</p><aside><nav id=TableOfContents><ul><li><a href=#一简介>一、简介</a></li><li><a href=#二index-createdelete>二、Index Create/Delete</a></li><li><a href=#三bulk-index>三、Bulk Index</a></li><li><a href=#四query>四、Query</a></li><li><a href=#五综上所述>五、综上所述</a></li></ul></nav></aside><h2 id=一简介>一、简介</h2><p><a href=https://www.elastic.co/guide/en/elasticsearch/client/go-api/current/getting-started-go.html>你可以通过参考Go 官方文档</a>找到简单的示例，所以我认为先看看这个是个好主意。</p><p>连接客户端有两种方式</p><p>至于两者的特点，TypedClient 有类型，更容易编写，但文档较少。另外，批量索引不支持TypedClient。由于普通客户端都是基于json的，所以我觉得从文档转换到代码还是比较容易的。</p><p>我的建议基本上是使用 TypedClient！
 虽然文档很稀疏，但它是基于规律性的类型化的，所以你越习惯它（特别是当涉及到有很多变化的东西时，比如查询），从 json 转换为类型化代码就越容易。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
-</span></span><span style=display:flex><span>    <span style=color:#505050>// client
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    es, err <span style=color:#00538b>:=</span> elasticsearch.<span style=color:#721045>NewClient</span>(elasticsearch.Config{
+</span></span><span style=display:flex><span>    <span style=color:#505050>// client</span>
+</span></span><span style=display:flex><span>    es, err <span style=color:#00538b>:=</span> elasticsearch.<span style=color:#721045>NewClient</span>(elasticsearch.Config{
 </span></span><span style=display:flex><span>        Addresses: []<span style=color:#005a5f>string</span>{<span style=color:#2544bb>&#34;http://localhost:9200&#34;</span>},
 </span></span><span style=display:flex><span>    })
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Error creating the client: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// typed client
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    es, err <span style=color:#00538b>:=</span> elasticsearch.<span style=color:#721045>NewTypedClient</span>(elasticsearch.Config{
+</span></span><span style=display:flex><span>    <span style=color:#505050>// typed client</span>
+</span></span><span style=display:flex><span>    es, err <span style=color:#00538b>:=</span> elasticsearch.<span style=color:#721045>NewTypedClient</span>(elasticsearch.Config{
 </span></span><span style=display:flex><span>        Addresses: []<span style=color:#005a5f>string</span>{<span style=color:#2544bb>&#34;http://localhost:9200&#34;</span>},
 </span></span><span style=display:flex><span>    })
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
@@ -106,21 +106,21 @@ func main() {
 </span></span><span style=display:flex><span>	format <span style=color:#00538b>:=</span> <span style=color:#2544bb>&#34;yyyy/MM/dd||yyyy/MM||MM/dd||yyyy||MM||dd&#34;</span>
 </span></span><span style=display:flex><span>	dateProperty.Format = <span style=color:#00538b>&amp;</span>format
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// index作成
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	_, err = es.Indices.<span style=color:#721045>Create</span>(<span style=color:#2544bb>&#34;sample_index&#34;</span>).<span style=color:#721045>Request</span>(<span style=color:#00538b>&amp;</span>create.Request{
+</span></span><span style=display:flex><span>	<span style=color:#505050>// index作成</span>
+</span></span><span style=display:flex><span>	_, err = es.Indices.<span style=color:#721045>Create</span>(<span style=color:#2544bb>&#34;sample_index&#34;</span>).<span style=color:#721045>Request</span>(<span style=color:#00538b>&amp;</span>create.Request{
 </span></span><span style=display:flex><span>		Settings: <span style=color:#00538b>&amp;</span>types.IndexSettings{
 </span></span><span style=display:flex><span>			IndexSettings: <span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]json.RawMessage{
-</span></span><span style=display:flex><span>				<span style=color:#505050>// 設定項目
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>				<span style=color:#505050>// bulk index里面的数据更新感觉。如果不需要频繁更新，设置得更长会提高性能。
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>				<span style=color:#2544bb>&#34;refresh_interval&#34;</span>: json.<span style=color:#721045>RawMessage</span>(<span style=color:#2544bb>`&#34;30s&#34;`</span>),
-</span></span><span style=display:flex><span>				<span style=color:#505050>// 可取得的最大件数的上限
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>				<span style=color:#2544bb>&#34;max_result_window&#34;</span>: json.<span style=color:#721045>RawMessage</span>(<span style=color:#2544bb>`&#34;1000000&#34;`</span>),
+</span></span><span style=display:flex><span>				<span style=color:#505050>// 設定項目</span>
+</span></span><span style=display:flex><span>				<span style=color:#505050>// bulk index里面的数据更新感觉。如果不需要频繁更新，设置得更长会提高性能。</span>
+</span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;refresh_interval&#34;</span>: json.<span style=color:#721045>RawMessage</span>(<span style=color:#2544bb>`&#34;30s&#34;`</span>),
+</span></span><span style=display:flex><span>				<span style=color:#505050>// 可取得的最大件数的上限</span>
+</span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;max_result_window&#34;</span>: json.<span style=color:#721045>RawMessage</span>(<span style=color:#2544bb>`&#34;1000000&#34;`</span>),
 </span></span><span style=display:flex><span>			},
 </span></span><span style=display:flex><span>		},
 </span></span><span style=display:flex><span>		Mappings: <span style=color:#00538b>&amp;</span>types.TypeMapping{
 </span></span><span style=display:flex><span>			Properties: <span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]types.Property{
-</span></span><span style=display:flex><span>				<span style=color:#505050>// 映射的定义
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>				<span style=color:#2544bb>&#34;name&#34;</span>:       keywordProperty,
+</span></span><span style=display:flex><span>				<span style=color:#505050>// 映射的定义</span>
+</span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;name&#34;</span>:       keywordProperty,
 </span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;age&#34;</span>:        types.<span style=color:#721045>NewIntegerNumberProperty</span>(),
 </span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;is_checked&#34;</span>: types.<span style=color:#721045>NewBooleanProperty</span>(),
 </span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;created_at&#34;</span>: dateProperty,
@@ -131,8 +131,8 @@ func main() {
 </span></span><span style=display:flex><span>		log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Error creating the client: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// index削除
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	_, err = es.Indices.<span style=color:#721045>Delete</span>(<span style=color:#2544bb>&#34;sample_index&#34;</span>).<span style=color:#721045>Do</span>(context.<span style=color:#721045>TODO</span>())
+</span></span><span style=display:flex><span>	<span style=color:#505050>// index削除</span>
+</span></span><span style=display:flex><span>	_, err = es.Indices.<span style=color:#721045>Delete</span>(<span style=color:#2544bb>&#34;sample_index&#34;</span>).<span style=color:#721045>Do</span>(context.<span style=color:#721045>TODO</span>())
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>		log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Error deleting the client: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>	}
@@ -174,10 +174,10 @@ func main() {
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>	bi, err <span style=color:#00538b>:=</span> esutil.<span style=color:#721045>NewBulkIndexer</span>(esutil.BulkIndexerConfig{
-</span></span><span style=display:flex><span>		Index:      <span style=color:#2544bb>&#34;sample_index&#34;</span>, <span style=color:#505050>// The default index name
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>		Client:     es,             <span style=color:#505050>// The Elasticsearch client
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>		NumWorkers: <span style=color:#0000c0>1</span>,              <span style=color:#505050>// The number of worker goroutines
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	})
+</span></span><span style=display:flex><span>		Index:      <span style=color:#2544bb>&#34;sample_index&#34;</span>, <span style=color:#505050>// The default index name</span>
+</span></span><span style=display:flex><span>		Client:     es,             <span style=color:#505050>// The Elasticsearch client</span>
+</span></span><span style=display:flex><span>		NumWorkers: <span style=color:#0000c0>1</span>,              <span style=color:#505050>// The number of worker goroutines</span>
+</span></span><span style=display:flex><span>	})
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>		log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Error creating the indexer: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>	}
@@ -191,8 +191,8 @@ func main() {
 </span></span><span style=display:flex><span>		err = bi.<span style=color:#721045>Add</span>(
 </span></span><span style=display:flex><span>			context.<span style=color:#721045>Background</span>(),
 </span></span><span style=display:flex><span>			esutil.BulkIndexerItem{
-</span></span><span style=display:flex><span>				<span style=color:#505050>// Delete时，action为“delete”，body为nil。
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>				Action: <span style=color:#2544bb>&#34;index&#34;</span>,
+</span></span><span style=display:flex><span>				<span style=color:#505050>// Delete时，action为“delete”，body为nil。</span>
+</span></span><span style=display:flex><span>				Action: <span style=color:#2544bb>&#34;index&#34;</span>,
 </span></span><span style=display:flex><span>				DocumentID: strconv.<span style=color:#721045>Itoa</span>(<span style=color:#8f0075>int</span>(a.ID)),
 </span></span><span style=display:flex><span>				Body: bytes.<span style=color:#721045>NewReader</span>(data),
 </span></span><span style=display:flex><span>				OnSuccess: <span style=color:#5317ac>func</span>(ctx context.Context, item esutil.BulkIndexerItem, res esutil.BulkIndexerResponseItem) {
@@ -212,8 +212,8 @@ func main() {
 </span></span><span style=display:flex><span>		log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Unexpected error: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// 取决于refresh_interval的值，但是如果感觉很长，在所有的index结束后刷新，数据会立即反映出来，所以很好
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	_, err = esRef.Indices.<span style=color:#721045>Refresh</span>().<span style=color:#721045>Index</span>(<span style=color:#2544bb>&#34;sample_index&#34;</span>).<span style=color:#721045>Do</span>(context.<span style=color:#721045>Background</span>())
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 取决于refresh_interval的值，但是如果感觉很长，在所有的index结束后刷新，数据会立即反映出来，所以很好</span>
+</span></span><span style=display:flex><span>	_, err = esRef.Indices.<span style=color:#721045>Refresh</span>().<span style=color:#721045>Index</span>(<span style=color:#2544bb>&#34;sample_index&#34;</span>).<span style=color:#721045>Do</span>(context.<span style=color:#721045>Background</span>())
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>		log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Error getting response: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>	}
@@ -239,13 +239,13 @@ func main() {
 </span></span><span style=display:flex><span>	size <span style=color:#00538b>:=</span> <span style=color:#0000c0>50</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>	req <span style=color:#00538b>:=</span> <span style=color:#00538b>&amp;</span>search.Request{
-</span></span><span style=display:flex><span>		<span style=color:#505050>// 查询
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>		Query: <span style=color:#00538b>&amp;</span>types.Query{
+</span></span><span style=display:flex><span>		<span style=color:#505050>// 查询</span>
+</span></span><span style=display:flex><span>		Query: <span style=color:#00538b>&amp;</span>types.Query{
 </span></span><span style=display:flex><span>			Bool: <span style=color:#00538b>&amp;</span>types.BoolQuery{
-</span></span><span style=display:flex><span>				<span style=color:#505050>// 过滤器(过滤器)
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>				Filter: []types.Query{
-</span></span><span style=display:flex><span>					<span style=color:#505050>// 范围过滤器(过滤器)
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>					{
+</span></span><span style=display:flex><span>				<span style=color:#505050>// 过滤器(过滤器)</span>
+</span></span><span style=display:flex><span>				Filter: []types.Query{
+</span></span><span style=display:flex><span>					<span style=color:#505050>// 范围过滤器(过滤器)</span>
+</span></span><span style=display:flex><span>					{
 </span></span><span style=display:flex><span>						Range: <span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]types.RangeQuery{
 </span></span><span style=display:flex><span>							<span style=color:#2544bb>&#34;age&#34;</span>: types.NumberRangeQuery{
 </span></span><span style=display:flex><span>								Gte: ageGteC,
@@ -253,8 +253,8 @@ func main() {
 </span></span><span style=display:flex><span>							},
 </span></span><span style=display:flex><span>						},
 </span></span><span style=display:flex><span>					},
-</span></span><span style=display:flex><span>					<span style=color:#505050>// 术语过滤器(过滤器)
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>					{
+</span></span><span style=display:flex><span>					<span style=color:#505050>// 术语过滤器(过滤器)</span>
+</span></span><span style=display:flex><span>					{
 </span></span><span style=display:flex><span>						Term: <span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]types.TermQuery{
 </span></span><span style=display:flex><span>							<span style=color:#2544bb>&#34;is_checked&#34;</span>: {Value: <span style=color:#0000c0>true</span>},
 </span></span><span style=display:flex><span>						},
@@ -262,12 +262,12 @@ func main() {
 </span></span><span style=display:flex><span>				},
 </span></span><span style=display:flex><span>			},
 </span></span><span style=display:flex><span>		},
-</span></span><span style=display:flex><span>		<span style=color:#505050>// 页面的起点
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>		From: <span style=color:#00538b>&amp;</span>pageStart,
-</span></span><span style=display:flex><span>		<span style=color:#505050>// 返回的数量
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>		Size: <span style=color:#00538b>&amp;</span>size,
-</span></span><span style=display:flex><span>		<span style=color:#505050>// 排序指定
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>		Sort: []types.SortCombinations{
+</span></span><span style=display:flex><span>		<span style=color:#505050>// 页面的起点</span>
+</span></span><span style=display:flex><span>		From: <span style=color:#00538b>&amp;</span>pageStart,
+</span></span><span style=display:flex><span>		<span style=color:#505050>// 返回的数量</span>
+</span></span><span style=display:flex><span>		Size: <span style=color:#00538b>&amp;</span>size,
+</span></span><span style=display:flex><span>		<span style=color:#505050>// 排序指定</span>
+</span></span><span style=display:flex><span>		Sort: []types.SortCombinations{
 </span></span><span style=display:flex><span>			types.SortOptions{SortOptions: <span style=color:#5317ac>map</span>[<span style=color:#005a5f>string</span>]types.FieldSort{
 </span></span><span style=display:flex><span>				<span style=color:#2544bb>&#34;created_at&#34;</span>: {Order: <span style=color:#00538b>&amp;</span>sortorder.Desc},
 </span></span><span style=display:flex><span>			}},
@@ -282,8 +282,8 @@ func main() {
 </span></span><span style=display:flex><span>		log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;Error query: %s&#34;</span>, err)
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// total
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	fmt.<span style=color:#721045>Println</span>(res.Hits.Total)
+</span></span><span style=display:flex><span>	<span style=color:#505050>// total</span>
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Println</span>(res.Hits.Total)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>	ds <span style=color:#00538b>:=</span> []<span style=color:#00538b>*</span>SampleIndexData{}
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>for</span> _, hit <span style=color:#00538b>:=</span> <span style=color:#5317ac>range</span> res.Hits.Hits {
@@ -294,7 +294,7 @@ func main() {
 </span></span><span style=display:flex><span>		ds = <span style=color:#8f0075>append</span>(ds, d)
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 拿出数据.
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	fmt.<span style=color:#721045>Println</span>(ds)
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 拿出数据.</span>
+</span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Println</span>(ds)
 </span></span><span style=display:flex><span>}
 </span></span></code></pre></div><h2 id=五综上所述>五、综上所述</h2><p>我已经简要描述了基本的索引创建/删除、使用 Bulk API 的批量处理以及如何在 go-elasticsearch 中使用 SearchAPI 编写搜索查询。</p><p>就我个人而言，我发现很容易迷失在 Elasticsearch 的文档中，当我尝试做一些详细的事情时，我最终会输入大量代码并进行反复试验，因此需要花费大量时间来理解整体概念并编写代码。</p></article></div></main></body></html>

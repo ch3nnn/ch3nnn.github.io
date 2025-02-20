@@ -17,16 +17,16 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>以上的命令会在&lt;code>&amp;lt;project&amp;gt;/ent/schema/&lt;/code>目录下产生&lt;code>User&lt;/code>的数据模式（数据模式是数据库系统设计中的专业术语，若对该部分有任何理解问题，请查阅数据库系统的相关书籍）：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> schema
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User在User实体中组合了ent默认的数据库模式定义
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User在User实体中组合了ent默认的数据库模式定义&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ent.Schema
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的边
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Edges&lt;/span>() []ent.Edge {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的边&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Edges&lt;/span>() []ent.Edge {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>为&lt;code>User&lt;/code> 模式添加两个字段：&lt;/p>
@@ -35,8 +35,8 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent/schema/field&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> []ent.Field{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> field.&lt;span style="color:#721045">Int&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;age&amp;#34;&lt;/span>).
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#721045">Positive&lt;/span>(),

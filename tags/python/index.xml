@@ -74,8 +74,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;p>&lt;a href="https://www.grpc.io/docs/languages/python/quickstart/">官方文档-Python&lt;/a>&lt;/p>
 &lt;p>gRPC是什么可以用官网的一句话来概括&lt;/p>
 &lt;blockquote>
-&lt;p>A high-performance, open-source universal RPC framework&lt;/p>
-&lt;/blockquote>
+&lt;p>A high-performance, open-source universal RPC framework&lt;/p>&lt;/blockquote>
 &lt;p>**所谓RPC(remote procedure call 远程过程调用)框架实际是提供了一套机制，使得应用程序之间可以进行通信，而且也遵从server/client模型。使用的时候客户端调用server端提供的接口就像是调用本地的函数一样。**如下图所示就是一个典型的RPC结构图。&lt;/p>
 &lt;p>&lt;img src="https://www.grpc.io/img/landing-2.svg" alt="概念图">&lt;/p>
 &lt;h2 id="grpc有什么好处以及在什么场景下需要用grpc">gRPC有什么好处以及在什么场景下需要用gRPC&lt;/h2>

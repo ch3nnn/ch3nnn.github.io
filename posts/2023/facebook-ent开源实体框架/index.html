@@ -50,16 +50,16 @@ func (User) Fields() []ent.Field {
 </span></span></code></pre></div><h3 id=创建你的第一个项目>创建你的第一个项目</h3><p>进入你项目的根目录，然后运行：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>go run -mod<span style=color:#00538b>=</span>mod entgo.io/ent/cmd/ent init User
 </span></span></code></pre></div><p>以上的命令会在<code>&lt;project>/ent/schema/</code>目录下产生<code>User</code>的数据模式（数据模式是数据库系统设计中的专业术语，若对该部分有任何理解问题，请查阅数据库系统的相关书籍）：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> schema
 </span></span><span style=display:flex><span><span style=color:#5317ac>import</span> <span style=color:#2544bb>&#34;entgo.io/ent&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#505050>// User在User实体中组合了ent默认的数据库模式定义
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>type</span> User <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span><span style=color:#505050>// User在User实体中组合了ent默认的数据库模式定义</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>type</span> User <span style=color:#5317ac>struct</span> {
 </span></span><span style=display:flex><span>    ent.Schema
 </span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span><span style=color:#505050>// User的字段
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> (User) <span style=color:#721045>Fields</span>() []ent.Field {
+</span></span><span style=display:flex><span><span style=color:#505050>// User的字段</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> (User) <span style=color:#721045>Fields</span>() []ent.Field {
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
 </span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span><span style=color:#505050>// User的边
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> (User) <span style=color:#721045>Edges</span>() []ent.Edge {
+</span></span><span style=display:flex><span><span style=color:#505050>// User的边</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> (User) <span style=color:#721045>Edges</span>() []ent.Edge {
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>
 </span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>为<code>User</code> 模式添加两个字段：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> schema
@@ -67,8 +67,8 @@ func (User) Fields() []ent.Field {
 </span></span><span style=display:flex><span>    <span style=color:#2544bb>&#34;entgo.io/ent&#34;</span>
 </span></span><span style=display:flex><span>    <span style=color:#2544bb>&#34;entgo.io/ent/schema/field&#34;</span>
 </span></span><span style=display:flex><span>)
-</span></span><span style=display:flex><span><span style=color:#505050>// User的字段
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> (User) <span style=color:#721045>Fields</span>() []ent.Field {
+</span></span><span style=display:flex><span><span style=color:#505050>// User的字段</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> (User) <span style=color:#721045>Fields</span>() []ent.Field {
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>return</span> []ent.Field{
 </span></span><span style=display:flex><span>        field.<span style=color:#721045>Int</span>(<span style=color:#2544bb>&#34;age&#34;</span>).
 </span></span><span style=display:flex><span>            <span style=color:#721045>Positive</span>(),
@@ -109,8 +109,8 @@ func (User) Fields() []ent.Field {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;failed opening connection to sqlite: %v&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>defer</span> client.<span style=color:#721045>Close</span>()
-</span></span><span style=display:flex><span>    <span style=color:#505050>// 运行自动迁移工具。
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> client.Schema.<span style=color:#721045>Create</span>(context.<span style=color:#721045>Background</span>()); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 运行自动迁移工具。</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> client.Schema.<span style=color:#721045>Create</span>(context.<span style=color:#721045>Background</span>()); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;failed creating schema resources: %v&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>}
@@ -127,8 +127,8 @@ func (User) Fields() []ent.Field {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;failed opening connection to postgres: %v&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>defer</span> client.<span style=color:#721045>Close</span>()
-</span></span><span style=display:flex><span>    <span style=color:#505050>// 运行自动迁移工具。
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> client.Schema.<span style=color:#721045>Create</span>(context.<span style=color:#721045>Background</span>()); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 运行自动迁移工具。</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> client.Schema.<span style=color:#721045>Create</span>(context.<span style=color:#721045>Background</span>()); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;failed creating schema resources: %v&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>}
@@ -145,13 +145,13 @@ func (User) Fields() []ent.Field {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;failed opening connection to mysql: %v&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>defer</span> client.<span style=color:#721045>Close</span>()
-</span></span><span style=display:flex><span>    <span style=color:#505050>// 运行自动迁移工具。
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> client.Schema.<span style=color:#721045>Create</span>(context.<span style=color:#721045>Background</span>()); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 运行自动迁移工具。</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>if</span> err <span style=color:#00538b>:=</span> client.Schema.<span style=color:#721045>Create</span>(context.<span style=color:#721045>Background</span>()); err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>        log.<span style=color:#721045>Fatalf</span>(<span style=color:#2544bb>&#34;failed creating schema resources: %v&#34;</span>, err)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>}
-</span></span></code></pre></div><h3 id=简单curd>简单CURD</h3><p>现在，我们准备创建我们的用户。 让我们写一个 <code>CreateUser</code> 函数，比如：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// CreateUser 新建用户
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> <span style=color:#721045>CreateUser</span>(ctx context.Context, client <span style=color:#00538b>*</span>ent.Client) (<span style=color:#00538b>*</span>ent.User, <span style=color:#005a5f>error</span>) {
+</span></span></code></pre></div><h3 id=简单curd>简单CURD</h3><p>现在，我们准备创建我们的用户。 让我们写一个 <code>CreateUser</code> 函数，比如：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// CreateUser 新建用户</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>CreateUser</span>(ctx context.Context, client <span style=color:#00538b>*</span>ent.Client) (<span style=color:#00538b>*</span>ent.User, <span style=color:#005a5f>error</span>) {
 </span></span><span style=display:flex><span>	u, err <span style=color:#00538b>:=</span> client.User.<span style=color:#721045>Create</span>().
 </span></span><span style=display:flex><span>		<span style=color:#721045>SetAge</span>(<span style=color:#0000c0>18</span>).
 </span></span><span style=display:flex><span>		<span style=color:#721045>SetName</span>(<span style=color:#2544bb>&#34;a8m&#34;</span>).
@@ -164,11 +164,11 @@ func (User) Fields() []ent.Field {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> u, <span style=color:#0000c0>nil</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p><code>ent</code> 为每个实体结构生成一个package，包含其条件、默认值、验证器、有关存储元素的附加信息 (字段名、主键等) 。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// QueryUser 查询用户
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> <span style=color:#721045>QueryUser</span>(ctx context.Context, client <span style=color:#00538b>*</span>ent.Client) (<span style=color:#00538b>*</span>ent.User, <span style=color:#005a5f>error</span>) {
-</span></span><span style=display:flex><span>	<span style=color:#505050>// `Only` 如果没有发现用户则报错,
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>// 否则正常返回。
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	u, err <span style=color:#00538b>:=</span> client.User.<span style=color:#721045>Query</span>().<span style=color:#721045>Where</span>(user.<span style=color:#721045>Name</span>(<span style=color:#2544bb>&#34;a8m&#34;</span>)).<span style=color:#721045>Only</span>(ctx)
+</span></span></code></pre></div><p><code>ent</code> 为每个实体结构生成一个package，包含其条件、默认值、验证器、有关存储元素的附加信息 (字段名、主键等) 。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// QueryUser 查询用户</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>QueryUser</span>(ctx context.Context, client <span style=color:#00538b>*</span>ent.Client) (<span style=color:#00538b>*</span>ent.User, <span style=color:#005a5f>error</span>) {
+</span></span><span style=display:flex><span>	<span style=color:#505050>// `Only` 如果没有发现用户则报错,</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 否则正常返回。</span>
+</span></span><span style=display:flex><span>	u, err <span style=color:#00538b>:=</span> client.User.<span style=color:#721045>Query</span>().<span style=color:#721045>Where</span>(user.<span style=color:#721045>Name</span>(<span style=color:#2544bb>&#34;a8m&#34;</span>)).<span style=color:#721045>Only</span>(ctx)
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> <span style=color:#0000c0>nil</span>, fmt.<span style=color:#721045>Errorf</span>(<span style=color:#2544bb>&#34;failed querying user: %w&#34;</span>, err)
 </span></span><span style=display:flex><span>	}

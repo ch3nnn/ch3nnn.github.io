@@ -11,7 +11,6 @@
 从正确性的角度来看，你不需要知道。Go中的每个变量都存在，只要有对它的引用。实现选择的存储位置与语言的语义无关。
 存储位置确实对编写高效的程序有影响。如果可能的话，Go编译器将为该函数的堆栈帧中的函数分配局部变量。但是，如果编译器不能证明该变量在函数返回后没有被引用，那么编译器必须在有垃圾回收的堆上分配该变量，以避免悬空指针错误。此外，如果局部变量非常大，那么将其存储在堆中可能比存储在栈中更有意义。
 在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。
-
 在什么阶段确立逃逸
 Go语言虽然没有明确说明逃逸分析规则，但是有以下几点准则，是可以参考的。
 
@@ -75,15 +74,15 @@ func main() {
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal4 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> fooVal5 = <span style=color:#8f0075>new</span>(<span style=color:#005a5f>int</span>)
 </span></span><span style=display:flex><span>	
-</span></span><span style=display:flex><span>    <span style=color:#505050>//此处循环是防止go编译器将foo优化成inline(内联函数)
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#505050>//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#505050>//即使fooVal3发生逃逸，地址与其他也是连续的
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; <span style=color:#0000c0>5</span>; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>//此处循环是防止go编译器将foo优化成inline(内联函数)</span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量</span>
+</span></span><span style=display:flex><span>    <span style=color:#505050>//即使fooVal3发生逃逸，地址与其他也是连续的</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; <span style=color:#0000c0>5</span>; i<span style=color:#00538b>++</span> {
 </span></span><span style=display:flex><span>        <span style=color:#8f0075>println</span>(argVal, fooVal1, fooVal2, fooVal3, fooVal4, fooVal5)
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>//fooVal3
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>return</span> fooVal3
+</span></span><span style=display:flex><span>    <span style=color:#505050>//fooVal3</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>return</span> fooVal3
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>

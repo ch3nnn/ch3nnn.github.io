@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/</link><description>Recent content on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 27 Aug 2024 00:51:35 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/index.xml" rel="self" type="application/rss+xml"/><item><title>动手不求人，记录一次 Mac Pro 拆机清灰</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</link><pubDate>Sat, 27 Apr 2024 23:28:09 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</guid><description>&lt;h2 id="一前言">一、前言&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/</link><description>Recent content on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 20 Feb 2025 11:05:31 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/index.xml" rel="self" type="application/rss+xml"/><item><title>动手不求人，记录一次 Mac Pro 拆机清灰</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</link><pubDate>Sat, 27 Apr 2024 23:28:09 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%8A%A8%E6%89%8B%E4%B8%8D%E6%B1%82%E4%BA%BA%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1macpro%E6%8B%86%E6%9C%BA%E6%B8%85%E7%81%B0/</guid><description>&lt;h2 id="一前言">一、前言&lt;/h2>
 &lt;p>自从换了新的吃饭家伙后(M3 Pro 女朋友送的!啊哈哈~)，老的 Mac Pro 退役后其实也没停下来，偶尔会用它搬砖调试。在使用过程中风扇的噪音变得非常大，整个键盘区域非常长烫手。
 仔细一算，这台家伙从18年到23年也已经快陪我走过了5年，但是一次拆机清灰都还没有过，于是找好了工具准备大干一场(其实是第三方清灰太贵了)。&lt;/p>
 &lt;h2 id="二准备工具">二、准备工具&lt;/h2>
@@ -21,10 +21,59 @@
 总体难度不是太大。顺带将买来的硅脂条也贴在热管后，提高一下散热。
 &lt;img src="https://s2.loli.net/2024/04/28/HwpW5KJ4Lc2n6Qf.png" alt="">&lt;/p>
 &lt;h2 id="五完美收工">五、完美收工&lt;/h2>
-&lt;p>这下应该整体机温可以下降 1 到 2 度了吧。其实整体拆机清灰难度不大，最主要是前期想当然了螺丝刀工具买错耽误几天时间，清理完成并没有出现主板短路、开不了机情况。总的来说算是比较不错。&lt;/p></description></item><item><title>Gorm 分表中间件(Sharding)</title><link>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</link><pubDate>Tue, 27 Aug 2024 00:51:35 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</guid><description>&lt;blockquote>
+&lt;p>这下应该整体机温可以下降 1 到 2 度了吧。其实整体拆机清灰难度不大，最主要是前期想当然了螺丝刀工具买错耽误几天时间，清理完成并没有出现主板短路、开不了机情况。总的来说算是比较不错。&lt;/p></description></item><item><title>fieldalignment 优化结构体内存对齐的静态分析工具</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%B7%A5%E5%85%B7-fieldalignment%E4%BC%98%E5%8C%96%E7%BB%93%E6%9E%84%E4%BD%93%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E7%9A%84%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</link><pubDate>Thu, 20 Feb 2025 11:05:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%B7%A5%E5%85%B7-fieldalignment%E4%BC%98%E5%8C%96%E7%BB%93%E6%9E%84%E4%BD%93%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E7%9A%84%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</guid><description>&lt;p>&lt;code>fieldalignment&lt;/code> 是 Go 官方工具链中用于优化结构体内存对齐的静态分析工具，可自动检测并修复结构体字段排列顺序问题。以下是核心要点：&lt;/p>
+&lt;hr>
+&lt;h3 id="-安装方式">🔧 安装方式&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-基础用法">🚀 基础用法&lt;/h3>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>命令&lt;/th>
+ &lt;th>作用&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;code>fieldalignment ./...&lt;/code>&lt;/td>
+ &lt;td>扫描当前项目所有结构体&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;code>fieldalignment -fix ./...&lt;/code>&lt;/td>
+ &lt;td>&lt;strong>自动修复&lt;/strong>可优化的结构体字段顺序&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;code>fieldalignment -json ./...&lt;/code>&lt;/td>
+ &lt;td>输出 JSON 格式报告&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-功能特性">🔍 功能特性&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>智能检测&lt;/strong>&lt;br>
+识别字段排列顺序导致内存浪费的结构体，例如：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// 检测前 (24 bytes)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> active &lt;span style="color:#005a5f">bool&lt;/span> &lt;span style="color:#505050">// 1字节 (导致后续填充)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> id &lt;span style="color:#005a5f">int64&lt;/span> &lt;span style="color:#505050">// 8字节&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> age &lt;span style="color:#005a5f">int32&lt;/span> &lt;span style="color:#505050">// 4字节&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// 检测后自动优化 (16 bytes)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> id &lt;span style="color:#005a5f">int64&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> age &lt;span style="color:#005a5f">int32&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> active &lt;span style="color:#005a5f">bool&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>节省计算&lt;/strong>&lt;br>
+报告潜在内存节省量，如：&lt;code>24 -&amp;gt; 16 bytes (saves 33%)&lt;/code>&lt;/p></description></item><item><title>Gorm 分表中间件(Sharding)</title><link>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</link><pubDate>Tue, 27 Aug 2024 00:51:35 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/gorm-%E5%88%86%E8%A1%A8%E4%B8%AD%E9%97%B4%E4%BB%B6/</guid><description>&lt;blockquote>
 &lt;p>&lt;a href="https://github.com/go-gorm/sharding">Sharding&lt;/a> 是一个高性能的 Gorm 分表中间件。它基于 Conn 层做 SQL 拦截、AST 解析、分表路由、自增主键填充，带来的额外开销极小。对开发者友好、透明，使用上与普通
-SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问&lt;/p>
-&lt;/blockquote>
+SQL、Gorm 查询无差别，只需要额外注意一下分表键条件。 为您提供高性能的数据库访问&lt;/p>&lt;/blockquote>
 &lt;h2 id="一功能特点">一、功能特点&lt;/h2>
 &lt;ul>
 &lt;li>非侵入式设计， 加载插件，指定配置，既可实现分表。&lt;/li>
@@ -78,51 +127,51 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> db.&lt;span style="color:#721045">Use&lt;/span>(sharding.&lt;span style="color:#721045">Register&lt;/span>(
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sharding.Config{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ShardingKey: &lt;span style="color:#2544bb">&amp;#34;user_id&amp;#34;&lt;/span>, &lt;span style="color:#505050">// 分片key
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> NumberOfShards: &lt;span style="color:#0000c0">2&lt;/span>, &lt;span style="color:#505050">// 分片数量
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> PrimaryKeyGenerator: sharding.PKMySQLSequence, &lt;span style="color:#505050">// 主键生成器, 这里使用 mysql
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> },
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;orders&amp;#34;&lt;/span>}, &lt;span style="color:#505050">// 需要分片 tables 
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> ))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ShardingKey: &lt;span style="color:#2544bb">&amp;#34;user_id&amp;#34;&lt;/span>, &lt;span style="color:#505050">// 分片key&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> NumberOfShards: &lt;span style="color:#0000c0">2&lt;/span>, &lt;span style="color:#505050">// 分片数量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PrimaryKeyGenerator: sharding.PKMySQLSequence, &lt;span style="color:#505050">// 主键生成器, 这里使用 mysql&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;orders&amp;#34;&lt;/span>}, &lt;span style="color:#505050">// 需要分片 tables &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ))
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this record will insert to orders_02
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Create&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{UserID: &lt;span style="color:#0000c0">2&lt;/span>}).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this record will insert to orders_02&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Create&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{UserID: &lt;span style="color:#0000c0">2&lt;/span>}).Error
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this record will insert to orders_03
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;INSERT INTO orders(user_id) VALUES(?)&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this record will insert to orders_03&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;INSERT INTO orders(user_id) VALUES(?)&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).Error
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will throw ErrMissingShardingKey error
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;INSERT INTO orders(product_id) VALUES(1)&amp;#34;&lt;/span>).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will throw ErrMissingShardingKey error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;INSERT INTO orders(product_id) VALUES(1)&amp;#34;&lt;/span>).Error
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will redirect query to orders_02
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">var&lt;/span> orders []Order
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will redirect query to orders_02&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> orders []Order
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Model&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{}).&lt;span style="color:#721045">Where&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;user_id&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">2&lt;/span>)).&lt;span style="color:#721045">Find&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders).Error
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%#v\n&amp;#34;&lt;/span>, orders)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// Raw SQL also supported
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> db.&lt;span style="color:#721045">Raw&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;SELECT * FROM orders WHERE user_id = ?&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).&lt;span style="color:#721045">Scan&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// Raw SQL also supported&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> db.&lt;span style="color:#721045">Raw&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;SELECT * FROM orders WHERE user_id = ?&amp;#34;&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).&lt;span style="color:#721045">Scan&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%#v\n&amp;#34;&lt;/span>, orders)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will throw ErrMissingShardingKey error
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Model&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{}).&lt;span style="color:#721045">Where&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;product_id&amp;#34;&lt;/span>, &lt;span style="color:#2544bb">&amp;#34;1&amp;#34;&lt;/span>).&lt;span style="color:#721045">Find&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// this will throw ErrMissingShardingKey error&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Model&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>Order{}).&lt;span style="color:#721045">Where&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;product_id&amp;#34;&lt;/span>, &lt;span style="color:#2544bb">&amp;#34;1&amp;#34;&lt;/span>).&lt;span style="color:#721045">Find&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>orders).Error
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// Update and Delete are similar to create and query
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;UPDATE orders SET product_id = ? WHERE user_id = ?&amp;#34;&lt;/span>, &lt;span style="color:#0000c0">2&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).Error
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err) &lt;span style="color:#505050">// nil
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;DELETE FROM orders WHERE product_id = 3&amp;#34;&lt;/span>).Error
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err) &lt;span style="color:#505050">// ErrMissingShardingKey
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// Update and Delete are similar to create and query&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;UPDATE orders SET product_id = ? WHERE user_id = ?&amp;#34;&lt;/span>, &lt;span style="color:#0000c0">2&lt;/span>, &lt;span style="color:#8f0075">int64&lt;/span>(&lt;span style="color:#0000c0">3&lt;/span>)).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err) &lt;span style="color:#505050">// nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> err = db.&lt;span style="color:#721045">Exec&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;DELETE FROM orders WHERE product_id = 3&amp;#34;&lt;/span>).Error
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt.&lt;span style="color:#721045">Println&lt;/span>(err) &lt;span style="color:#505050">// ErrMissingShardingKey&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;/ul></description></item><item><title>Go 编程风格指南 - 最佳实践</title><link>https://blog.ch3nnn.cn/posts/2024/go%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC%E6%8C%87%E5%8D%97-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link><pubDate>Mon, 03 Jun 2024 10:42:06 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go%E7%BC%96%E7%A8%8B%E9%A3%8E%E6%A0%BC%E6%8C%87%E5%8D%97-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid><description>&lt;p>原文：&lt;a href="https://google.github.io/styleguide/go">https://google.github.io/styleguide/go&lt;/a>&lt;/p>
@@ -150,37 +199,37 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>对于函数，不要&lt;a href="https://gocn.github.io/styleguide/docs/03-decisions/#%E5%8C%85%E5%90%8D-vs-%E5%8F%AF%E5%AF%BC%E5%87%BA%E7%AC%A6%E5%8F%B7%E5%90%8Dpackage-vs-exported-symbol-name">重复软件包的名称&lt;/a>。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">package&lt;/span> yamlconfig
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> yamlconfig
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">ParseYAMLConfig&lt;/span>(input &lt;span style="color:#005a5f">string&lt;/span>) (&lt;span style="color:#00538b">*&lt;/span>Config, &lt;span style="color:#005a5f">error&lt;/span>)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">package&lt;/span> yamlconfig
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> yamlconfig
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">Parse&lt;/span>(input &lt;span style="color:#005a5f">string&lt;/span>) (&lt;span style="color:#00538b">*&lt;/span>Config, &lt;span style="color:#005a5f">error&lt;/span>)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>对于方法不要重复方法接收器的名称。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (c &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#721045">WriteConfigTo&lt;/span>(w io.Writer) (&lt;span style="color:#005a5f">int64&lt;/span>, &lt;span style="color:#005a5f">error&lt;/span>)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (c &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#721045">WriteTo&lt;/span>(w io.Writer) (&lt;span style="color:#005a5f">int64&lt;/span>, &lt;span style="color:#005a5f">error&lt;/span>)
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (c &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#721045">WriteConfigTo&lt;/span>(w io.Writer) (&lt;span style="color:#005a5f">int64&lt;/span>, &lt;span style="color:#005a5f">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (c &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#721045">WriteTo&lt;/span>(w io.Writer) (&lt;span style="color:#005a5f">int64&lt;/span>, &lt;span style="color:#005a5f">error&lt;/span>)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>不要重复传参的变量名称&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">OverrideFirstWithSecond&lt;/span>(dest, source &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#005a5f">error&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">Override&lt;/span>(dest, source &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#005a5f">error&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Bad:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">OverrideFirstWithSecond&lt;/span>(dest, source &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#005a5f">error&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Good:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">Override&lt;/span>(dest, source &lt;span style="color:#00538b">*&lt;/span>Config) &lt;span style="color:#005a5f">error&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
 &lt;li>
 &lt;p>不要重复返回值的名称和类型&lt;/p></description></item><item><title>Go 1.22的新功能 Cmp.Or</title><link>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</link><pubDate>Sat, 27 Apr 2024 22:45:54 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-1.22%E6%96%B0%E5%8A%9F%E8%83%BD-cmp.or/</guid><description>&lt;h2 id="一介绍">一、介绍&lt;/h2>
 &lt;p>&lt;a href="https://go.dev/doc/go1.22">截至撰写本文时， Go 1.22&lt;/a>已经发布几个月了。&lt;/p>
 &lt;p>Go 1.22提出并实现的最终函数是&lt;code>cmp.Or&lt;/code>。&lt;/p>
 &lt;p>首先我们看一下代码：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Or returns the first of its arguments that is not equal to the zero value.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// If no argument is non-zero, it returns the zero value.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> Or[T comparable](vals &lt;span style="color:#00538b">...&lt;/span>T) T {
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// Or returns the first of its arguments that is not equal to the zero value.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// If no argument is non-zero, it returns the zero value.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> Or[T comparable](vals &lt;span style="color:#00538b">...&lt;/span>T) T {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">var&lt;/span> zero T
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> _, val &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#5317ac">range&lt;/span> vals {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">if&lt;/span> val &lt;span style="color:#00538b">!=&lt;/span> zero {
@@ -190,8 +239,7 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">return&lt;/span> zero
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>它非常简短。它只是比较其参数并返回第一个不是 &lt;code>0&lt;/code> or &lt;code>nil&lt;/code> or &lt;code>&amp;quot;&amp;quot;&lt;/code> 或&lt;strong>其类型的零值&lt;/strong>的参数。&lt;/p>
-&lt;/blockquote>
+&lt;p>它非常简短。它只是比较其参数并返回第一个不是 &lt;code>0&lt;/code> or &lt;code>nil&lt;/code> or &lt;code>&amp;quot;&amp;quot;&lt;/code> 或&lt;strong>其类型的零值&lt;/strong>的参数。&lt;/p>&lt;/blockquote>
 &lt;h2 id="二如何使用它">二、如何使用它?&lt;/h2>
 &lt;p>主要用途&lt;code>cmp.Or&lt;/code>是获取数字并返回第一个非0数字。例如，一个 API 获取列表页中的 &lt;code>page&lt;/code> 和 &lt;code>pageSize&lt;/code>参数值, 给一些默认值。&lt;/p></description></item><item><title>Go Sync并发包之errgroup</title><link>https://blog.ch3nnn.cn/posts/2024/go-sync%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B9%8Berrgroup/</link><pubDate>Wed, 24 Apr 2024 10:44:21 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/go-sync%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B9%8Berrgroup/</guid><description>&lt;p>你是否写过一个函数，它之所以很长，是因为它要完成很多任务，即使这些任务之间并不相互依赖？ 你是否写过一个很长的函数，因为它要完成很多任务，即使这些任务并不相互依赖？我就遇到过这种情况。&lt;/p>
 &lt;p>想想看，你有一个函数可以做 3 件事：&lt;/p>
@@ -203,15 +251,15 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">FetchUserData&lt;/span>(userID &lt;span style="color:#005a5f">string&lt;/span>) &lt;span style="color:#005a5f">error&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> g &lt;span style="color:#00538b">:=&lt;/span> errgroup.Group{}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户详细信息
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> userDetail, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserDetails&lt;/span>(userID)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户活动
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> userAct, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserActivity&lt;/span>(userID)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 获取用户登录详细信息
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> userLoginInfo, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserLoginDetails&lt;/span>(userID)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户详细信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> userDetail, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserDetails&lt;/span>(userID)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户活动&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> userAct, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserActivity&lt;/span>(userID)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 获取用户登录详细信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> userLoginInfo, _ &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#721045">fetchUserLoginDetails&lt;/span>(userID)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// ...
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// ...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>所有这些任务都只需要用户 ID，而不使用其他任务的数据。&lt;/p>
 &lt;p>您可以尝试使用 goroutines 来实现这一点，但您需要自己处理细节问题。让我们来回答这些问题：&lt;/p>
 &lt;ul>
@@ -223,35 +271,34 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/ul>
 &lt;h2 id="1什么是-errgroup">1.什么是 errgroup？&lt;/h2>
 &lt;blockquote>
-&lt;p>errgroup 软件包可让您同时处理多项任务。&lt;/p>
-&lt;/blockquote>
+&lt;p>errgroup 软件包可让您同时处理多项任务。&lt;/p>&lt;/blockquote>
 &lt;p>通过它，可以轻松地以安全的方式一起运行，保持同步，处理错误，并控制何时停止 goroutines。下面是一个如何使用它的快速示例：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">FetchUserData&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	g &lt;span style="color:#00538b">:=&lt;/span> errgroup.Group{}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户详细信息
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户详细信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Fetched user details...&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 获取用户活动
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// 获取用户活动&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Fetched user activity...&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户登录详细信息
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 获取用户登录详细信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	g.&lt;span style="color:#721045">Go&lt;/span>(&lt;span style="color:#5317ac">func&lt;/span>() &lt;span style="color:#005a5f">error&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">2&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Fetched user login details...&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	})
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 等待所有goroutines完成并返回第一个错误 (如果有)
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	&lt;span style="color:#5317ac">return&lt;/span> g.&lt;span style="color:#721045">Wait&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 等待所有goroutines完成并返回第一个错误 (如果有)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">return&lt;/span> g.&lt;span style="color:#721045">Wait&lt;/span>()
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>因此，errgroup 的工作就是运行这些任务，并通过 &lt;code>g.Wait()&lt;/code> 等待任务结束，我们需要做的就是添加任务。
 &lt;img src="https://s2.loli.net/2024/04/24/GMLih1vYBzDbWsO.png" alt="什么是 errgroup？">&lt;/p></description></item><item><title>使用 go-elasticsearch v8 请求示例</title><link>https://blog.ch3nnn.cn/posts/2024/%E4%BD%BF%E7%94%A8go-elasticsearch-v8%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B/</link><pubDate>Tue, 19 Mar 2024 23:07:33 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E4%BD%BF%E7%94%A8go-elasticsearch-v8%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B/</guid><description>&lt;h2 id="一简介">一、简介&lt;/h2>
@@ -261,16 +308,16 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;p>我的建议基本上是使用 TypedClient！
 虽然文档很稀疏，但它是基于规律性的类型化的，所以你越习惯它（特别是当涉及到有很多变化的东西时，比如查询），从 json 转换为类型化代码就越容易。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// client
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewClient&lt;/span>(elasticsearch.Config{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// client&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewClient&lt;/span>(elasticsearch.Config{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Addresses: []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;http://localhost:9200&amp;#34;&lt;/span>},
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error creating the client: %s&amp;#34;&lt;/span>, err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// typed client
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewTypedClient&lt;/span>(elasticsearch.Config{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// typed client&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> es, err &lt;span style="color:#00538b">:=&lt;/span> elasticsearch.&lt;span style="color:#721045">NewTypedClient&lt;/span>(elasticsearch.Config{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Addresses: []&lt;span style="color:#005a5f">string&lt;/span>{&lt;span style="color:#2544bb">&amp;#34;http://localhost:9200&amp;#34;&lt;/span>},
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
@@ -295,21 +342,21 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	format &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#2544bb">&amp;#34;yyyy/MM/dd||yyyy/MM||MM/dd||yyyy||MM||dd&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	dateProperty.Format = &lt;span style="color:#00538b">&amp;amp;&lt;/span>format
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// index作成
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	_, err = es.Indices.&lt;span style="color:#721045">Create&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;sample_index&amp;#34;&lt;/span>).&lt;span style="color:#721045">Request&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>create.Request{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// index作成&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_, err = es.Indices.&lt;span style="color:#721045">Create&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;sample_index&amp;#34;&lt;/span>).&lt;span style="color:#721045">Request&lt;/span>(&lt;span style="color:#00538b">&amp;amp;&lt;/span>create.Request{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		Settings: &lt;span style="color:#00538b">&amp;amp;&lt;/span>types.IndexSettings{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			IndexSettings: &lt;span style="color:#5317ac">map&lt;/span>[&lt;span style="color:#005a5f">string&lt;/span>]json.RawMessage{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 設定項目
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#505050">// bulk index里面的数据更新感觉。如果不需要频繁更新，设置得更长会提高性能。
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#2544bb">&amp;#34;refresh_interval&amp;#34;&lt;/span>: json.&lt;span style="color:#721045">RawMessage&lt;/span>(&lt;span style="color:#2544bb">`&amp;#34;30s&amp;#34;`&lt;/span>),
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 可取得的最大件数的上限
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#2544bb">&amp;#34;max_result_window&amp;#34;&lt;/span>: json.&lt;span style="color:#721045">RawMessage&lt;/span>(&lt;span style="color:#2544bb">`&amp;#34;1000000&amp;#34;`&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 設定項目&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// bulk index里面的数据更新感觉。如果不需要频繁更新，设置得更长会提高性能。&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;refresh_interval&amp;#34;&lt;/span>: json.&lt;span style="color:#721045">RawMessage&lt;/span>(&lt;span style="color:#2544bb">`&amp;#34;30s&amp;#34;`&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 可取得的最大件数的上限&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;max_result_window&amp;#34;&lt;/span>: json.&lt;span style="color:#721045">RawMessage&lt;/span>(&lt;span style="color:#2544bb">`&amp;#34;1000000&amp;#34;`&lt;/span>),
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			},
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		},
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		Mappings: &lt;span style="color:#00538b">&amp;amp;&lt;/span>types.TypeMapping{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			Properties: &lt;span style="color:#5317ac">map&lt;/span>[&lt;span style="color:#005a5f">string&lt;/span>]types.Property{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 映射的定义
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>				&lt;span style="color:#2544bb">&amp;#34;name&amp;#34;&lt;/span>: keywordProperty,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#505050">// 映射的定义&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;name&amp;#34;&lt;/span>: keywordProperty,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;age&amp;#34;&lt;/span>: types.&lt;span style="color:#721045">NewIntegerNumberProperty&lt;/span>(),
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;is_checked&amp;#34;&lt;/span>: types.&lt;span style="color:#721045">NewBooleanProperty&lt;/span>(),
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>				&lt;span style="color:#2544bb">&amp;#34;created_at&amp;#34;&lt;/span>: dateProperty,
@@ -320,8 +367,8 @@ Sharding 能理解数据需要对应到哪一个子表&lt;/strong>&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error creating the client: %s&amp;#34;&lt;/span>, err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// index削除
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	_, err = es.Indices.&lt;span style="color:#721045">Delete&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;sample_index&amp;#34;&lt;/span>).&lt;span style="color:#721045">Do&lt;/span>(context.&lt;span style="color:#721045">TODO&lt;/span>())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// index削除&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_, err = es.Indices.&lt;span style="color:#721045">Delete&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;sample_index&amp;#34;&lt;/span>).&lt;span style="color:#721045">Do&lt;/span>(context.&lt;span style="color:#721045">TODO&lt;/span>())
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		log.&lt;span style="color:#721045">Fatalf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;Error deleting the client: %s&amp;#34;&lt;/span>, err)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
@@ -337,18 +384,17 @@ Go 语言初学者带来了不少困惑。要想真正解决这些困惑，我�
 &lt;p>2.1 接口的静态特性与动态特性介绍
 接口的静态特性体现在接口类型变量具有静态类型。&lt;/p>
 &lt;p>比如 var err error 中变量 err 的静态类型为 error。拥有静态类型，那就意味着编译器会在编译阶段对所有接口类型变量的赋值操作进行类型检查，编译器会检查右值的类型是否实现了该接口方法集合中的所有方法。如果不满足，就会报错：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> err &lt;span style="color:#005a5f">error&lt;/span> = &lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#505050">// cannot use 1 (type int) as type error in assignment: int does not implement error (missing Error method)
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>而接口的动态特性，就体现在接口类型变量在运行时还存储了右值的真实类型信息，这个右值的真实类型被称为接口类型变量的动态类型。例如，下面示例代码：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> err &lt;span style="color:#005a5f">error&lt;/span> = &lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#505050">// cannot use 1 (type int) as type error in assignment: int does not implement error (missing Error method)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>而接口的动态特性，就体现在接口类型变量在运行时还存储了右值的真实类型信息，这个右值的真实类型被称为接口类型变量的动态类型。例如，下面示例代码：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> err &lt;span style="color:#005a5f">error&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>err = errors.&lt;span style="color:#721045">New&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;error1&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%T\n&amp;#34;&lt;/span>, err) &lt;span style="color:#505050">// *errors.errorString
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>2.2 “动静皆备”的特性的好处
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Printf&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;%T\n&amp;#34;&lt;/span>, err) &lt;span style="color:#505050">// *errors.errorString&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>2.2 “动静皆备”的特性的好处
 首先，接口类型变量在程序运行时可以被赋值为不同的动态类型变量，每次赋值后，接口类型变量中存储的动态类型信息都会发生变化，这让 Go 语言可以像动态语言（比如
 Python）那样拥有使用 Duck Typing（鸭子类型）的灵活性。所谓鸭子类型，就是指某类型所表现出的特性（比如是否可以作为某接口类型的右值），不是由其基因（比如
 C++ 中的父类）决定的，而是由类型所表现出来的行为（比如类型拥有的方法）决定的。&lt;/p></description></item><item><title>Protobuf 文档生成器插件</title><link>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</link><pubDate>Wed, 28 Feb 2024 16:20:31 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2024/%E5%B7%A5%E5%85%B7-protobuf%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E5%99%A8%E6%8F%92%E4%BB%B6/</guid><description>&lt;blockquote>
 &lt;p>这是 Google Protocol Buffers 文档生成器插件 (protoc)。
-该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。&lt;/p>
-&lt;/blockquote>
+该插件可以根据文件中的注释生成 HTML、JSON、DocBook 和 Markdown 文档。&lt;/p>&lt;/blockquote>
 &lt;h2 id="一前言">一、前言&lt;/h2>
 &lt;p>毫无疑问, 目前后台开发接口协议应用最广泛的除了 HTTP 之外就是 gRPC 了, HTTP 接口有成熟的&lt;code>swagger&lt;/code>工具可以生成界面美观和使用友好的文档，那么对于gRPC呢？&lt;/p>
 &lt;p>所以通过 .proto 文件能否生成更易阅读的 HTML 接口文档？&lt;/p>
@@ -462,8 +508,7 @@ gofmt 的&amp;quot;超集&amp;quot;，经过 gofumpt 格式化的代码也符合
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;!-- raw HTML omitted -->
 &lt;p>&lt;strong>函数体周围没有空行&lt;/strong>&lt;/p></description></item><item><title>在 Go 使用 embed 当中嵌入父目录中的文件</title><link>https://blog.ch3nnn.cn/posts/2023/%E5%9C%A8go%E4%BD%BF%E7%94%A8embed%E5%BD%93%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%88%B6%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</link><pubDate>Sat, 07 Oct 2023 09:48:41 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E5%9C%A8go%E4%BD%BF%E7%94%A8embed%E5%BD%93%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%88%B6%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6/</guid><description>&lt;blockquote>
-&lt;p>自 Go 1.16 版本开始，Go 提供了将二进制文件打包进入到 Binary 文件当中的机制:`//go:embed。不过，我看到的示例大多数都是嵌入当前文件夹下的子文件夹的示例。并没有嵌入父一级文件夹的示例。&lt;/p>
-&lt;/blockquote>
+&lt;p>自 Go 1.16 版本开始，Go 提供了将二进制文件打包进入到 Binary 文件当中的机制:`//go:embed。不过，我看到的示例大多数都是嵌入当前文件夹下的子文件夹的示例。并没有嵌入父一级文件夹的示例。&lt;/p>&lt;/blockquote>
 &lt;h2 id="为什么会需要嵌入父目录中的文件">为什么会需要嵌入父目录中的文件？&lt;/h2>
 &lt;p>这是因为不同的项目的构建规则不同。一些小型项目可能只有一个 main.go 或同级目录下几个其他的 go source 文件即可，但对于更大型的项目，合理的项目拆分是有助于帮助提升项目的可维护性的。&lt;/p>
 &lt;p>以我为例，我的目录结构如下：biz 目录下是我的核心逻辑，也是我日常写代码的地方；conf 则放置了各种配置，比如各种 API Key，ral 则是网络访问层，比如我比较喜欢用 gin 来做底层的网络访问层；script 放置了开发所需要的各种脚本文件；static 则放置了前端所需要的 JS / CSS 文件。在开发一些偏内容向的页面时，我会习惯使用 Server Side Render，所以我在 biz 目录下还有一个 template 目录。而主要的逻辑则放在 handler。&lt;/p>
@@ -624,11 +669,10 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
  &lt;/tbody>
 &lt;/table>
 &lt;h2 id="-功能简介">📖 功能简介&lt;/h2>
-&lt;p>下载的扩展兼容以下浏览器：&lt;/p></description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>&lt;h2 id="utoolspnghttpsresu-toolscnwebsiteutoolspng">&lt;img src="https://res.u-tools.cn/website/utools.png" alt="utools.png">&lt;/h2>
+&lt;p>下载的扩展兼容以下浏览器：&lt;/p></description></item><item><title>推荐一款超级好用的工具:uTools</title><link>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</link><pubDate>Thu, 23 Mar 2023 05:56:04 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E6%8E%A8%E8%8D%90%E4%B8%80%E6%AC%BE%E8%B6%85%E7%BA%A7%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7utools/</guid><description>&lt;h2 id="utoolspng">&lt;img src="https://res.u-tools.cn/website/utools.png" alt="utools.png">&lt;/h2>
 &lt;h2 id="utools-是什么">uTools 是什么？&lt;/h2>
 &lt;blockquote>
-&lt;p>uTools = your tools（你的工具集）&lt;/p>
-&lt;/blockquote>
+&lt;p>uTools = your tools（你的工具集）&lt;/p>&lt;/blockquote>
 &lt;p>uTools 是一个极简、插件化的现代桌面软件，通过自由选配丰富的插件，打造得心应手的工具集合。&lt;/p>
 &lt;p>通过快捷键（默认&lt;code>alt + space&lt;/code>）就可以快速呼出这个搜索框。你可以往输入框内粘贴文本、图片、截图、文件、文件夹等等，能够处理此内容的插件也早已准备就绪，统一的设计风格和操作方式，助你高效的得到结果。&lt;/p>
 &lt;h2 id="utools-能做什么">uTools 能做什么？&lt;/h2>
@@ -641,8 +685,7 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;h2 id="超级面板">超级面板&lt;/h2>
 &lt;p>可以通过鼠标右键/中键（可配置），快速打开 uTools 超级面板，uTools 会根据当前选择的内容（文本、截图、文件、文件夹）自动匹配已安装的插件供你选择。与平时使用右键类似的习惯，uTools 超级面板却能为你带来完全不一样的内容及体验。&lt;/p>
 &lt;blockquote>
-&lt;p>针对英文，还提供单词词典和整句翻译功能。&lt;/p>
-&lt;/blockquote>
+&lt;p>针对英文，还提供单词词典和整句翻译功能。&lt;/p>&lt;/blockquote>
 &lt;p>&lt;img src="https://res.u-tools.cn/website/translate.jpg" alt="superPanel">&lt;/p></description></item><item><title>Filebeat轻量型日志采集器-自定义processors处理器</title><link>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/</link><pubDate>Thu, 23 Feb 2023 18:14:25 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8-%E8%87%AA%E5%AE%9A%E4%B9%89processors%E5%A4%84%E7%90%86%E5%99%A8/</guid><description>&lt;h2 id="引入对beat的依赖">引入对beat的依赖&lt;/h2>
 &lt;p>&lt;code>go get github.com/elastic/beats/v7&lt;/code>&lt;/p>
 &lt;h2 id="定义在filebeat中的配置文件">定义在filebeat中的配置文件&lt;/h2>
@@ -684,8 +727,8 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">return&lt;/span> event, &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 按空格切分文本
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	split &lt;span style="color:#00538b">:=&lt;/span> strings.&lt;span style="color:#721045">Split&lt;/span>(message, &lt;span style="color:#2544bb">&amp;#34;,&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#505050">// 按空格切分文本&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	split &lt;span style="color:#00538b">:=&lt;/span> strings.&lt;span style="color:#721045">Split&lt;/span>(message, &lt;span style="color:#2544bb">&amp;#34;,&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	p.result[&lt;span style="color:#2544bb">&amp;#34;split&amp;#34;&lt;/span>] = split
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_, err = event.Fields.&lt;span style="color:#721045">Put&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;parse_text&amp;#34;&lt;/span>, p.result)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">if&lt;/span> err &lt;span style="color:#00538b">!=&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span> {
@@ -701,8 +744,8 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> (
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;os&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_ &lt;span style="color:#2544bb">&amp;#34;filebeat-plugin/pkg/processors/actions&amp;#34;&lt;/span> &lt;span style="color:#505050">// 这里需要将自定义插件注册
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	&lt;span style="color:#2544bb">&amp;#34;github.com/elastic/beats/v7/filebeat/cmd&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	_ &lt;span style="color:#2544bb">&amp;#34;filebeat-plugin/pkg/processors/actions&amp;#34;&lt;/span> &lt;span style="color:#505050">// 这里需要将自定义插件注册&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#2544bb">&amp;#34;github.com/elastic/beats/v7/filebeat/cmd&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	inputs &lt;span style="color:#2544bb">&amp;#34;github.com/elastic/beats/v7/filebeat/input/default-inputs&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -731,16 +774,16 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>以上的命令会在&lt;code>&amp;lt;project&amp;gt;/ent/schema/&lt;/code>目录下产生&lt;code>User&lt;/code>的数据模式（数据模式是数据库系统设计中的专业术语，若对该部分有任何理解问题，请查阅数据库系统的相关书籍）：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> schema
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">import&lt;/span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User在User实体中组合了ent默认的数据库模式定义
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User在User实体中组合了ent默认的数据库模式定义&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> User &lt;span style="color:#5317ac">struct&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ent.Schema
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的边
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Edges&lt;/span>() []ent.Edge {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的边&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Edges&lt;/span>() []ent.Edge {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#0000c0">nil&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>为&lt;code>User&lt;/code> 模式添加两个字段：&lt;/p>
@@ -749,8 +792,8 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#2544bb">&amp;#34;entgo.io/ent/schema/field&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// User的字段&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> (User) &lt;span style="color:#721045">Fields&lt;/span>() []ent.Field {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> []ent.Field{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> field.&lt;span style="color:#721045">Int&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;age&amp;#34;&lt;/span>).
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#721045">Positive&lt;/span>(),
@@ -759,8 +802,7 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>从项目的根目录下像如下命令那样，运行&lt;code>go generate&lt;/code>：&lt;/p></description></item><item><title>Filebeat轻量型日志采集器及output插件开发</title><link>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/</link><pubDate>Mon, 09 Jan 2023 16:36:01 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/filebeat%E8%BD%BB%E9%87%8F%E5%9E%8B%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%99%A8%E5%8F%8Aoutput%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/</guid><description>&lt;blockquote>
-&lt;p>无论您是从安全设备、云、容器、主机还是 OT 进行数据收集，Filebeat 都将为您提供一种轻量型方法，用于转发和汇总日志与文件，让简单的事情不再繁杂。&lt;/p>
-&lt;/blockquote>
+&lt;p>无论您是从安全设备、云、容器、主机还是 OT 进行数据收集，Filebeat 都将为您提供一种轻量型方法，用于转发和汇总日志与文件，让简单的事情不再繁杂。&lt;/p>&lt;/blockquote>
 &lt;h2 id="介绍">介绍&lt;/h2>
 &lt;p>Filebeat 是使用 Golang 实现的轻量型日志采集器。本质上是一个 agent ，可以安装在各个节点上，根据配置读取对应位置的日志，并上报到相应的地方去。&lt;/p>
 &lt;h3 id="概要">概要&lt;/h3>
@@ -772,8 +814,7 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;li>prospector (查找器) 的主要职责是管理 harvester 并找到所有要读取的文件来源。如果输入类型为日志，则查找器将查找路径匹配的所有文件，并为每个文件启动一个 harvester。每个 prospector 都在自己的 Go 协程中运行。&lt;/li>
 &lt;/ul>
 &lt;blockquote>
-&lt;p>&lt;em>注：Filebeat prospector只能读取本地文件， 没有功能可以连接到远程主机来读取存储的文件或日志。&lt;/em>&lt;/p>
-&lt;/blockquote>
+&lt;p>&lt;em>注：Filebeat prospector只能读取本地文件， 没有功能可以连接到远程主机来读取存储的文件或日志。&lt;/em>&lt;/p>&lt;/blockquote>
 &lt;p>由以上两个组件一起工作来读取文件（tail file）并将事件数据发送到指定的输出。
 下图是 Filebeat 官方提供的架构图：
 &lt;img src="https://cdn.jsdelivr.net/gh/ch3nnn/picgo/blog/imgs20230109163928.png" alt="">&lt;/p>
@@ -824,8 +865,8 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;p>如果我们可能想查看一些 Go 相关的环境变量，例如 GOROOT 或者 GOPATH。你可以执行这个命令。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> env
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当你想对某个环境变量进行更改，例如修改 Go 代理，你可以这样做。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> env &lt;span style="color:#00538b">-&lt;/span>w GOPROXY=https:&lt;span style="color:#505050">//goproxy.io,direct
-&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>go mod&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> env &lt;span style="color:#00538b">-&lt;/span>w GOPROXY=https:&lt;span style="color:#505050">//goproxy.io,direct&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>go mod&lt;/strong>&lt;/p>
 &lt;p>在你开始建立第一个 Go 程序时，在项目根目录下，你应该运行这样的命令。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#5317ac">go&lt;/span> mod init &amp;lt;your project name&amp;gt;
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>例如&lt;/p>
@@ -836,8 +877,7 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#0000c0">1.18&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果你有其他语言的经验，那么 go.mod 类似于 Python 中的 requirements.txt，Java 中的 pom.xml，它用于管理项目的依赖包。&lt;/p></description></item><item><title>「回顾2022，展望2023」 —— 年终总结</title><link>https://blog.ch3nnn.cn/posts/2022/%E6%88%91%E7%9A%842022%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link><pubDate>Sun, 01 Jan 2023 23:41:48 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/%E6%88%91%E7%9A%842022%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid><description>&lt;blockquote>
-&lt;p>致自己：折腾不息 · 乐此不疲!&lt;/p>
-&lt;/blockquote>
+&lt;p>致自己：折腾不息 · 乐此不疲!&lt;/p>&lt;/blockquote>
 &lt;h2 id="22-年收获">22 年收获&lt;/h2>
 &lt;p>&lt;strong>技术上&lt;/strong>&lt;/p>
 &lt;ul>
@@ -950,12 +990,12 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;h2 id="slice">Slice&lt;/h2>
 &lt;p>slice 翻译成中文就是切片，它和数组（array）很类似，可以用下标的方式进行访问，如果越界，就会产生 panic。但是它比数组更灵活，可以自动地进行扩容。&lt;/p>
 &lt;p>了解 slice 的本质, 最简单的方法就是看它的源码:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// runtime/slice.go
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">type&lt;/span> slice &lt;span style="color:#5317ac">struct&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> array unsafe.Pointer &lt;span style="color:#505050">// 元素指针
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> len &lt;span style="color:#005a5f">int&lt;/span> &lt;span style="color:#505050">// 长度 
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> cap &lt;span style="color:#005a5f">int&lt;/span> &lt;span style="color:#505050">// 容量
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// runtime/slice.go&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">type&lt;/span> slice &lt;span style="color:#5317ac">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> array unsafe.Pointer &lt;span style="color:#505050">// 元素指针&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> len &lt;span style="color:#005a5f">int&lt;/span> &lt;span style="color:#505050">// 长度 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cap &lt;span style="color:#005a5f">int&lt;/span> &lt;span style="color:#505050">// 容量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>slice 共有三个属性:&lt;/p>
 &lt;ol>
 &lt;li>&lt;strong>指针&lt;/strong> 指向底层数组&lt;/li>
@@ -1027,8 +1067,7 @@ NGINX 和 Kong，为什么还需要 Apache APISIX？” ，下面做个简单对
 &lt;p>实现拉链法一般会使用数组加上链表，不过有一些语言会在拉链法的哈希中引入红黑树以优化性能，拉链法会使用链表数组作为哈希底层的数据结构，我们可以将它看成一个可以扩展的『二维数组』：
 拉链法写入数据如图:
 &lt;img src="https://cdn.ch3nnn.cn/img202304111030711.png" alt="">&lt;/p></description></item><item><title>Golang-channel通道</title><link>https://blog.ch3nnn.cn/posts/2022/golang-channel%E9%80%9A%E9%81%93/</link><pubDate>Sat, 19 Mar 2022 17:41:05 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-channel%E9%80%9A%E9%81%93/</guid><description>&lt;blockquote>
-&lt;p>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。&lt;/p>
-&lt;/blockquote>
+&lt;p>goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。&lt;/p>&lt;/blockquote>
 &lt;h2 id="channel-有哪些应用">channel 有哪些应用&lt;/h2>
 &lt;p>&lt;strong>停止信号&lt;/strong>
 channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。&lt;/p>
@@ -1048,8 +1087,8 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">for&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">select&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span> ticker:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#505050">// 执行定时任务
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;执行 1s 定时任务&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#505050">// 执行定时任务&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;执行 1s 定时任务&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
@@ -1118,8 +1157,7 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;blockquote>
 &lt;p>从正确性的角度来看，你不需要知道。Go中的每个变量都存在，只要有对它的引用。实现选择的存储位置与语言的语义无关。
 存储位置确实对编写高效的程序有影响。如果可能的话，Go编译器将为该函数的堆栈帧中的函数分配局部变量。但是，如果编译器不能证明该变量在函数返回后没有被引用，那么编译器必须在有垃圾回收的堆上分配该变量，以避免悬空指针错误。此外，如果局部变量非常大，那么将其存储在堆中可能比存储在栈中更有意义。
-在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。&lt;/p>
-&lt;/blockquote>
+在当前编译器中，如果变量的地址被占用，那么该变量就是堆上分配内存的候选变量。然而，基本的逃逸分析可以识别出某些情况下，这些变量将不会存在于函数返回之后，而可以驻留在栈中。&lt;/p>&lt;/blockquote>
 &lt;h3 id="在什么阶段确立逃逸">在什么阶段确立逃逸&lt;/h3>
 &lt;p>Go语言虽然没有明确说明逃逸分析规则，但是有以下几点准则，是可以参考的。&lt;/p>
 &lt;ul>
@@ -1151,15 +1189,15 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal4 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">var&lt;/span> fooVal5 = &lt;span style="color:#8f0075">new&lt;/span>(&lt;span style="color:#005a5f">int&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//此处循环是防止go编译器将foo优化成inline(内联函数)
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#505050">//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#505050">//即使fooVal3发生逃逸，地址与其他也是连续的
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">5&lt;/span>; i&lt;span style="color:#00538b">++&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//此处循环是防止go编译器将foo优化成inline(内联函数)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//如果是内联函数，main调用foo将是原地展开，所以fooVal 1-5 相当于main作用域的变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//即使fooVal3发生逃逸，地址与其他也是连续的&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">5&lt;/span>; i&lt;span style="color:#00538b">++&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#8f0075">println&lt;/span>(argVal, fooVal1, fooVal2, fooVal3, fooVal4, fooVal5)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//fooVal3
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span> &lt;span style="color:#5317ac">return&lt;/span> fooVal3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">//fooVal3&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">return&lt;/span> fooVal3
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -1171,8 +1209,7 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>我们将fooVal 1-5 全部用&lt;code>new&lt;/code>的方式来开辟, 编译运行看结果, 显然&lt;code>fooVal3&lt;/code>发生了逃逸&lt;/p></description></item><item><title>Golang-GMP模型</title><link>https://blog.ch3nnn.cn/posts/2022/golang-gmp%E6%A8%A1%E5%9E%8B/</link><pubDate>Wed, 02 Mar 2022 16:45:39 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-gmp%E6%A8%A1%E5%9E%8B/</guid><description>&lt;h3 id="写在前面">写在前面&lt;/h3>
 &lt;p>Go 为了自身 goroutine 执行和调度的效率，自身在 runtime 中实现了一套 goroutine 的调度器，下面通过一段简单的代码展示一下 Go 应用程序在运行时的 goroutine，方便大家更好的理解。&lt;/p>
 &lt;blockquote>
-&lt;p>The Go scheduler is part of the Go runtime, and the Go runtime is built into your application&lt;/p>
-&lt;/blockquote>
+&lt;p>The Go scheduler is part of the Go runtime, and the Go runtime is built into your application&lt;/p>&lt;/blockquote>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">0&lt;/span>; i &amp;lt; &lt;span style="color:#0000c0">4&lt;/span>; i&lt;span style="color:#00538b">++&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#5317ac">func&lt;/span>() {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> time.&lt;span style="color:#721045">Sleep&lt;/span>(time.Second)
@@ -1192,8 +1229,8 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s1 []&lt;span style="color:#005a5f">int&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s2 = []&lt;span style="color:#005a5f">int&lt;/span>{}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s3 = &lt;span style="color:#8f0075">make&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>, &lt;span style="color:#0000c0">0&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// new 函数返回是指针类型，所以需要使用 * 号来解引用
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>&lt;span style="color:#5317ac">var&lt;/span> s4 = &lt;span style="color:#00538b">*&lt;/span>&lt;span style="color:#8f0075">new&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// new 函数返回是指针类型，所以需要使用 * 号来解引用&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> s4 = &lt;span style="color:#00538b">*&lt;/span>&lt;span style="color:#8f0075">new&lt;/span>([]&lt;span style="color:#005a5f">int&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#8f0075">len&lt;/span>(s1), &lt;span style="color:#8f0075">len&lt;/span>(s2), &lt;span style="color:#8f0075">len&lt;/span>(s3), &lt;span style="color:#8f0075">len&lt;/span>(s4))
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#8f0075">cap&lt;/span>(s1), &lt;span style="color:#8f0075">cap&lt;/span>(s2), &lt;span style="color:#8f0075">cap&lt;/span>(s3), &lt;span style="color:#8f0075">cap&lt;/span>(s4))
@@ -1227,16 +1264,16 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;h2 id="分号插入规则">分号插入规则&lt;/h2>
 &lt;p>我们在Go编程中常遵循的一个规则是：一个显式代码块的起始左大括号{不放在下一行。 比如，下面这个for循环代码块编译将失败。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; i &amp;gt; &lt;span style="color:#0000c0">0&lt;/span>; i&lt;span style="color:#00538b">--&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{ &lt;span style="color:#505050">// error: 未预料到的新行
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{ &lt;span style="color:#505050">// error: 未预料到的新行&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>为了让上面这个for循环代码块编译成功，我们不能在起始左大括号{前断行，而应该像下面这样进行修改：&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span> i &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#0000c0">5&lt;/span>; i &amp;gt; &lt;span style="color:#0000c0">0&lt;/span>; i&lt;span style="color:#00538b">--&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然而，有时候起始左大括号{却可以放在一个新行上，比如下面这个for循环代编译时没有问题的。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">for&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// do something ...
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#505050">// do something ...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>那么，Go代码中的根本性换行规则究竟是如何定义的呢？ 在回答这个问题之前，我们应该知道一个事实：正式的Go语法是使用（英文）分号;做为结尾标识符的。 但是，我们很少在Go代码中使用和看到分号。为什么呢？原因是大多数分号都是可选的，因此它们常常被省略。 在编译时刻，Go编译器会自动插入这些省略的分号。&lt;/p>
 &lt;p>比如，下面这个程序中的十个分号都是可以被省略掉的。&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">package&lt;/span> main;
@@ -1260,11 +1297,11 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;p>但是，Go语言并没有提供终止goroutine的接口，也就是说，我们不能从外部去停止一个goroutine，只能由goroutine内部退出(main函数终止除外)；&lt;/p>
 &lt;h3 id="goroutine-案例">goroutine 案例&lt;/h3>
 &lt;p>日常开发开启一个 goroutine go代码, 只需一个 go 关键字即可:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> wg sync.WaitGroup &lt;span style="color:#505050">// 等待组，用来阻塞程序
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">var&lt;/span> wg sync.WaitGroup &lt;span style="color:#505050">// 等待组，用来阻塞程序&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span>) &lt;span style="color:#505050">// 等待组 +1
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#5317ac">func&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span>) &lt;span style="color:#505050">// 等待组 +1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#5317ac">func&lt;/span>() {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">for&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;开启 goroutine&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
@@ -1284,13 +1321,13 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">select&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>msg:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;[go-routine] done&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#505050">// 必须 return, 否则 goroutine 不会结束
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>		}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#505050">// 必须 return, 否则 goroutine 不会结束&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}()
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;start&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;close channel&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#8f0075">close&lt;/span>(msg) &lt;span style="color:#505050">// 直接关闭通道 程序结束
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#8f0075">close&lt;/span>(msg) &lt;span style="color:#505050">// 直接关闭通道 程序结束&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>第二种方法，通过定期轮训 channel 其结合了第一种方法和类似信号量的处理方式。&lt;/li>
@@ -1311,16 +1348,16 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">select&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>quit:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;收到退出信号&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#505050">//必须return，否则goroutine不会结束
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>		&lt;span style="color:#5317ac">case&lt;/span> v &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>in:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			&lt;span style="color:#5317ac">return&lt;/span> &lt;span style="color:#505050">//必须return，否则goroutine不会结束&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		&lt;span style="color:#5317ac">case&lt;/span> v &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#00538b">&amp;lt;-&lt;/span>in:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>			fmt.&lt;span style="color:#721045">Println&lt;/span>(v)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#5317ac">func&lt;/span> &lt;span style="color:#721045">main&lt;/span>() {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	quit &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>) &lt;span style="color:#505050">//退出通道
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	in &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	quit &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>) &lt;span style="color:#505050">//退出通道&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	in &lt;span style="color:#00538b">:=&lt;/span> &lt;span style="color:#8f0075">make&lt;/span>(&lt;span style="color:#5317ac">chan&lt;/span> &lt;span style="color:#005a5f">int&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	&lt;span style="color:#5317ac">go&lt;/span> &lt;span style="color:#721045">worker&lt;/span>(in, quit)
@@ -1330,8 +1367,8 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>		time.&lt;span style="color:#721045">Sleep&lt;/span>(&lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#00538b">*&lt;/span> time.Second)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	}
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	quit &lt;span style="color:#00538b">&amp;lt;-&lt;/span> &lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#505050">//想通道写入退出信号
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">&lt;/span>	wg.&lt;span style="color:#721045">Wait&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	quit &lt;span style="color:#00538b">&amp;lt;-&lt;/span> &lt;span style="color:#0000c0">1&lt;/span> &lt;span style="color:#505050">//想通道写入退出信号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>	wg.&lt;span style="color:#721045">Wait&lt;/span>()
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="context">Context&lt;/h4>
 &lt;p>Go 语言的上下文（context）来做 goroutine 的控制和关闭, 对于是一种 tree 结构的goroutine, 要停止 sub tree 使用 channel 的方式不太方便&lt;/p></description></item><item><title>Golang:值传递还是引用传递</title><link>https://blog.ch3nnn.cn/posts/2022/golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/</link><pubDate>Sun, 09 Jan 2022 18:09:14 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2022/golang-%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/</guid><description>&lt;h2 id="go-官方的定义">Go 官方的定义&lt;/h2>
@@ -1456,17 +1493,15 @@ if __name__ == &amp;#39;__main__&amp;#39;:
  print(CallStateResult.USER_STATE_NULL.getMessage())
  print(CallStateResult.messageByCode(0))
 &lt;/code>&lt;/pre>&lt;p>输出&lt;/p></description></item><item><title>Github标星34K+Star，这款开源项目助你秒建Git服务！</title><link>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</link><pubDate>Tue, 06 Jul 2021 09:01:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2021/github%E6%A0%87%E6%98%9F34k+star%E8%BF%99%E6%AC%BE%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%8A%A9%E4%BD%A0%E7%A7%92%E5%BB%BAgit%E6%9C%8D%E5%8A%A1/</guid><description>&lt;blockquote>
-&lt;p>以前使用Gitlab搭建过Git服务，如果服务器配置低的话启动和访问都会特别慢。最近发现了Gogs这个开源项目，安装方便，特别轻量级，推荐给大家！&lt;/p>
-&lt;/blockquote>
-&lt;h2 id="推荐语httpwwwmacrozhengcomreferencegogs_startide68ea8e88d90e8afad">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%8e%a8%e8%8d%90%e8%af%ad">推荐语&lt;/a>&lt;/h2>
+&lt;p>以前使用Gitlab搭建过Git服务，如果服务器配置低的话启动和访问都会特别慢。最近发现了Gogs这个开源项目，安装方便，特别轻量级，推荐给大家！&lt;/p>&lt;/blockquote>
+&lt;h2 id="推荐语">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%8e%a8%e8%8d%90%e8%af%ad">推荐语&lt;/a>&lt;/h2>
 &lt;p>一款极易搭建的自助Git服务，特别轻量级，推荐给大家！&lt;/p>
-&lt;h2 id="gogs简介httpwwwmacrozhengcomreferencegogs_startidgogse7ae80e4bb8b">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=gogs%e7%ae%80%e4%bb%8b">Gogs简介&lt;/a>&lt;/h2>
+&lt;h2 id="gogs简介">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=gogs%e7%ae%80%e4%bb%8b">Gogs简介&lt;/a>&lt;/h2>
 &lt;p>Gogs是一款极易搭建的自助Git服务，使用Go语言开发，只要Go语言支持的平台它都支持，包括Linux、Mac OS X、Windows以及ARM平台。Gogs对系统硬件要求极低，你甚至可以在树莓派上搭建它。&lt;/p>
 &lt;p>项目地址：&lt;a href="https://github.com/gogs/gogs">https://github.com/gogs/gogs&lt;/a>&lt;/p>
-&lt;h2 id="安装httpwwwmacrozhengcomreferencegogs_startide5ae89e8a385">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%ae%89%e8%a3%85">安装&lt;/a>&lt;/h2>
+&lt;h2 id="安装">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%ae%89%e8%a3%85">安装&lt;/a>&lt;/h2>
 &lt;blockquote>
-&lt;p>Gogs在Docker环境下的安装非常简单，只需要两个命令即可，推荐使用该方式来进行安装。&lt;/p>
-&lt;/blockquote>
+&lt;p>Gogs在Docker环境下的安装非常简单，只需要两个命令即可，推荐使用该方式来进行安装。&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>首先我们需要先下载Gogs的Docker镜像；&lt;/li>
 &lt;/ul>
@@ -1477,7 +1512,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;/code>&lt;/pre>&lt;ul>
 &lt;li>这里我们说下命令中值得注意的地方，&lt;code>10022&lt;/code>对应的是Gogs的SSH服务端口，&lt;code>10080&lt;/code>对应的使用Gogs的HTTP服务端口，我们还将容器的数据目录挂载到了宿主机的&lt;code>/mydata/gogs&lt;/code>目录下，这样就算我们重新创建容器数据也不会丢失。&lt;/li>
 &lt;/ul>
-&lt;h2 id="配置httpwwwmacrozhengcomreferencegogs_startide9858de7bdae">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e9%85%8d%e7%bd%ae">配置&lt;/a>&lt;/h2>
+&lt;h2 id="配置">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e9%85%8d%e7%bd%ae">配置&lt;/a>&lt;/h2>
 &lt;ul>
 &lt;li>
 &lt;p>安装完成后，我们第一次访问Gogs服务会显示一个设置页面，访问地址：&lt;a href="http://192.168.5.19:10080/">http://192.168.5.19:10080/&lt;/a>&lt;/p>
@@ -1492,8 +1527,8 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;li>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/c1c4936ed1184085a60c7b1c567bb7b4.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_02.png" alt="">&lt;/p>
-&lt;h2 id="使用httpwwwmacrozhengcomreferencegogs_startide4bdbfe794a8">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e4%bd%bf%e7%94%a8">使用&lt;/a>&lt;/h2>
-&lt;h3 id="注册httpwwwmacrozhengcomreferencegogs_startide6b3a8e5868c">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b3%a8%e5%86%8c">注册&lt;/a>&lt;/h3>
+&lt;h2 id="使用">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e4%bd%bf%e7%94%a8">使用&lt;/a>&lt;/h2>
+&lt;h3 id="注册">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b3%a8%e5%86%8c">注册&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>配置好以后会直接跳转到登录界面，首先注册一个帐户；&lt;/li>
 &lt;/ul>
@@ -1503,7 +1538,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;li>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/98c5b485a2244a6cb9b24fd433ff92e2.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_04.png" alt="">&lt;/p>
-&lt;h3 id="创建仓库httpwwwmacrozhengcomreferencegogs_startide5889be5bbbae4bb93e5ba93">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%88%9b%e5%bb%ba%e4%bb%93%e5%ba%93">创建仓库&lt;/a>&lt;/h3>
+&lt;h3 id="创建仓库">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%88%9b%e5%bb%ba%e4%bb%93%e5%ba%93">创建仓库&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>直接使用我的仓库右侧的加号即可创建仓库，简单设置下仓库名称和可见性来完成创建；&lt;/li>
 &lt;/ul>
@@ -1520,7 +1555,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;li>检出完成后，加入我们的代码直接提交、推送，在Gogs里面就可以看到我们提交的代码了。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_08.png" alt="">&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/2cb90e1a6d674b74b9be06db5970ec55.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;/p>
-&lt;h3 id="工单管理httpwwwmacrozhengcomreferencegogs_startide5b7a5e58d95e7aea1e79086">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%b7%a5%e5%8d%95%e7%ae%a1%e7%90%86">工单管理&lt;/a>&lt;/h3>
+&lt;h3 id="工单管理">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e5%b7%a5%e5%8d%95%e7%ae%a1%e7%90%86">工单管理&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>这里的工单管理，有点类似Github上面的Issue的功能，我们可以通过&lt;code>创建工单&lt;/code>按钮来创建；&lt;/li>
 &lt;/ul>
@@ -1533,7 +1568,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;li>创建完成后显示效果如下。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="https://cdn.ch3nnn.cn/upload/2021/07/02/de43c3f2c8c044909b9359f31080f8e0.png?imageMogr2/auto-orient/thumbnail/1000x/interlace/1/blur/1x0/quality/95%7Cwatermark/2/text/Q2gzbm5ubm7nmoTljZrlrqIgfOaKmOiFvuS4jeaBryDCtyDkuZDmraTkuI3nlrI=/font/6buR5L2T/fontsize/260/fill/I0ZDRkNGQw==/dissolve/75/gravity/SouthEast/dx/10/dy/10" alt="">&lt;img src="http://www.macrozheng.com/images/gogs_start_11.png" alt="">&lt;/p>
-&lt;h3 id="添加用户httpwwwmacrozhengcomreferencegogs_startide6b7bbe58aa0e794a8e688b7">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b7%bb%e5%8a%a0%e7%94%a8%e6%88%b7">添加用户&lt;/a>&lt;/h3>
+&lt;h3 id="添加用户">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e6%b7%bb%e5%8a%a0%e7%94%a8%e6%88%b7">添加用户&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>有时候管理员需要新建一些帐户来协作开发，此时我们只要点击&lt;code>头像-&amp;gt;管理面板-&amp;gt;用户管理&lt;/code>即可打开用户管理界面；&lt;/li>
 &lt;/ul>
@@ -1542,7 +1577,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;li>然后点击&lt;code>创建新的帐户&lt;/code>，输入相关信息即可完成创建。&lt;/li>
 &lt;/ul>
 &lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_13.png" alt="">&lt;/p>
-&lt;h3 id="管理协作者httpwwwmacrozhengcomreferencegogs_startide7aea1e79086e58d8fe4bd9ce88085">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e7%ae%a1%e7%90%86%e5%8d%8f%e4%bd%9c%e8%80%85">管理协作者&lt;/a>&lt;/h3>
+&lt;h3 id="管理协作者">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e7%ae%a1%e7%90%86%e5%8d%8f%e4%bd%9c%e8%80%85">管理协作者&lt;/a>&lt;/h3>
 &lt;ul>
 &lt;li>创建完成后，我们可以在仓库页面的&lt;code>仓库设置&lt;/code>中打开&lt;code>管理协作者&lt;/code>功能；&lt;/li>
 &lt;/ul>
@@ -1550,12 +1585,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;ul>
 &lt;li>之后通过输入协作者账户，点击&lt;code>增加新的协作者&lt;/code>并设置好权限即可，这样协作者就可以访问并向该仓库提交代码了。&lt;/li>
 &lt;/ul>
-&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_15.png" alt="">&lt;/p>
-&lt;h3 id="迁移外部仓库httpwwwmacrozhengcomreferencegogs_startide8bf81e7a7bbe5a496e983a8e4bb93e5ba93">&lt;a href="http://www.macrozheng.com/#/reference/gogs_start?id=%e8%bf%81%e7%a7%bb%e5%a4%96%e9%83%a8%e4%bb%93%e5%ba%93">迁移外部仓库&lt;/a>&lt;/h3>
-&lt;ul>
-&lt;li>Gogs还提供了从外部仓库迁移代码的功能，通过头像左侧的加号，然后选择&lt;code>迁移外部仓库&lt;/code>即可；&lt;/li>
-&lt;/ul>
-&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_16.png" alt="">&lt;/p></description></item><item><title>更换（Pypi）pip源到国内镜像</title><link>https://blog.ch3nnn.cn/posts/2021/%E6%9B%B4%E6%8D%A2pypipip%E6%BA%90%E5%88%B0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F/</link><pubDate>Mon, 22 Feb 2021 03:09:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2021/%E6%9B%B4%E6%8D%A2pypipip%E6%BA%90%E5%88%B0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F/</guid><description>&lt;h3 id="pip国内的一些镜像">pip国内的一些镜像&lt;/h3>
+&lt;p>&lt;img src="http://www.macrozheng.com/images/gogs_start_15.png" alt="">&lt;/p></description></item><item><title>更换（Pypi）pip源到国内镜像</title><link>https://blog.ch3nnn.cn/posts/2021/%E6%9B%B4%E6%8D%A2pypipip%E6%BA%90%E5%88%B0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F/</link><pubDate>Mon, 22 Feb 2021 03:09:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2021/%E6%9B%B4%E6%8D%A2pypipip%E6%BA%90%E5%88%B0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F/</guid><description>&lt;h3 id="pip国内的一些镜像">pip国内的一些镜像&lt;/h3>
 &lt;ul>
 &lt;li>阿里云&lt;a href="http://mirrors.aliyun.com/pypi/simple/">https://mirrors.aliyun.com/pypi/simple/&lt;/a>&lt;/li>
 &lt;li>中国科技大学&lt;a href="https://pypi.mirrors.ustc.edu.cn/simple/">https://pypi.mirrors.ustc.edu.cn/simple/&lt;/a>&lt;/li>
@@ -1569,48 +1599,39 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;p>&lt;strong>Linux Mac Windows 通用命令&lt;/strong>&lt;/p>
 &lt;p>可以在使用pip的时候在后面加上-i参数，指定pip源&lt;/p>
 &lt;blockquote>
-&lt;p>pip install scrapy -i&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple&lt;/a>&lt;/p>
-&lt;/blockquote>
+&lt;p>pip install scrapy -i&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple&lt;/a>&lt;/p>&lt;/blockquote>
 &lt;h4 id="永久修改">永久修改：&lt;/h4>
 &lt;p>&lt;strong>Linux:&lt;/strong>&lt;/p>
 &lt;p>修改 pip.conf 文件 (没有就创建一个)&lt;/p>
 &lt;blockquote>
-&lt;p>$HOME/.config/pip/pip.conf&lt;/p>
-&lt;/blockquote>
+&lt;p>$HOME/.config/pip/pip.conf&lt;/p>&lt;/blockquote>
 &lt;p>修改内容如下：&lt;/p>
 &lt;blockquote>
 &lt;p>[global]&lt;/p>
-&lt;p>index-url =&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple12">https://pypi.tuna.tsinghua.edu.cn/simple12&lt;/a>&lt;/p>
-&lt;/blockquote>
+&lt;p>index-url =&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple12">https://pypi.tuna.tsinghua.edu.cn/simple12&lt;/a>&lt;/p>&lt;/blockquote>
 &lt;p>&lt;strong>Mac:&lt;/strong>&lt;/p>
 &lt;p>修改 pip.conf 文件&lt;/p>
 &lt;blockquote>
-&lt;p>$HOME/Library/Application Support/pip/pip.conf&lt;/p>
-&lt;/blockquote>
+&lt;p>$HOME/Library/Application Support/pip/pip.conf&lt;/p>&lt;/blockquote>
 &lt;p>如果没有上面的目录,在如下目录创建 pip.conf&lt;/p>
 &lt;blockquote>
-&lt;p>$HOME/.config/pip/pip.conf&lt;/p>
-&lt;/blockquote>
+&lt;p>$HOME/.config/pip/pip.conf&lt;/p>&lt;/blockquote>
 &lt;p>修改内容如下：&lt;/p>
 &lt;blockquote>
 &lt;p>[global]&lt;/p>
-&lt;p>index-url =&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple12">https://pypi.tuna.tsinghua.edu.cn/simple12&lt;/a>&lt;/p>
-&lt;/blockquote>
+&lt;p>index-url =&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple12">https://pypi.tuna.tsinghua.edu.cn/simple12&lt;/a>&lt;/p>&lt;/blockquote>
 &lt;p>&lt;strong>Windows:&lt;/strong>&lt;/p>
 &lt;p>修改 pip.conf 文件 (没有就创建一个)&lt;/p>
 &lt;blockquote>
-&lt;p>%APPDATA%\pip\pip.ini&lt;/p>
-&lt;/blockquote>
+&lt;p>%APPDATA%\pip\pip.ini&lt;/p>&lt;/blockquote>
 &lt;p>修改内容如下：&lt;/p>
 &lt;blockquote>
 &lt;p>[global]&lt;/p>
-&lt;p>index-url =&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple&lt;/a>&lt;/p>
-&lt;/blockquote>
+&lt;p>index-url =&lt;a href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple&lt;/a>&lt;/p>&lt;/blockquote>
 &lt;h3 id="修改文件后执行命令发生错误">修改文件后，执行命令发生错误&lt;/h3>
 &lt;p>使用非HTTPS加密源（如豆瓣源），在执行命令发生错误，在命令最后加上&lt;code>--trusted-host pypi.douban.com&lt;/code>&lt;/p>
 &lt;blockquote>
-&lt;p>pip install django -i&lt;a href="http://pypi.douban.com/simple">http://pypi.douban.com/simple&lt;/a>&amp;ndash;trusted-host&lt;a href="http://pypi.douban.com/">pypi.douban.com&lt;/a>&lt;/p>
-&lt;/blockquote></description></item><item><title>Python 使用-gRPC详解</title><link>https://blog.ch3nnn.cn/posts/2020/grpc%E8%AF%A6%E8%A7%A3/</link><pubDate>Thu, 24 Dec 2020 09:05:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/grpc%E8%AF%A6%E8%A7%A3/</guid><description>&lt;h2 id="rpc-框架原理">RPC 框架原理&lt;/h2>
+&lt;p>pip install django -i&lt;a href="http://pypi.douban.com/simple">http://pypi.douban.com/simple&lt;/a>&amp;ndash;trusted-host&lt;a href="http://pypi.douban.com/">pypi.douban.com&lt;/a>&lt;/p>&lt;/blockquote></description></item><item><title>Python 使用-gRPC详解</title><link>https://blog.ch3nnn.cn/posts/2020/grpc%E8%AF%A6%E8%A7%A3/</link><pubDate>Thu, 24 Dec 2020 09:05:00 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2020/grpc%E8%AF%A6%E8%A7%A3/</guid><description>&lt;h2 id="rpc-框架原理">RPC 框架原理&lt;/h2>
 &lt;p>&lt;strong>RPC 框架的目标就是让远程服务调用更加简单、透明&lt;/strong>，RPC 框架负责屏蔽底层的传输方式（TCP 或者 UDP）、序列化方式（XML/Json/ 二进制）和通信细节。&lt;strong>服务调用者可以像调用本地接口一样调用远程的服务提供者，而不需要关心底层通信细节和调用过程。&lt;/strong>&lt;/p>
 &lt;p>RPC 框架的调用原理图如下所示：&lt;/p>
 &lt;p>&lt;img src="https://s2.loli.net/2023/03/10/E4o5iRd3KuaH2Fg.png" alt="">&lt;/p>
@@ -1618,8 +1639,7 @@ if __name__ == &amp;#39;__main__&amp;#39;:
 &lt;p>&lt;a href="https://www.grpc.io/docs/languages/python/quickstart/">官方文档-Python&lt;/a>&lt;/p>
 &lt;p>gRPC是什么可以用官网的一句话来概括&lt;/p>
 &lt;blockquote>
-&lt;p>A high-performance, open-source universal RPC framework&lt;/p>
-&lt;/blockquote>
+&lt;p>A high-performance, open-source universal RPC framework&lt;/p>&lt;/blockquote>
 &lt;p>**所谓RPC(remote procedure call 远程过程调用)框架实际是提供了一套机制，使得应用程序之间可以进行通信，而且也遵从server/client模型。使用的时候客户端调用server端提供的接口就像是调用本地的函数一样。**如下图所示就是一个典型的RPC结构图。&lt;/p>
 &lt;p>&lt;img src="https://www.grpc.io/img/landing-2.svg" alt="概念图">&lt;/p>
 &lt;h2 id="grpc有什么好处以及在什么场景下需要用grpc">gRPC有什么好处以及在什么场景下需要用gRPC&lt;/h2>
@@ -1843,8 +1863,7 @@ PS:这个&lt;code>zh-Hans.lproj&lt;/code>汉化文件是从&lt;code>Navicat Prem
 &lt;blockquote>
 &lt;p>&lt;strong>uPic(upload Picture) 是一款 Mac 端的图床(文件)上传客户端&lt;/strong>&lt;br>
 可将图片、各种文件上传到配置好的指定提供商的对象存储中。&lt;br>
-然后快速获取可供互联网访问的文件 URL&lt;/p>
-&lt;/blockquote>
+然后快速获取可供互联网访问的文件 URL&lt;/p>&lt;/blockquote>
 &lt;p>**💡 特点：**无论是本地文件、或者屏幕截图都可自动上传，菜单栏显示实时上传进度。上传完成后文件链接自动复制到剪切板，让你无论是在写博客、灌水聊天都能快速插入图片。&lt;br>
 连接格式可以是普通 URL、HTML 或者 Markdown，仍由你掌控。&lt;/p>
 &lt;p>&lt;strong>🔋 支持图床：&lt;/strong>&lt;a href="https://sm.ms/">smms&lt;/a>、&lt;a href="https://www.upyun.com/products/file-storage">又拍云 USS&lt;/a>、&lt;a href="https://www.qiniu.com/products/kodo">七牛云 KODO&lt;/a>、&lt;a href="https://www.aliyun.com/product/oss/">阿里云 OSS&lt;/a>、&lt;a href="https://cloud.tencent.com/product/cos">腾讯云 COS&lt;/a>、&lt;a href="https://weibo.com/">微博&lt;/a>、&lt;a href="https://github.com/settings/tokens">Github&lt;/a>、&lt;a href="https://gitee.com/profile/personal_access_tokens">Gitee&lt;/a>、&lt;a href="https://aws.amazon.com/cn/s3/">Amazon S3&lt;/a>、&lt;a href="https://blog.svend.cc/upic/tutorials/custom">自定义上传接口&lt;/a>、…&lt;/p>

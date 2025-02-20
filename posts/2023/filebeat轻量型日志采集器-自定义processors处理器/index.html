@@ -101,8 +101,8 @@ func main() {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> event, <span style=color:#0000c0>nil</span>
 </span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 按空格切分文本
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	split <span style=color:#00538b>:=</span> strings.<span style=color:#721045>Split</span>(message, <span style=color:#2544bb>&#34;,&#34;</span>)
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 按空格切分文本</span>
+</span></span><span style=display:flex><span>	split <span style=color:#00538b>:=</span> strings.<span style=color:#721045>Split</span>(message, <span style=color:#2544bb>&#34;,&#34;</span>)
 </span></span><span style=display:flex><span>	p.result[<span style=color:#2544bb>&#34;split&#34;</span>] = split
 </span></span><span style=display:flex><span>	_, err = event.Fields.<span style=color:#721045>Put</span>(<span style=color:#2544bb>&#34;parse_text&#34;</span>, p.result)
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> err <span style=color:#00538b>!=</span> <span style=color:#0000c0>nil</span> {
@@ -117,8 +117,8 @@ func main() {
 </span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
 </span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;os&#34;</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>	_ <span style=color:#2544bb>&#34;filebeat-plugin/pkg/processors/actions&#34;</span>  <span style=color:#505050>// 这里需要将自定义插件注册
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#2544bb>&#34;github.com/elastic/beats/v7/filebeat/cmd&#34;</span>
+</span></span><span style=display:flex><span>	_ <span style=color:#2544bb>&#34;filebeat-plugin/pkg/processors/actions&#34;</span>  <span style=color:#505050>// 这里需要将自定义插件注册</span>
+</span></span><span style=display:flex><span>	<span style=color:#2544bb>&#34;github.com/elastic/beats/v7/filebeat/cmd&#34;</span>
 </span></span><span style=display:flex><span>	inputs <span style=color:#2544bb>&#34;github.com/elastic/beats/v7/filebeat/input/default-inputs&#34;</span>
 </span></span><span style=display:flex><span>)
 </span></span><span style=display:flex><span>

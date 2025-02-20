@@ -2,7 +2,6 @@
 Go 为了自身 goroutine 执行和调度的效率，自身在 runtime 中实现了一套 goroutine 的调度器，下面通过一段简单的代码展示一下 Go 应用程序在运行时的 goroutine，方便大家更好的理解。
 
 The Go scheduler is part of the Go runtime, and the Go runtime is built into your application
-
 for i := 0; i < 4; i++ {
         go func() {
                 time.Sleep(time.Second)

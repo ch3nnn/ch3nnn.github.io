@@ -52,8 +52,8 @@ fmt.Println(a4)
 </span></span></code></pre></div><p>表示底层数组的二进制内容都是零</p><p><strong>「空切片」和 「nil 切片」</strong></p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>var</span> s1 []<span style=color:#005a5f>int</span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>var</span> s2 = []<span style=color:#005a5f>int</span>{}
 </span></span><span style=display:flex><span><span style=color:#5317ac>var</span> s3 = <span style=color:#8f0075>make</span>([]<span style=color:#005a5f>int</span>, <span style=color:#0000c0>0</span>)
-</span></span><span style=display:flex><span><span style=color:#505050>// new 函数返回是指针类型，所以需要使用 * 号来解引用
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>var</span> s4 = <span style=color:#00538b>*</span><span style=color:#8f0075>new</span>([]<span style=color:#005a5f>int</span>)
+</span></span><span style=display:flex><span><span style=color:#505050>// new 函数返回是指针类型，所以需要使用 * 号来解引用</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> s4 = <span style=color:#00538b>*</span><span style=color:#8f0075>new</span>([]<span style=color:#005a5f>int</span>)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>fmt.<span style=color:#721045>Println</span>(<span style=color:#8f0075>len</span>(s1), <span style=color:#8f0075>len</span>(s2), <span style=color:#8f0075>len</span>(s3), <span style=color:#8f0075>len</span>(s4))
 </span></span><span style=display:flex><span>fmt.<span style=color:#721045>Println</span>(<span style=color:#8f0075>cap</span>(s1), <span style=color:#8f0075>cap</span>(s2), <span style=color:#8f0075>cap</span>(s3), <span style=color:#8f0075>cap</span>(s4))
@@ -83,13 +83,13 @@ fmt.Println(a4)
 </span></span><span style=display:flex><span>[<span style=color:#0000c0>824634199592</span> <span style=color:#0000c0>0</span> <span style=color:#0000c0>0</span>]
 </span></span><span style=display:flex><span>[<span style=color:#0000c0>0</span> <span style=color:#0000c0>0</span> <span style=color:#0000c0>0</span>]
 </span></span></code></pre></div><p>其中输出为 [0 0 0] 的 s1 和 s4 变量就是「 nil 切片」，s2 和 s3 变量就是「空切片」。824634199592 这个值是一个特殊的内存地址，所有类型的「空切片」都共享这一个内存地址。</p><p>用图形来表示「空切片」和「 nil 切片」如下</p><p><img src=https://s2.loli.net/2023/02/20/k7rE2iY4cyqPHhN.png alt></p><p>空切片指向的 zerobase 内存地址是一个神奇的地址，从 Go 语言的源代码中可以看到它的定义</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#505050>//// runtime/malloc.go
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>
-</span></span><span style=display:flex><span><span style=color:#505050>// base address for all 0-byte allocations
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>var</span> zerobase <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span><span style=color:#505050>//// runtime/malloc.go</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#505050>// 分配对象内存
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> <span style=color:#721045>mallocgc</span>(size <span style=color:#005a5f>uintptr</span>, typ <span style=color:#00538b>*</span>_type, needzero <span style=color:#005a5f>bool</span>) unsafe.Pointer {
+</span></span><span style=display:flex><span><span style=color:#505050>// base address for all 0-byte allocations</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>var</span> zerobase <span style=color:#005a5f>uintptr</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#505050>// 分配对象内存</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>mallocgc</span>(size <span style=color:#005a5f>uintptr</span>, typ <span style=color:#00538b>*</span>_type, needzero <span style=color:#005a5f>bool</span>) unsafe.Pointer {
 </span></span><span style=display:flex><span>	<span style=color:#00538b>...</span>
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>if</span> size <span style=color:#00538b>==</span> <span style=color:#0000c0>0</span> {
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>return</span> unsafe.<span style=color:#721045>Pointer</span>(<span style=color:#00538b>&amp;</span>zerobase)
@@ -97,9 +97,9 @@ fmt.Println(a4)
 </span></span><span style=display:flex><span>    <span style=color:#00538b>...</span>
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#505050>//// runtime/slice.go
-</span></span></span><span style=display:flex><span><span style=color:#505050>// 创建切片
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>func</span> <span style=color:#721045>makeslice</span>(et <span style=color:#00538b>*</span>_type, len, cap <span style=color:#005a5f>int</span>) slice {
+</span></span><span style=display:flex><span><span style=color:#505050>//// runtime/slice.go</span>
+</span></span><span style=display:flex><span><span style=color:#505050>// 创建切片</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>makeslice</span>(et <span style=color:#00538b>*</span>_type, len, cap <span style=color:#005a5f>int</span>) slice {
 </span></span><span style=display:flex><span>  <span style=color:#00538b>...</span>
 </span></span><span style=display:flex><span>     p <span style=color:#00538b>:=</span> <span style=color:#721045>mallocgc</span>(et.size<span style=color:#00538b>*</span><span style=color:#8f0075>uintptr</span>(cap), et, <span style=color:#0000c0>true</span>)
 </span></span><span style=display:flex><span>	 <span style=color:#5317ac>return</span> slice{p, len, cap}
@@ -150,12 +150,12 @@ fmt.Println(a4)
 </span></span><span style=display:flex><span><span style=color:#00538b>---------</span>
 </span></span><span style=display:flex><span>{<span style=color:#2544bb>&#34;Values&#34;</span>:null}
 </span></span><span style=display:flex><span>{<span style=color:#2544bb>&#34;Values&#34;</span>:[]}
-</span></span></code></pre></div><p>Ban! Ban! Ban! 它们的 json 序列化结果居然也不一样！</p><h2 id=数组与切片有什么区别>数组与切片有什么区别</h2><p><code>slice</code> 的底层数据是数组，<code>slice</code> 是对数组的封装，它描述一个数组的片段。两者都可以通过下标来访问单个元素。</p><p>数组是定长的，长度定义好之后，不能再更改。在 Go 中，数组是不常见的，因为其长度是类型的一部分，限制了它的表达能力，比如 [3]int 和 [4]int 就是不同的类型</p><p>而切片则非常灵活，它可以动态地扩容。切片的类型和长度无关。</p><p>数组就是一片连续的内存， <code>slice</code> 实际上是一个结构体，包含三个字段：<strong>长度</strong>、<strong>容量</strong>、<strong>底层数组</strong>。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// runtime/slice.go
-</span></span></span><span style=display:flex><span><span style=color:#505050></span><span style=color:#5317ac>type</span> slice <span style=color:#5317ac>struct</span> {
-</span></span><span style=display:flex><span>	array unsafe.Pointer <span style=color:#505050>// 元素指针
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	len   <span style=color:#005a5f>int</span> <span style=color:#505050>// 长度 
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	cap   <span style=color:#005a5f>int</span> <span style=color:#505050>// 容量
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span></code></pre></div><p>Ban! Ban! Ban! 它们的 json 序列化结果居然也不一样！</p><h2 id=数组与切片有什么区别>数组与切片有什么区别</h2><p><code>slice</code> 的底层数据是数组，<code>slice</code> 是对数组的封装，它描述一个数组的片段。两者都可以通过下标来访问单个元素。</p><p>数组是定长的，长度定义好之后，不能再更改。在 Go 中，数组是不常见的，因为其长度是类型的一部分，限制了它的表达能力，比如 [3]int 和 [4]int 就是不同的类型</p><p>而切片则非常灵活，它可以动态地扩容。切片的类型和长度无关。</p><p>数组就是一片连续的内存， <code>slice</code> 实际上是一个结构体，包含三个字段：<strong>长度</strong>、<strong>容量</strong>、<strong>底层数组</strong>。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// runtime/slice.go</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>type</span> slice <span style=color:#5317ac>struct</span> {
+</span></span><span style=display:flex><span>	array unsafe.Pointer <span style=color:#505050>// 元素指针</span>
+</span></span><span style=display:flex><span>	len   <span style=color:#005a5f>int</span> <span style=color:#505050>// 长度 </span>
+</span></span><span style=display:flex><span>	cap   <span style=color:#005a5f>int</span> <span style=color:#505050>// 容量</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p><code>slice</code> 的数据结构如下：</p><p><img src=https://cdn.jsdelivr.net/gh/ch3nnn/picgo/blog/imgs202302151639786.png alt></p><p>注意，底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。</p><p>【引申1】 [3]int 和 [4]int 是同一个类型吗？</p><p>不是。因为数组的长度是类型的一部分，这是与 slice 不同的一点。</p><p>【引申2】 下面的代码输出是什么？</p><p>说明：例子来自雨痕大佬《Go学习笔记》第四版，P43页。这里我会进行扩展，并会作图详细分析。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> main
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>import</span> <span style=color:#2544bb>&#34;fmt&#34;</span>
@@ -186,8 +186,8 @@ fmt.Println(a4)
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>f</span>(s []<span style=color:#005a5f>int</span>) {
-</span></span><span style=display:flex><span>	<span style=color:#505050>// i只是一个副本，不能改变s中元素的值
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>/*for _, i := range s {
+</span></span><span style=display:flex><span>	<span style=color:#505050>// i只是一个副本，不能改变s中元素的值</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>/*for _, i := range s {
 </span></span></span><span style=display:flex><span><span style=color:#505050>		i++
 </span></span></span><span style=display:flex><span><span style=color:#505050>	}
 </span></span></span><span style=display:flex><span><span style=color:#505050>	*/</span>
@@ -201,14 +201,14 @@ fmt.Println(a4)
 </span></span><span style=display:flex><span><span style=color:#5317ac>import</span> <span style=color:#2544bb>&#34;fmt&#34;</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>myAppend</span>(s []<span style=color:#005a5f>int</span>) []<span style=color:#005a5f>int</span> {
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 这里 s 虽然改变了，但并不会影响外层函数的 s
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	s = <span style=color:#8f0075>append</span>(s, <span style=color:#0000c0>100</span>)
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 这里 s 虽然改变了，但并不会影响外层函数的 s</span>
+</span></span><span style=display:flex><span>	s = <span style=color:#8f0075>append</span>(s, <span style=color:#0000c0>100</span>)
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span> s
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>myAppendPtr</span>(s <span style=color:#00538b>*</span>[]<span style=color:#005a5f>int</span>) {
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 会改变外层 s 本身
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#00538b>*</span>s = <span style=color:#8f0075>append</span>(<span style=color:#00538b>*</span>s, <span style=color:#0000c0>100</span>)
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 会改变外层 s 本身</span>
+</span></span><span style=display:flex><span>	<span style=color:#00538b>*</span>s = <span style=color:#8f0075>append</span>(<span style=color:#00538b>*</span>s, <span style=color:#0000c0>100</span>)
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>return</span>
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span>

@@ -1,6 +1,5 @@
 <!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='
 goroutine 和 channel (通道)并成为 Go 并发的两大基石。channel 可以放心地在多个 goroutine 之间使用, 因为它是并发安全的。
-
 channel 有哪些应用
 停止信号
 channel 用于停止信号的场景很多，通常是通过关闭某个channel 或者向 channel 发送一个元素，使得接收 channel 的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。
@@ -42,8 +41,8 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>for</span> {
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>select</span> {
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>case</span> <span style=color:#00538b>&lt;-</span> ticker:
-</span></span><span style=display:flex><span>			<span style=color:#505050>// 执行定时任务
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>			fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;执行 1s 定时任务&#34;</span>)
+</span></span><span style=display:flex><span>			<span style=color:#505050>// 执行定时任务</span>
+</span></span><span style=display:flex><span>			fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;执行 1s 定时任务&#34;</span>)
 </span></span><span style=display:flex><span>		}
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>}
@@ -52,21 +51,21 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 </span></span><span style=display:flex><span>	taskCh <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#005a5f>int</span>, <span style=color:#0000c0>100</span>)
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>go</span> <span style=color:#721045>worker</span>(taskCh)
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// 塞任务
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; <span style=color:#0000c0>10</span>; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 塞任务</span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; <span style=color:#0000c0>10</span>; i<span style=color:#00538b>++</span> {
 </span></span><span style=display:flex><span>		taskCh <span style=color:#00538b>&lt;-</span> i
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// 等待 1 小时 
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>select</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// 等待 1 小时 </span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>select</span> {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>case</span> <span style=color:#00538b>&lt;-</span>time.<span style=color:#721045>After</span>(time.Hour):
 </span></span><span style=display:flex><span>	}
 </span></span><span style=display:flex><span>}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>worker</span>(taskCh <span style=color:#00538b>&lt;-</span><span style=color:#5317ac>chan</span> <span style=color:#005a5f>int</span>) {
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>const</span> N = <span style=color:#0000c0>5</span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 启动 5 个工作协程
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; N; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 启动 5 个工作协程</span>
+</span></span><span style=display:flex><span>	<span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; N; i<span style=color:#00538b>++</span> {
 </span></span><span style=display:flex><span>		<span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>(id <span style=color:#005a5f>int</span>) {
 </span></span><span style=display:flex><span>			<span style=color:#5317ac>for</span> {
 </span></span><span style=display:flex><span>				task <span style=color:#00538b>:=</span> <span style=color:#00538b>&lt;-</span> taskCh
@@ -92,41 +91,41 @@ channel 用于停止信号的场景很多，通常是通过关闭某个channel �
 channel 来控制并发数：</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>var</span> limit = <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#005a5f>int</span>, <span style=color:#0000c0>3</span>)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>main</span>() {
-</span></span><span style=display:flex><span>    <span style=color:#505050>// …………
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>for</span> _, w <span style=color:#00538b>:=</span> <span style=color:#5317ac>range</span> work {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// …………</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>for</span> _, w <span style=color:#00538b>:=</span> <span style=color:#5317ac>range</span> work {
 </span></span><span style=display:flex><span>        <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>() {
 </span></span><span style=display:flex><span>            limit <span style=color:#00538b>&lt;-</span> <span style=color:#0000c0>1</span>
 </span></span><span style=display:flex><span>            <span style=color:#721045>w</span>()
 </span></span><span style=display:flex><span>            <span style=color:#00538b>&lt;-</span>limit
 </span></span><span style=display:flex><span>        }()
 </span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>    <span style=color:#505050>// …………
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>}
+</span></span><span style=display:flex><span>    <span style=color:#505050>// …………</span>
+</span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>构建一个缓冲型的 channel，容量为 3。接着遍历任务列表，每个任务启动一个 goroutine 去完成。真正执行任务，访问第三方的动作在 w() 中完成，在执行 w() 之前，先要从 limit 中拿“许可证”，拿到许可证之后，才能执行 w()，并且在执行完任务，要将“许可证”归还。这样就可以控制同时运行的 goroutine 数。</p><h3 id=channel-数据结构>channel 数据结构</h3><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>type</span> hchan <span style=color:#5317ac>struct</span> {
-</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 里元素数量
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	qcount   <span style=color:#005a5f>uint</span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 底层循环数组的长度
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	dataqsiz <span style=color:#005a5f>uint</span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 指向底层循环数组的指针
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>// 只针对有缓冲的 channel
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	buf      unsafe.Pointer
-</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 中元素大小
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	elemsize <span style=color:#005a5f>uint16</span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 是否被关闭的标志
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	closed   <span style=color:#005a5f>uint32</span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 中元素类型
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	elemtype <span style=color:#00538b>*</span>_type <span style=color:#505050>// element type
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>// 已发送元素在循环数组中的索引
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	sendx    <span style=color:#005a5f>uint</span>   <span style=color:#505050>// send index
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>// 已接收元素在循环数组中的索引
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	recvx    <span style=color:#005a5f>uint</span>   <span style=color:#505050>// receive index
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>// 等待接收的 goroutine 队列
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	recvq    waitq  <span style=color:#505050>// list of recv waiters
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	<span style=color:#505050>// 等待发送的 goroutine 队列
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	sendq    waitq  <span style=color:#505050>// list of send waiters
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>
-</span></span><span style=display:flex><span>	<span style=color:#505050>// 保护 hchan 中所有字段
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	lock mutex
+</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 里元素数量</span>
+</span></span><span style=display:flex><span>	qcount   <span style=color:#005a5f>uint</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 底层循环数组的长度</span>
+</span></span><span style=display:flex><span>	dataqsiz <span style=color:#005a5f>uint</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 指向底层循环数组的指针</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 只针对有缓冲的 channel</span>
+</span></span><span style=display:flex><span>	buf      unsafe.Pointer
+</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 中元素大小</span>
+</span></span><span style=display:flex><span>	elemsize <span style=color:#005a5f>uint16</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 是否被关闭的标志</span>
+</span></span><span style=display:flex><span>	closed   <span style=color:#005a5f>uint32</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// chan 中元素类型</span>
+</span></span><span style=display:flex><span>	elemtype <span style=color:#00538b>*</span>_type <span style=color:#505050>// element type</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 已发送元素在循环数组中的索引</span>
+</span></span><span style=display:flex><span>	sendx    <span style=color:#005a5f>uint</span>   <span style=color:#505050>// send index</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 已接收元素在循环数组中的索引</span>
+</span></span><span style=display:flex><span>	recvx    <span style=color:#005a5f>uint</span>   <span style=color:#505050>// receive index</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 等待接收的 goroutine 队列</span>
+</span></span><span style=display:flex><span>	recvq    waitq  <span style=color:#505050>// list of recv waiters</span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 等待发送的 goroutine 队列</span>
+</span></span><span style=display:flex><span>	sendq    waitq  <span style=color:#505050>// list of send waiters</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#505050>// 保护 hchan 中所有字段</span>
+</span></span><span style=display:flex><span>	lock mutex
 </span></span><span style=display:flex><span>}
 </span></span></code></pre></div><p>关于字段的含义都写在注释里了，再来重点说几个字段：</p><p>buf 指向底层循环数组，只有缓冲型的 channel 才有。</p><p>sendx，recvx 均指向底层循环数组，表示当前可以发送和接收的元素位置索引值（相对于底层数组）。</p><p>sendq，recvq 分别表示被阻塞的 goroutine，这些 goroutine 由于尝试读取 channel 或向 channel 发送数据而被阻塞。</p><p>waitq 是 sudog 的一个双向链表，而 sudog 实际上是对 goroutine 的一个封装：</p><pre><code>type waitq struct {
     first *sudog
@@ -155,8 +154,8 @@ channel 来控制并发数：</p><div class=highlight><pre tabindex=0 style=colo
 </span></span><span style=display:flex><span>	c <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#00538b>*</span>user, <span style=color:#0000c0>5</span>)
 </span></span><span style=display:flex><span>	c <span style=color:#00538b>&lt;-</span> g
 </span></span><span style=display:flex><span>	fmt.<span style=color:#721045>Println</span>(g)
-</span></span><span style=display:flex><span>	<span style=color:#505050>// modify g
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>	g = <span style=color:#00538b>&amp;</span>user{name: <span style=color:#2544bb>&#34;Ankur Anand&#34;</span>, age: <span style=color:#0000c0>100</span>}
+</span></span><span style=display:flex><span>	<span style=color:#505050>// modify g</span>
+</span></span><span style=display:flex><span>	g = <span style=color:#00538b>&amp;</span>user{name: <span style=color:#2544bb>&#34;Ankur Anand&#34;</span>, age: <span style=color:#0000c0>100</span>}
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>go</span> <span style=color:#721045>printUser</span>(c)
 </span></span><span style=display:flex><span>	<span style=color:#5317ac>go</span> <span style=color:#721045>modifyUser</span>(g)
 </span></span><span style=display:flex><span>	time.<span style=color:#721045>Sleep</span>(<span style=color:#0000c0>5</span> <span style=color:#00538b>*</span> time.Second)
@@ -176,8 +175,8 @@ printUser goRoutine called &amp;{Ankur 25}
 </span></span><span style=display:flex><span>    dataCh <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#005a5f>int</span>, <span style=color:#0000c0>100</span>)
 </span></span><span style=display:flex><span>    stopCh <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#5317ac>struct</span>{})
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// senders
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; NumSenders; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// senders</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; NumSenders; i<span style=color:#00538b>++</span> {
 </span></span><span style=display:flex><span>        <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>() {
 </span></span><span style=display:flex><span>            <span style=color:#5317ac>for</span> {
 </span></span><span style=display:flex><span>                <span style=color:#5317ac>select</span> {
@@ -189,8 +188,8 @@ printUser goRoutine called &amp;{Ankur 25}
 </span></span><span style=display:flex><span>        }()
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// the receiver
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// the receiver</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>() {
 </span></span><span style=display:flex><span>        <span style=color:#5317ac>for</span> value <span style=color:#00538b>:=</span> <span style=color:#5317ac>range</span> dataCh {
 </span></span><span style=display:flex><span>            <span style=color:#5317ac>if</span> value <span style=color:#00538b>==</span> Max<span style=color:#00538b>-</span><span style=color:#0000c0>1</span> {
 </span></span><span style=display:flex><span>                fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;send stop signal to senders.&#34;</span>)
@@ -218,19 +217,19 @@ printUser goRoutine called &amp;{Ankur 25}
 </span></span><span style=display:flex><span>    dataCh <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#005a5f>int</span>, <span style=color:#0000c0>100</span>)
 </span></span><span style=display:flex><span>    stopCh <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#5317ac>struct</span>{})
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// It must be a buffered channel.
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    toStop <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#005a5f>string</span>, <span style=color:#0000c0>1</span>)
+</span></span><span style=display:flex><span>    <span style=color:#505050>// It must be a buffered channel.</span>
+</span></span><span style=display:flex><span>    toStop <span style=color:#00538b>:=</span> <span style=color:#8f0075>make</span>(<span style=color:#5317ac>chan</span> <span style=color:#005a5f>string</span>, <span style=color:#0000c0>1</span>)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>    <span style=color:#5317ac>var</span> stoppedBy <span style=color:#005a5f>string</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// moderator
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// moderator</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>() {
 </span></span><span style=display:flex><span>        stoppedBy = <span style=color:#00538b>&lt;-</span>toStop
 </span></span><span style=display:flex><span>        <span style=color:#8f0075>close</span>(stopCh)
 </span></span><span style=display:flex><span>    }()
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// senders
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; NumSenders; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// senders</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; NumSenders; i<span style=color:#00538b>++</span> {
 </span></span><span style=display:flex><span>        <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>(id <span style=color:#005a5f>string</span>) {
 </span></span><span style=display:flex><span>            <span style=color:#5317ac>for</span> {
 </span></span><span style=display:flex><span>                value <span style=color:#00538b>:=</span> rand.<span style=color:#721045>Intn</span>(Max)
@@ -251,8 +250,8 @@ printUser goRoutine called &amp;{Ankur 25}
 </span></span><span style=display:flex><span>        }(strconv.<span style=color:#721045>Itoa</span>(i))
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#505050>// receivers
-</span></span></span><span style=display:flex><span><span style=color:#505050></span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; NumReceivers; i<span style=color:#00538b>++</span> {
+</span></span><span style=display:flex><span>    <span style=color:#505050>// receivers</span>
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>for</span> i <span style=color:#00538b>:=</span> <span style=color:#0000c0>0</span>; i &lt; NumReceivers; i<span style=color:#00538b>++</span> {
 </span></span><span style=display:flex><span>        <span style=color:#5317ac>go</span> <span style=color:#5317ac>func</span>(id <span style=color:#005a5f>string</span>) {
 </span></span><span style=display:flex><span>            <span style=color:#5317ac>for</span> {
 </span></span><span style=display:flex><span>                <span style=color:#5317ac>select</span> {
