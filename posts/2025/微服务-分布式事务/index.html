@@ -1,2 +1,144 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="TODO 待补充完善"><title>微服务-分布式事务
-</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2025-03-07 11:24:06 +0800 +0800">2025-03-07</time></p><h1>微服务-分布式事务</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共2字</span></p><p class=post-meta>预计阅读约: 1 分钟</p><p>TODO 待补充完善</p></article></div></main></body></html>
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='微服务-分布式事务
+一、微服务架构下的分布式事务挑战
+在微服务架构中，每个服务独立拥有数据库（Database per Service），跨服务的事务操作面临以下核心问题：
+
+数据一致性：跨服务的业务操作无法通过本地事务保证原子性
+通信可靠性：网络分区、服务宕机等场景下的异常处理
+性能损耗：传统两阶段提交（2PC）方案存在同步阻塞问题
+
+二、主流分布式事务解决方案
+
+Saga 模式（最终一致性）
+
+通过补偿机制回滚分布式事务
+适用场景：长事务、高吞吐量系统
+
+
+TCC 模式（Try-Confirm-Cancel）
+
+业务层实现资源预留/确认/取消三阶段
+适用场景：资金类强一致性要求场景
+
+
+XA 规范（强一致性）
+
+依赖数据库层的两阶段提交协议
+缺点：同步阻塞、数据库兼容性问题
+
+
+
+三、DTM 分布式事务框架（Go 语言实现）
+核心特性
+// 典型 Saga 事务示例（Go 语言）
+// 添加子事务，正向操作为url， 补偿操作为url
+dtmcli.SagaProcess(saga, func (saga *dtmcli.Saga) {
+    saga.Add("http://service1/api/trans", "http://service1/api/compensate", &amp;req1)
+    saga.Add("http://service2/api/trans", "http://service2/api/compensate", &amp;req2)
+})
+
+多模式支持：Saga/TCC/XA/消息事务
+多语言 SDK：原生支持 Go、Java、Python 等
+事务屏障：自动处理空补偿/悬挂问题
+高可用架构：支持 MySQL/Redis 等多种存储后端
+
+技术优势
+
+性能指标：单事务处理时间 < 5ms（SSD 环境）
+部署方案：支持 Kubernetes 容器化部署
+可视化监控：内置事务状态跟踪和管理界面
+
+四、实战案例：电商订单系统
+场景：创建订单（库存扣减 + 订单生成）
+// DTM + go-zero 框架实现分布式事务
+func (l *CreateLogic) Create(req *types.OrderCreateReq) (resp *types.OrderCreateResp, err error) {
+	// 获取订单服务地址
+	orderRpcTarget, err := l.svcCtx.Config.OrderRpcConf.BuildTarget()
+	if err != nil {
+		return nil, fmt.Errorf("下单异常超时")
+	}
+
+	// 获取库存服务地址
+	stockRpcTarget, err := l.svcCtx.Config.StockRpcConf.BuildTarget()
+	if err != nil {
+		return nil, fmt.Errorf("下单异常超时")
+	}
+
+	// 创建一个saga事务
+	m := dtmgrpc.NewSagaGrpc(dtmServer, dtmgrpc.MustGenGid(dtmServer)).
+		// 订单服务
+		Add(
+			orderRpcTarget+orderpb.Order_Create_FullMethodName,         // 创建订单
+			orderRpcTarget+orderpb.Order_CreateRollback_FullMethodName, // 补偿操作-创建订单回滚
+			&amp;order.CreateReq{
+				UserId:  req.UserID,
+				GoodsId: req.GoodsID,
+				Num:     req.Num,
+			},
+		).
+		// 库存服务
+		Add(
+			stockRpcTarget+stockpb.Stock_Deduct_FullMethodName,         // 扣减库存
+			stockRpcTarget+stockpb.Stock_DeductRollback_FullMethodName, // 补偿操作-扣减库存回滚
+			&amp;stock.DeductReq{
+				GoodsId: req.GoodsID,
+				Num:     req.Num,
+			},
+		)
+
+	// 提交数据到dtm
+	err = m.Submit()
+	logger.FatalIfError(err)
+
+	return
+}
+
+实战完整源代码 https://github.com/ch3nnn/dtm-zero'><title>微服务-分布式事务
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2025-03-07 11:24:06 +0800 +0800">2025-03-07</time></p><h1>微服务-分布式事务</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共215字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><aside><nav id=TableOfContents><ul><li><a href=#微服务-分布式事务>微服务-分布式事务</a><ul><li><a href=#一微服务架构下的分布式事务挑战>一、微服务架构下的分布式事务挑战</a></li><li><a href=#二主流分布式事务解决方案>二、主流分布式事务解决方案</a></li><li><a href=#三dtm-分布式事务框架go-语言实现>三、DTM 分布式事务框架（Go 语言实现）</a></li><li><a href=#四实战案例电商订单系统>四、实战案例：电商订单系统</a></li><li><a href=#五选型建议>五、选型建议</a></li><li><a href=#六参考资料>六、参考资料</a></li></ul></li></ul></nav></aside><h2 id=微服务-分布式事务>微服务-分布式事务</h2><h3 id=一微服务架构下的分布式事务挑战>一、微服务架构下的分布式事务挑战</h3><p>在微服务架构中，每个服务独立拥有数据库（Database per Service），跨服务的事务操作面临以下核心问题：</p><ul><li><strong>数据一致性</strong>：跨服务的业务操作无法通过本地事务保证原子性</li><li><strong>通信可靠性</strong>：网络分区、服务宕机等场景下的异常处理</li><li><strong>性能损耗</strong>：传统两阶段提交（2PC）方案存在同步阻塞问题</li></ul><h3 id=二主流分布式事务解决方案>二、主流分布式事务解决方案</h3><ol><li><strong>Saga 模式</strong>（最终一致性）<ul><li>通过补偿机制回滚分布式事务</li><li>适用场景：长事务、高吞吐量系统</li></ul></li><li><strong>TCC 模式</strong>（Try-Confirm-Cancel）<ul><li>业务层实现资源预留/确认/取消三阶段</li><li>适用场景：资金类强一致性要求场景</li></ul></li><li><strong>XA 规范</strong>（强一致性）<ul><li>依赖数据库层的两阶段提交协议</li><li>缺点：同步阻塞、数据库兼容性问题</li></ul></li></ol><h3 id=三dtm-分布式事务框架go-语言实现>三、DTM 分布式事务框架（Go 语言实现）</h3><h4 id=核心特性>核心特性</h4><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#505050>// 典型 Saga 事务示例（Go 语言）</span>
+</span></span><span style=display:flex><span><span style=color:#505050>// 添加子事务，正向操作为url， 补偿操作为url</span>
+</span></span><span style=display:flex><span>dtmcli.<span style=color:#721045>SagaProcess</span>(saga, <span style=color:#5317ac>func</span> (saga <span style=color:#00538b>*</span>dtmcli.Saga) {
+</span></span><span style=display:flex><span>    saga.<span style=color:#721045>Add</span>(<span style=color:#2544bb>&#34;http://service1/api/trans&#34;</span>, <span style=color:#2544bb>&#34;http://service1/api/compensate&#34;</span>, <span style=color:#00538b>&amp;</span>req1)
+</span></span><span style=display:flex><span>    saga.<span style=color:#721045>Add</span>(<span style=color:#2544bb>&#34;http://service2/api/trans&#34;</span>, <span style=color:#2544bb>&#34;http://service2/api/compensate&#34;</span>, <span style=color:#00538b>&amp;</span>req2)
+</span></span><span style=display:flex><span>})
+</span></span></code></pre></div><ol><li><strong>多模式支持</strong>：Saga/TCC/XA/消息事务</li><li><strong>多语言 SDK</strong>：原生支持 Go、Java、Python 等</li><li><strong>事务屏障</strong>：自动处理空补偿/悬挂问题</li><li><strong>高可用架构</strong>：支持 MySQL/Redis 等多种存储后端</li></ol><h4 id=技术优势>技术优势</h4><ul><li><strong>性能指标</strong>：单事务处理时间 &lt; 5ms（SSD 环境）</li><li><strong>部署方案</strong>：支持 Kubernetes 容器化部署</li><li><strong>可视化监控</strong>：内置事务状态跟踪和管理界面</li></ul><h3 id=四实战案例电商订单系统>四、实战案例：电商订单系统</h3><p><strong>场景</strong>：创建订单（库存扣减 + 订单生成）</p><pre tabindex=0><code>// DTM + go-zero 框架实现分布式事务
+func (l *CreateLogic) Create(req *types.OrderCreateReq) (resp *types.OrderCreateResp, err error) {
+	// 获取订单服务地址
+	orderRpcTarget, err := l.svcCtx.Config.OrderRpcConf.BuildTarget()
+	if err != nil {
+		return nil, fmt.Errorf(&#34;下单异常超时&#34;)
+	}
+
+	// 获取库存服务地址
+	stockRpcTarget, err := l.svcCtx.Config.StockRpcConf.BuildTarget()
+	if err != nil {
+		return nil, fmt.Errorf(&#34;下单异常超时&#34;)
+	}
+
+	// 创建一个saga事务
+	m := dtmgrpc.NewSagaGrpc(dtmServer, dtmgrpc.MustGenGid(dtmServer)).
+		// 订单服务
+		Add(
+			orderRpcTarget+orderpb.Order_Create_FullMethodName,         // 创建订单
+			orderRpcTarget+orderpb.Order_CreateRollback_FullMethodName, // 补偿操作-创建订单回滚
+			&amp;order.CreateReq{
+				UserId:  req.UserID,
+				GoodsId: req.GoodsID,
+				Num:     req.Num,
+			},
+		).
+		// 库存服务
+		Add(
+			stockRpcTarget+stockpb.Stock_Deduct_FullMethodName,         // 扣减库存
+			stockRpcTarget+stockpb.Stock_DeductRollback_FullMethodName, // 补偿操作-扣减库存回滚
+			&amp;stock.DeductReq{
+				GoodsId: req.GoodsID,
+				Num:     req.Num,
+			},
+		)
+
+	// 提交数据到dtm
+	err = m.Submit()
+	logger.FatalIfError(err)
+
+	return
+}
+</code></pre><blockquote><p>实战完整源代码 <a href=https://github.com/ch3nnn/dtm-zero>https://github.com/ch3nnn/dtm-zero</a></p></blockquote><h3 id=五选型建议>五、选型建议</h3><table><thead><tr><th>方案</th><th>一致性级别</th><th>性能</th><th>复杂度</th><th>适用场景</th></tr></thead><tbody><tr><td>DTM Saga</td><td>最终一致</td><td>高</td><td>中</td><td>电商、物流等最终一致性场景</td></tr><tr><td>DTM TCC</td><td>强一致</td><td>中</td><td>高</td><td>金融交易、库存管理等强一致性场景</td></tr><tr><td>本地消息表</td><td>最终一致</td><td>中</td><td>低</td><td>异步消息处理场景</td></tr><tr><td>Seata</td><td>强一致</td><td>较低</td><td>高</td><td>Java 技术栈主导的系统</td></tr></tbody></table><p><strong>最佳实践</strong>：</p><ol><li>优先使用 Saga 模式降低系统复杂度</li><li>关键资金操作采用 TCC 模式</li><li>事务消息需设置合理的重试策略和报警机制</li><li>事务执行路径避免超过 5 个服务调用</li></ol><blockquote><p>提示：DTM 最新版本已支持与 gRPC 协议深度集成，可通过 proto 文件自动生成事务处理代码，显著提升开发效率。建议结合 CI/CD 流程进行事务补偿逻辑的自动化测试。</p></blockquote><h3 id=六参考资料>六、参考资料</h3><ol><li><a href=https://github.com/dtm-labs/dtm-examples>dtm-labs/dtm-examples</a></li><li><a href=https://github.com/Mikaelemmmm/gozerodtm>gozerodtm</a></li><li><a href=https://dtm.pub/ref/gozero.html>dtm文档go-zero支持</a></li><li><a href=https://gorm.io/zh_CN/docs/>gorm</a></li></ol></article></div></main></body></html>

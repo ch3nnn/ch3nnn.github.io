@@ -1,4 +1,98 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>微服务 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link><description>Recent content in 微服务 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 07 Mar 2025 11:24:06 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>微服务-分布式事务</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link><pubDate>Fri, 07 Mar 2025 11:24:06 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</guid><description>&lt;p>TODO 待补充完善&lt;/p></description></item><item><title>微服务-API网关对比和选型</title><link>https://blog.ch3nnn.cn/posts/2023/%E5%BE%AE%E6%9C%8D%E5%8A%A1api%E7%BD%91%E5%85%B3%E5%AF%B9%E6%AF%94%E5%92%8C%E9%80%89%E5%9E%8B/</link><pubDate>Tue, 04 Apr 2023 16:45:00 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E5%BE%AE%E6%9C%8D%E5%8A%A1api%E7%BD%91%E5%85%B3%E5%AF%B9%E6%AF%94%E5%92%8C%E9%80%89%E5%9E%8B/</guid><description>&lt;h2 id="什么是微服务">什么是微服务&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>微服务 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link><description>Recent content in 微服务 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 07 Mar 2025 11:24:06 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>微服务-分布式事务</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link><pubDate>Fri, 07 Mar 2025 11:24:06 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</guid><description>&lt;h2 id="微服务-分布式事务">微服务-分布式事务&lt;/h2>
+&lt;h3 id="一微服务架构下的分布式事务挑战">一、微服务架构下的分布式事务挑战&lt;/h3>
+&lt;p>在微服务架构中，每个服务独立拥有数据库（Database per Service），跨服务的事务操作面临以下核心问题：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>数据一致性&lt;/strong>：跨服务的业务操作无法通过本地事务保证原子性&lt;/li>
+&lt;li>&lt;strong>通信可靠性&lt;/strong>：网络分区、服务宕机等场景下的异常处理&lt;/li>
+&lt;li>&lt;strong>性能损耗&lt;/strong>：传统两阶段提交（2PC）方案存在同步阻塞问题&lt;/li>
+&lt;/ul>
+&lt;h3 id="二主流分布式事务解决方案">二、主流分布式事务解决方案&lt;/h3>
+&lt;ol>
+&lt;li>&lt;strong>Saga 模式&lt;/strong>（最终一致性）
+&lt;ul>
+&lt;li>通过补偿机制回滚分布式事务&lt;/li>
+&lt;li>适用场景：长事务、高吞吐量系统&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>TCC 模式&lt;/strong>（Try-Confirm-Cancel）
+&lt;ul>
+&lt;li>业务层实现资源预留/确认/取消三阶段&lt;/li>
+&lt;li>适用场景：资金类强一致性要求场景&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>XA 规范&lt;/strong>（强一致性）
+&lt;ul>
+&lt;li>依赖数据库层的两阶段提交协议&lt;/li>
+&lt;li>缺点：同步阻塞、数据库兼容性问题&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="三dtm-分布式事务框架go-语言实现">三、DTM 分布式事务框架（Go 语言实现）&lt;/h3>
+&lt;h4 id="核心特性">核心特性&lt;/h4>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// 典型 Saga 事务示例（Go 语言）&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#505050">// 添加子事务，正向操作为url， 补偿操作为url&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dtmcli.&lt;span style="color:#721045">SagaProcess&lt;/span>(saga, &lt;span style="color:#5317ac">func&lt;/span> (saga &lt;span style="color:#00538b">*&lt;/span>dtmcli.Saga) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> saga.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;http://service1/api/trans&amp;#34;&lt;/span>, &lt;span style="color:#2544bb">&amp;#34;http://service1/api/compensate&amp;#34;&lt;/span>, &lt;span style="color:#00538b">&amp;amp;&lt;/span>req1)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> saga.&lt;span style="color:#721045">Add&lt;/span>(&lt;span style="color:#2544bb">&amp;#34;http://service2/api/trans&amp;#34;&lt;/span>, &lt;span style="color:#2544bb">&amp;#34;http://service2/api/compensate&amp;#34;&lt;/span>, &lt;span style="color:#00538b">&amp;amp;&lt;/span>req2)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>})
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;li>&lt;strong>多模式支持&lt;/strong>：Saga/TCC/XA/消息事务&lt;/li>
+&lt;li>&lt;strong>多语言 SDK&lt;/strong>：原生支持 Go、Java、Python 等&lt;/li>
+&lt;li>&lt;strong>事务屏障&lt;/strong>：自动处理空补偿/悬挂问题&lt;/li>
+&lt;li>&lt;strong>高可用架构&lt;/strong>：支持 MySQL/Redis 等多种存储后端&lt;/li>
+&lt;/ol>
+&lt;h4 id="技术优势">技术优势&lt;/h4>
+&lt;ul>
+&lt;li>&lt;strong>性能指标&lt;/strong>：单事务处理时间 &amp;lt; 5ms（SSD 环境）&lt;/li>
+&lt;li>&lt;strong>部署方案&lt;/strong>：支持 Kubernetes 容器化部署&lt;/li>
+&lt;li>&lt;strong>可视化监控&lt;/strong>：内置事务状态跟踪和管理界面&lt;/li>
+&lt;/ul>
+&lt;h3 id="四实战案例电商订单系统">四、实战案例：电商订单系统&lt;/h3>
+&lt;p>&lt;strong>场景&lt;/strong>：创建订单（库存扣减 + 订单生成）&lt;/p>
+&lt;pre tabindex="0">&lt;code>// DTM + go-zero 框架实现分布式事务
+func (l *CreateLogic) Create(req *types.OrderCreateReq) (resp *types.OrderCreateResp, err error) {
+	// 获取订单服务地址
+	orderRpcTarget, err := l.svcCtx.Config.OrderRpcConf.BuildTarget()
+	if err != nil {
+		return nil, fmt.Errorf(&amp;#34;下单异常超时&amp;#34;)
+	}
+
+	// 获取库存服务地址
+	stockRpcTarget, err := l.svcCtx.Config.StockRpcConf.BuildTarget()
+	if err != nil {
+		return nil, fmt.Errorf(&amp;#34;下单异常超时&amp;#34;)
+	}
+
+	// 创建一个saga事务
+	m := dtmgrpc.NewSagaGrpc(dtmServer, dtmgrpc.MustGenGid(dtmServer)).
+		// 订单服务
+		Add(
+			orderRpcTarget+orderpb.Order_Create_FullMethodName, // 创建订单
+			orderRpcTarget+orderpb.Order_CreateRollback_FullMethodName, // 补偿操作-创建订单回滚
+			&amp;amp;order.CreateReq{
+				UserId: req.UserID,
+				GoodsId: req.GoodsID,
+				Num: req.Num,
+			},
+		).
+		// 库存服务
+		Add(
+			stockRpcTarget+stockpb.Stock_Deduct_FullMethodName, // 扣减库存
+			stockRpcTarget+stockpb.Stock_DeductRollback_FullMethodName, // 补偿操作-扣减库存回滚
+			&amp;amp;stock.DeductReq{
+				GoodsId: req.GoodsID,
+				Num: req.Num,
+			},
+		)
+
+	// 提交数据到dtm
+	err = m.Submit()
+	logger.FatalIfError(err)
+
+	return
+}
+&lt;/code>&lt;/pre>&lt;blockquote>
+&lt;p>实战完整源代码 &lt;a href="https://github.com/ch3nnn/dtm-zero">https://github.com/ch3nnn/dtm-zero&lt;/a>&lt;/p></description></item><item><title>微服务-API网关对比和选型</title><link>https://blog.ch3nnn.cn/posts/2023/%E5%BE%AE%E6%9C%8D%E5%8A%A1api%E7%BD%91%E5%85%B3%E5%AF%B9%E6%AF%94%E5%92%8C%E9%80%89%E5%9E%8B/</link><pubDate>Tue, 04 Apr 2023 16:45:00 +0000</pubDate><guid>https://blog.ch3nnn.cn/posts/2023/%E5%BE%AE%E6%9C%8D%E5%8A%A1api%E7%BD%91%E5%85%B3%E5%AF%B9%E6%AF%94%E5%92%8C%E9%80%89%E5%9E%8B/</guid><description>&lt;h2 id="什么是微服务">什么是微服务&lt;/h2>
 &lt;p>微服务架构（通常简称为微服务）是指开发应用所用的一种架构形式。通过微服务，可将大型应用分解成多个独立的组件，其中每个组件都有各自的责任领域。
 在处理一个用户请求时，基于微服务的应用可能会调用许多内部微服务来共同生成其响应。微服务是互联网业务发展的结果，互联网业务的飞速发展导致系统的架构也在不断地发生变化，总体来说，系统的架构大致经历了：单体应用架构—&amp;gt;
 SOA 架构—&amp;gt;微服务架构 的演变，具体发展历程和各自的优缺点如下表所示。
