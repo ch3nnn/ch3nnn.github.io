@@ -1,0 +1,150 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="微服务-分布式任务
+前言
+这篇文章应该拖了很久，今天终于抽空整理一下。 之前项目中一直使用的是 Celery，但项目业务场景复杂，需要处理大量异步任务，且对可视化运维和报警监控有强需求，语言生态无法满足现有系统架构，因此选择使用
+XXL-JOB。
+一、介绍
+分布式任务是指将一个大型任务拆解为多个子任务，通过多台计算机/服务节点协同完成的计算模式。其核心目标是利用多机资源提升处理效率、保障系统高可用性。
+二、核心对比表
+
+  
+      
+          维度
+          asynq
+          xxl-job-go
+          Celery
+          gocron
+      
+  
+  
+      
+          语言生态
+          Go
+          Go（XXL-JOB生态移植）
+          Python
+          Go
+      
+      
+          核心定位
+          异步任务队列
+          分布式任务调度平台
+          分布式任务队列 + 定时任务
+          轻量级定时任务调度
+      
+      
+          调度类型
+          异步任务 + 延迟任务
+          定时任务 + API触发
+          异步任务 + 定时任务
+          定时任务为主
+      
+      
+          可视化支持
+          需第三方工具（如Prometheus）
+          自带Web控制台
+          依赖Flower插件
+          无原生界面
+      
+      
+          消息中间件依赖
+          强依赖Redis
+          无（基于数据库调度）
+          强依赖RabbitMQ/Redis
+          无依赖
+      
+      
+          分布式能力
+          基于Redis的Worker集群
+          中心化调度 + 执行器集群
+          Worker集群 + 消息队列
+          需自行实现分布式锁
+      
+      
+          典型场景
+          邮件发送、实时数据处理
+          报表生成、跨服务定时任务
+          Django后台任务、数据分析
+          单服务定时脚本
+      
+  
+
+
+选型建议
+
+  
+      
+          场景
+          推荐框架
+          理由
+      
+  
+  
+      
+          高并发异步任务
+          asynq
+          Redis支撑高吞吐，Go的并发性能优势
+      
+      
+          企业级定时任务平台
+          xxl-job-go
+          控制台完善，任务分片机制成熟
+      
+      
+          Python项目后台任务
+          Celery
+          生态成熟，与Django无缝集成
+      
+      
+          轻量级单服务定时脚本
+          gocron
+          零依赖，API简单
+      
+  
+
+扩展建议："><title>微服务-分布式任务
+</title><link rel="shortcut icon" type=image/x-icon href=/img/icon.png><link rel=stylesheet href=/css/main.df4fc34cbb4964ffc7f5be01c4fd6b3531b8bcd68a132d90d82274e9bebb9847136b10f2dc3bd59d06d68d40882449f7309d5c7a6bc6bb9864605167f3269300.css integrity="sha512-30/DTLtJZP/H9b4BxP1rNTG4vNaKEy2Q2CJ06b67mEcTaxDy3DvVnQbWjUCIJEn3MJ1cemvGu5hkYFFn8yaTAA=="></head><body a=light><main class=page-content aria-label=Content><div class=w><a href=/>..</a><article><p class=post-meta><time datetime="2025-03-09 17:00:27 +0800 +0800">2025-03-09</time></p><h1>微服务-分布式任务</h1><p class=post-meta>阅读 </span></span>|<span class=post-date>共225字</span></p><p class=post-meta>预计阅读约: 2 分钟</p><aside><nav id=TableOfContents><ul><li><a href=#微服务-分布式任务>微服务-分布式任务</a><ul><li><a href=#前言>前言</a></li><li><a href=#一介绍>一、介绍</a></li><li><a href=#二核心对比表>二、核心对比表</a></li><li><a href=#三xxl-job>三、XXL-JOB</a></li><li><a href=#四与-go-zero-框架集成>四、与 go-zero 框架集成</a></li><li><a href=#五参考资料>五、参考资料</a></li></ul></li></ul></nav></aside><h2 id=微服务-分布式任务>微服务-分布式任务</h2><h3 id=前言>前言</h3><p>这篇文章应该拖了很久，今天终于抽空整理一下。 之前项目中一直使用的是 Celery，但项目业务场景复杂，需要处理大量异步任务，且对可视化运维和报警监控有强需求，语言生态无法满足现有系统架构，因此选择使用
+XXL-JOB。</p><h3 id=一介绍>一、介绍</h3><p>分布式任务是指将一个大型任务拆解为多个子任务，通过多台计算机/服务节点协同完成的计算模式。其核心目标是利用多机资源提升处理效率、保障系统高可用性。</p><h3 id=二核心对比表>二、核心对比表</h3><table><thead><tr><th>维度</th><th>asynq</th><th>xxl-job-go</th><th>Celery</th><th>gocron</th></tr></thead><tbody><tr><td><strong>语言生态</strong></td><td>Go</td><td>Go（XXL-JOB生态移植）</td><td>Python</td><td>Go</td></tr><tr><td><strong>核心定位</strong></td><td>异步任务队列</td><td>分布式任务调度平台</td><td>分布式任务队列 + 定时任务</td><td>轻量级定时任务调度</td></tr><tr><td><strong>调度类型</strong></td><td>异步任务 + 延迟任务</td><td>定时任务 + API触发</td><td>异步任务 + 定时任务</td><td>定时任务为主</td></tr><tr><td><strong>可视化支持</strong></td><td>需第三方工具（如Prometheus）</td><td>自带Web控制台</td><td>依赖Flower插件</td><td>无原生界面</td></tr><tr><td><strong>消息中间件依赖</strong></td><td>强依赖Redis</td><td>无（基于数据库调度）</td><td>强依赖RabbitMQ/Redis</td><td>无依赖</td></tr><tr><td><strong>分布式能力</strong></td><td>基于Redis的Worker集群</td><td>中心化调度 + 执行器集群</td><td>Worker集群 + 消息队列</td><td>需自行实现分布式锁</td></tr><tr><td><strong>典型场景</strong></td><td>邮件发送、实时数据处理</td><td>报表生成、跨服务定时任务</td><td>Django后台任务、数据分析</td><td>单服务定时脚本</td></tr></tbody></table><hr><p><strong>选型建议</strong></p><table><thead><tr><th>场景</th><th>推荐框架</th><th>理由</th></tr></thead><tbody><tr><td><strong>高并发异步任务</strong></td><td>asynq</td><td>Redis支撑高吞吐，Go的并发性能优势</td></tr><tr><td><strong>企业级定时任务平台</strong></td><td>xxl-job-go</td><td>控制台完善，任务分片机制成熟</td></tr><tr><td><strong>Python项目后台任务</strong></td><td>Celery</td><td>生态成熟，与Django无缝集成</td></tr><tr><td><strong>轻量级单服务定时脚本</strong></td><td>gocron</td><td>零依赖，API简单</td></tr></tbody></table><p><strong>扩展建议</strong>：</p><ul><li>需要<strong>混合语言支持</strong>时，可组合使用（如Go用asynq处理计算密集型任务，Python用Celery处理AI推理）</li><li><strong>关键任务</strong>推荐搭配Redis Sentinel/Cluster（asynq）或MySQL高可用方案（xxl-job-go）</li></ul><h3 id=三xxl-job>三、XXL-JOB</h3><p>XXL-JOB 是一个分布式任务调度平台，其核心设计目标是开发迅速、学习简单、轻量级、易扩展。现已开放源代码并接入多家公司线上产品线，开箱即用。
+选型 xxl-job 是因为已接入的<a href=https://github.com/xuxueli/xxl-job/issues/1>公司不限于700+</a>相对成熟稳定且企业级。</p><p><strong>核心优势</strong></p><ol><li><p><strong>轻量易用</strong></p><ul><li>核心依赖仅 DB（MySQL），5分钟快速部署</li><li>提供可视化控制台，支持动态调整任务参数（CRON表达式、路由策略等）</li><li>RESTful API 设计，与业务系统解耦</li></ul></li><li><p><strong>调度中心高可用</strong></p><ul><li>采用中心化调度（非竞争式），支持集群部署</li><li>任务触发策略丰富（轮训、故障转移、分片广播等）</li></ul></li><li><p><strong>完备的监控能力</strong></p><ul><li>实时查看调度日志（支持日志回溯）</li><li>内置邮件报警机制</li><li>运行报表统计（成功率/触发次数）</li></ul></li><li><p><strong>弹性扩缩容</strong></p><ul><li>执行器自动注册发现</li><li>支持动态分片（如：处理海量数据时自动拆分任务）</li></ul></li></ol><h3 id=四与-go-zero-框架集成>四、与 go-zero 框架集成</h3><p>只需要将 <a href=https://github.com/xxl-job/xxl-job-executor-go>xxl-job-executor-go</a> 集成到 go-zero 框架中，配合 xxl-job-admin 即可完成分布式任务调度。</p><ol><li><p><strong>编写任务逻辑</strong></p><p>只需要在 internal/task/ 目录下创建自己任务文件即可。 如下示例 internal/task/demo1.go</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> task
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
+</span></span><span style=display:flex><span>    <span style=color:#2544bb>&#34;context&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2544bb>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    xxl <span style=color:#2544bb>&#34;github.com/xxl-job/xxl-job-executor-go&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>Test1</span>(cxt context.Context, param <span style=color:#00538b>*</span>xxl.RunReq) (msg <span style=color:#005a5f>string</span>) {
+</span></span><span style=display:flex><span>    fmt.<span style=color:#721045>Println</span>(<span style=color:#2544bb>&#34;test one task&#34;</span> <span style=color:#00538b>+</span> param.ExecutorHandler <span style=color:#00538b>+</span> <span style=color:#2544bb>&#34; param：&#34;</span> <span style=color:#00538b>+</span> param.ExecutorParams <span style=color:#00538b>+</span> <span style=color:#2544bb>&#34; log_id:&#34;</span> <span style=color:#00538b>+</span> xxl.<span style=color:#721045>Int64ToStr</span>(param.LogID))
+</span></span><span style=display:flex><span>    <span style=color:#5317ac>return</span> <span style=color:#2544bb>&#34;test done&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></li><li><p><strong>注册任务</strong></p><p>这里将把我们编写代码任务注册。如下示例 internal/svc/regtask.go 文件中注册。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#5317ac>package</span> svc
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>import</span> (
+</span></span><span style=display:flex><span>    task <span style=color:#2544bb>&#34;github.com/ch3nnn/xxl-job-zero/internal/task&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2544bb>&#34;github.com/ch3nnn/xxl-job-zero/pkg/xxlx&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#505050>// RegisterTasks 注册任务</span>
+</span></span><span style=display:flex><span><span style=color:#5317ac>func</span> <span style=color:#721045>RegisterTasks</span>(exec xxlx.Executor) {
+</span></span><span style=display:flex><span>    exec.<span style=color:#721045>RegTasks</span>(
+</span></span><span style=display:flex><span>        []xxlx.Task{
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Pattern: <span style=color:#2544bb>&#34;task.demo1&#34;</span>,
+</span></span><span style=display:flex><span>                TaskFn:  task.Test1,
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Pattern: <span style=color:#2544bb>&#34;task.demo2&#34;</span>,
+</span></span><span style=display:flex><span>                TaskFn:  task.Test2,
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Pattern: <span style=color:#2544bb>&#34;task.demo3&#34;</span>,
+</span></span><span style=display:flex><span>                TaskFn:  task.Panic,
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></li><li><p><strong>启动</strong></p><p>我们只需要把项目中 job.go 文件启动即可。</p><div class=highlight><pre tabindex=0 style=color:#000;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-shell data-lang=shell><span style=display:flex><span>register task: task.demo1 
+</span></span><span style=display:flex><span>register task: task.demo2 
+</span></span><span style=display:flex><span>register task: task.demo3 
+</span></span><span style=display:flex><span>Starting server at 0.0.0.0:8888...
+</span></span><span style=display:flex><span><span style=color:#00538b>{</span><span style=color:#2544bb>&#34;@timestamp&#34;</span>:<span style=color:#2544bb>&#34;2024-10-09T18:25:59.587+08:00&#34;</span>,<span style=color:#2544bb>&#34;caller&#34;</span>:<span style=color:#2544bb>&#34;xxlx/log.go:22&#34;</span>,<span style=color:#2544bb>&#34;content&#34;</span>:<span style=color:#2544bb>&#34;执行器注册成功:{\&#34;code\&#34;:200,\&#34;msg\&#34;:null,\&#34;content\&#34;:null}&#34;</span>,<span style=color:#2544bb>&#34;level&#34;</span>:<span style=color:#2544bb>&#34;info&#34;</span><span style=color:#00538b>}</span>
+</span></span></code></pre></div></li></ol><blockquote><p>实战完整源代码 <a href=https://github.com/ch3nnn/xxl-job-zero>https://github.com/ch3nnn/xxl-job-zero</a></p></blockquote><h3 id=五参考资料>五、参考资料</h3><ul><li><a href=https://github.com/xxl-job/xxl-job-executor-go>https://github.com/xxl-job/xxl-job-executor-go</a></li><li><a href=https://marksuper.xyz/2022/10/13/xxl-job/>Go 语言使用定时调度任务大杀器 — XXL-JOB</a></li></ul></article></div></main></body></html>

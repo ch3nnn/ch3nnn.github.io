@@ -1,4 +1,106 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>微服务 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link><description>Recent content in 微服务 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 07 Mar 2025 11:24:06 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>微服务-分布式事务</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link><pubDate>Fri, 07 Mar 2025 11:24:06 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</guid><description>&lt;h2 id="微服务-分布式事务">微服务-分布式事务&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>微服务 on Ch3nnn!Blog</title><link>https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link><description>Recent content in 微服务 on Ch3nnn!Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sun, 09 Mar 2025 17:00:27 +0800</lastBuildDate><atom:link href="https://blog.ch3nnn.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>微服务-分布式任务</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1/</link><pubDate>Sun, 09 Mar 2025 17:00:27 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1/</guid><description>&lt;h2 id="微服务-分布式任务">微服务-分布式任务&lt;/h2>
+&lt;h3 id="前言">前言&lt;/h3>
+&lt;p>这篇文章应该拖了很久，今天终于抽空整理一下。 之前项目中一直使用的是 Celery，但项目业务场景复杂，需要处理大量异步任务，且对可视化运维和报警监控有强需求，语言生态无法满足现有系统架构，因此选择使用
+XXL-JOB。&lt;/p>
+&lt;h3 id="一介绍">一、介绍&lt;/h3>
+&lt;p>分布式任务是指将一个大型任务拆解为多个子任务，通过多台计算机/服务节点协同完成的计算模式。其核心目标是利用多机资源提升处理效率、保障系统高可用性。&lt;/p>
+&lt;h3 id="二核心对比表">二、核心对比表&lt;/h3>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>维度&lt;/th>
+ &lt;th>asynq&lt;/th>
+ &lt;th>xxl-job-go&lt;/th>
+ &lt;th>Celery&lt;/th>
+ &lt;th>gocron&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;strong>语言生态&lt;/strong>&lt;/td>
+ &lt;td>Go&lt;/td>
+ &lt;td>Go（XXL-JOB生态移植）&lt;/td>
+ &lt;td>Python&lt;/td>
+ &lt;td>Go&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>核心定位&lt;/strong>&lt;/td>
+ &lt;td>异步任务队列&lt;/td>
+ &lt;td>分布式任务调度平台&lt;/td>
+ &lt;td>分布式任务队列 + 定时任务&lt;/td>
+ &lt;td>轻量级定时任务调度&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>调度类型&lt;/strong>&lt;/td>
+ &lt;td>异步任务 + 延迟任务&lt;/td>
+ &lt;td>定时任务 + API触发&lt;/td>
+ &lt;td>异步任务 + 定时任务&lt;/td>
+ &lt;td>定时任务为主&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>可视化支持&lt;/strong>&lt;/td>
+ &lt;td>需第三方工具（如Prometheus）&lt;/td>
+ &lt;td>自带Web控制台&lt;/td>
+ &lt;td>依赖Flower插件&lt;/td>
+ &lt;td>无原生界面&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>消息中间件依赖&lt;/strong>&lt;/td>
+ &lt;td>强依赖Redis&lt;/td>
+ &lt;td>无（基于数据库调度）&lt;/td>
+ &lt;td>强依赖RabbitMQ/Redis&lt;/td>
+ &lt;td>无依赖&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>分布式能力&lt;/strong>&lt;/td>
+ &lt;td>基于Redis的Worker集群&lt;/td>
+ &lt;td>中心化调度 + 执行器集群&lt;/td>
+ &lt;td>Worker集群 + 消息队列&lt;/td>
+ &lt;td>需自行实现分布式锁&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>典型场景&lt;/strong>&lt;/td>
+ &lt;td>邮件发送、实时数据处理&lt;/td>
+ &lt;td>报表生成、跨服务定时任务&lt;/td>
+ &lt;td>Django后台任务、数据分析&lt;/td>
+ &lt;td>单服务定时脚本&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;p>&lt;strong>选型建议&lt;/strong>&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>场景&lt;/th>
+ &lt;th>推荐框架&lt;/th>
+ &lt;th>理由&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;strong>高并发异步任务&lt;/strong>&lt;/td>
+ &lt;td>asynq&lt;/td>
+ &lt;td>Redis支撑高吞吐，Go的并发性能优势&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>企业级定时任务平台&lt;/strong>&lt;/td>
+ &lt;td>xxl-job-go&lt;/td>
+ &lt;td>控制台完善，任务分片机制成熟&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>Python项目后台任务&lt;/strong>&lt;/td>
+ &lt;td>Celery&lt;/td>
+ &lt;td>生态成熟，与Django无缝集成&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;strong>轻量级单服务定时脚本&lt;/strong>&lt;/td>
+ &lt;td>gocron&lt;/td>
+ &lt;td>零依赖，API简单&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>扩展建议&lt;/strong>：&lt;/p></description></item><item><title>微服务-分布式事务</title><link>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link><pubDate>Fri, 07 Mar 2025 11:24:06 +0800</pubDate><guid>https://blog.ch3nnn.cn/posts/2025/%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</guid><description>&lt;h2 id="微服务-分布式事务">微服务-分布式事务&lt;/h2>
 &lt;h3 id="一微服务架构下的分布式事务挑战">一、微服务架构下的分布式事务挑战&lt;/h3>
 &lt;p>在微服务架构中，每个服务独立拥有数据库（Database per Service），跨服务的事务操作面临以下核心问题：&lt;/p>
 &lt;ul>
